@@ -20,7 +20,7 @@ IncludeDir["glm"] = "%{wks.location}/Banan2D/vendor/glm"
 
 group "Dependencies"
 	include "Banan2D/vendor/Glad"
-	include "Banan2D/vendor/imgui"
+	include "Banan2D/vendor/ImGui"
 group ""
 
 include "Banan2D"

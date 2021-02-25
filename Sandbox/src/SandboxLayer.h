@@ -18,7 +18,7 @@ public:
 private:
 	Banan::OrthographicCameraController m_cameraController;
 
-	Banan::QuadPropreties m_quad;
+	Banan::QuadProperties m_quad;
 
 	glm::vec4 m_color = { 1.0f, 1.0f, 0.0f, 1.0f };
 	uint8_t m_index = 0;

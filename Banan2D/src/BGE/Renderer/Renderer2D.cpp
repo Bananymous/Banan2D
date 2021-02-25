@@ -21,12 +21,12 @@ namespace Banan
 		float textureIndex;
 	};
 
-	struct Renderer2DData
+	static struct Renderer2DData
 	{
-		const uint32_t maxQuads		= 10000;
-		const uint32_t maxVertices	= maxQuads * 4;
-		const uint32_t maxIndices	= maxQuads * 6;
-		static const uint32_t maxTextureSlots = 32;
+		static const uint32_t maxQuads			= 10000;
+		static const uint32_t maxVertices		= maxQuads * 4;
+		static const uint32_t maxIndices		= maxQuads * 6;
+		static const uint32_t maxTextureSlots	= 32;
 
 		Ref<VertexArray> quadVertexArray;
 		Ref<VertexBuffer> quadVertexBuffer;
@@ -41,11 +41,10 @@ namespace Banan
 		uint32_t textureSlotIndex = 1;
 
 		glm::vec4 quadVertexPositions[4];
-	};
 
-	static Renderer2DData s_data;
-
-
+		Renderer2D::Stats stats;
+		
+	} s_data;
 
 	void Renderer2D::Init()
 	{
@@ -139,12 +138,23 @@ namespace Banan
 			s_data.textureSlots[i]->Bind(i);
 
 		RenderCommand::DrawIndexed(s_data.quadVertexArray, s_data.quadIndexCount);
+
+		s_data.stats.drawCalls++;
 	}
 
+	void Renderer2D::FlushAndReset()
+	{
+		EndScene();
+
+		s_data.quadIndexCount = 0;
+		s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
+
+		s_data.textureSlotIndex = 1;
+	}
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
-		QuadPropreties props;
+		QuadProperties props;
 		props.position = position;
 		props.size = size;
 		props.color = color;
@@ -153,7 +163,7 @@ namespace Banan
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
-		QuadPropreties props;
+		QuadProperties props;
 		props.position = position;
 		props.size = size;
 		props.texture = texture;
@@ -162,7 +172,7 @@ namespace Banan
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
-		QuadPropreties props;
+		QuadProperties props;
 		props.position = position;
 		props.size = size;
 		props.rotation = rotation;
@@ -172,7 +182,7 @@ namespace Banan
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture)
 	{
-		QuadPropreties props;
+		QuadProperties props;
 		props.position = position;
 		props.size = size;
 		props.rotation = rotation;
@@ -203,8 +213,11 @@ namespace Banan
 		return textureIndex;
 	}
 
-	void Renderer2D::DrawQuad(const QuadPropreties& props)
+	void Renderer2D::DrawQuad(const QuadProperties& props)
 	{
+		if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
 		float textureIndex = props.texture ? GetTextureIndex(props.texture) : 0.0f;
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), props.position)
@@ -220,10 +233,17 @@ namespace Banan
 		}
 
 		s_data.quadIndexCount += 6;
+
+
+
+		s_data.stats.quads++;
 	}
 
-	void Renderer2D::DrawRotatedQuad(const QuadPropreties& props)
+	void Renderer2D::DrawRotatedQuad(const QuadProperties& props)
 	{
+		if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
 		float textureIndex = props.texture ? GetTextureIndex(props.texture) : 0.0f;
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), props.position)
@@ -240,6 +260,22 @@ namespace Banan
 		}
 
 		s_data.quadIndexCount += 6;
+
+
+
+		s_data.stats.quads++;
+	}
+
+
+
+	Renderer2D::Stats Renderer2D::GetStats()
+	{
+		return s_data.stats;
+	}
+
+	void Renderer2D::ResetStats()
+	{
+		memset(&s_data.stats, 0, sizeof(Stats));
 	}
 
 }

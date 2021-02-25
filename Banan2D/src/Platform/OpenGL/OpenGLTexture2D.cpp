@@ -1,5 +1,5 @@
 #include "bgepch.h"
-#include "OpenGLTexture.h"
+#include "OpenGLTexture2D.h"
 
 #include <stb_image.h>
 

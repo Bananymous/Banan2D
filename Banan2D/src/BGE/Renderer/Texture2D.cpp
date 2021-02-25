@@ -3,7 +3,7 @@
 
 #include "RendererAPI.h"
 
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/OpenGL/OpenGLTexture2D.h"
 
 namespace Banan
 {

@@ -16,6 +16,7 @@ void SandboxLayer::OnAttach()
 	m_quad.size = glm::vec2(1.0f, 1.0f);
 	m_quad.texture = Banan::Texture2D::Create("assets/textures/test.png");
 	m_quad.rotation = 0.4f;
+	m_quad.position.z = 1.0f;
 }
 
 void SandboxLayer::OnDetach()
@@ -33,10 +34,16 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 	Banan::RenderCommand::SetClearColor({ 0.0f, 1.0f, 1.0f, 1.0f });
 	Banan::RenderCommand::Clear();
 
+
+
+	Banan::Renderer2D::ResetStats();
+
 	Banan::Renderer2D::BeginScene(m_cameraController.GetCamera());
 
-	for(int i = 0; i < 10; i++)
-		Banan::Renderer2D::DrawQuad(Banan::QuadPropreties(glm::vec3(0.0f, (float)i * 0.11f, 0.0f), glm::vec2(0.1f, 0.1f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f)));
+	float tileSize = 0.1f;
+	for (float y = -5.0f; y < 5.0f; y += tileSize)
+		for (float x = -5.0f; x < 5.0f; x += tileSize)
+			Banan::Renderer2D::DrawQuad({ x, y, 0.0f }, glm::vec2(tileSize), { (x + 5.0f) / 10.f, (y + 5.0f) / 10.f, 0.3f, 1.0f });
 
 	Banan::Renderer2D::DrawRotatedQuad(m_quad);
 
@@ -70,9 +77,15 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 
 void SandboxLayer::OnImGuiRender()
 {
-	ImGui::Begin("System:");
-	ImGui::Text("MOIIII <33");
-	ImGui::ColorEdit4("", glm::value_ptr(m_color));
+	auto stats = Banan::Renderer2D::GetStats();
+
+	ImGui::Begin("Statistics:");
+
+	ImGui::Text("Draw Calls %d", stats.drawCalls);
+	ImGui::Text("Quads %d", stats.quads);
+	ImGui::Text("Vertices %d", stats.GetVertices());
+	ImGui::Text("Indices %d", stats.GetIndices());
+
 	ImGui::End();
 }
 
