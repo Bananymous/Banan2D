@@ -23,7 +23,7 @@ namespace Banan
 
 	Application::~Application()
 	{
-
+		Renderer2D::Shutdown();
 	}
 
 	void Application::OnEvent(Event& e)

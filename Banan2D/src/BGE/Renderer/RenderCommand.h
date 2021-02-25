@@ -14,9 +14,9 @@ namespace Banan
 
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) { s_rendererAPI->SetViewport(x, y, width, height); }
 
-		static void SetClearColor(const glm::vec4& color)				{ s_rendererAPI->SetClearColor(color); }
-		static void Clear()												{ s_rendererAPI->Clear(); }
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray)	{ s_rendererAPI->DrawIndexed(vertexArray); }
+		static void SetClearColor(const glm::vec4& color)										{ s_rendererAPI->SetClearColor(color); }
+		static void Clear()																		{ s_rendererAPI->Clear(); }
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)	{ s_rendererAPI->DrawIndexed(vertexArray, indexCount); }
 
 	private:
 		static RendererAPI* s_rendererAPI;

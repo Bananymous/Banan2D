@@ -8,6 +8,18 @@
 namespace Banan
 {
 
+	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+	{
+		switch (RendererAPI::GetAPI())
+		{
+		case RendererAPI::API::None:		BGE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL:		return CreateRef<OpenGLVertexBuffer>(size);
+		}
+
+		BGE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
+
 	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 	{
 		switch (RendererAPI::GetAPI())
@@ -20,12 +32,12 @@ namespace Banan
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
+	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t count)
 	{
 		switch (RendererAPI::GetAPI())
 		{
 			case RendererAPI::API::None:		BGE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:		return CreateRef<OpenGLIndexBuffer>(indices, size);
+			case RendererAPI::API::OpenGL:		return CreateRef<OpenGLIndexBuffer>(indices, count);
 		}
 
 		BGE_ASSERT(false, "Unknown RendererAPI!");

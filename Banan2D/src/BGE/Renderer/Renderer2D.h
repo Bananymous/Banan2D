@@ -20,6 +20,14 @@ namespace Banan
 			color		(glm::vec4(1.0f)),
 			texture		(nullptr)
 		{ }
+
+		QuadPropreties(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) :
+			position	(position),
+			size		(size),
+			rotation	(0.0f),
+			color		(color),
+			texture		(nullptr)
+		{ }
 	};
 
 	class Renderer2D
@@ -32,6 +40,7 @@ namespace Banan
 
 		static void BeginScene(const OrthographicCamera& camera);
 		static void EndScene();
+		static void Flush();
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture);

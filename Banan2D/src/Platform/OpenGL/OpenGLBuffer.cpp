@@ -8,6 +8,13 @@ namespace Banan
 
 	// ******************** VERTEX BUFFER *******************************
 
+	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+	{
+		glCreateBuffers(1, &m_rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	}
+
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
 	{
 		glCreateBuffers(1, &m_rendererID);
@@ -33,6 +40,13 @@ namespace Banan
 	void OpenGLVertexBuffer::SetLayout(const BufferLayout& layout)
 	{
 		m_layout = layout;
+	}
+
+
+	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 

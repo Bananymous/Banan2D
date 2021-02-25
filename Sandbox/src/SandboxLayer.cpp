@@ -28,12 +28,15 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 	m_cameraController.OnUpdate(ts);
 
 	m_quad.tint = m_color;
-
+	m_quad.rotation = m_rotation;
 
 	Banan::RenderCommand::SetClearColor({ 0.0f, 1.0f, 1.0f, 1.0f });
 	Banan::RenderCommand::Clear();
 
 	Banan::Renderer2D::BeginScene(m_cameraController.GetCamera());
+
+	for(int i = 0; i < 10; i++)
+		Banan::Renderer2D::DrawQuad(Banan::QuadPropreties(glm::vec3(0.0f, (float)i * 0.11f, 0.0f), glm::vec2(0.1f, 0.1f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f)));
 
 	Banan::Renderer2D::DrawRotatedQuad(m_quad);
 

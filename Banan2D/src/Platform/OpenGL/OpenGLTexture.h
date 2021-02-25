@@ -21,6 +21,12 @@ namespace Banan
 
 		virtual void Bind(uint32_t slot = 0) const override;
 
+
+		virtual boolean operator==(const Texture2D& other) const override
+		{
+			return m_rendererID == ((OpenGLTexture2D&)other).m_rendererID;
+		}
+
 	private:
 		std::string m_path;
 		uint32_t m_width;
