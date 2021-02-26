@@ -10,33 +10,68 @@
 namespace Banan
 {
 
-	static GLenum ShaderFromTypeString(const std::string& type)
+	OpenGLShader::OpenGLShader(uint32_t textureSlots) :
+		m_rendererID(0)
 	{
-		if (type == "vertex") return GL_VERTEX_SHADER;
-		if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
-		BGE_ASSERT(false, "Invalid shader type: " << type);
-		return 0;
-	}
+		std::string vertexSource = R"(
+			#version 450 core
 
-	OpenGLShader::OpenGLShader(const std::string& path)
-	{
-		std::string source = ReadFile(path);
-		auto shaderSources = PreProcess(source);
-		Compile(shaderSources);
+			layout(location = 0) in vec3	a_position;
+			layout(location = 1) in vec4	a_color;
+			layout(location = 2) in vec2	a_textureCoord;
+			layout(location = 3) in float	a_textureIndex;
+			layout(location = 4) in float	a_tilingFactor;
 
-		size_t lastSlash = path.find_last_of("/\\");
-		lastSlash = (lastSlash == std::string::npos) ? 0 : lastSlash + 1;
-		size_t lastDot = path.rfind('.');
-		size_t length = (lastDot == std::string::npos) ? path.size() - lastSlash : lastDot - lastSlash;
-		m_name = path.substr(lastSlash, length);
-	}
+			uniform mat4 u_viewProjection;
 
-	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) :
-		m_name(name), m_rendererID(0)
-	{
+			out vec4		v_color;
+			out vec2		v_textureCoord;
+			out flat float	v_textureIndex;
+			out float		v_tilingFactor;
+
+			void main()
+			{
+				v_color = a_color;
+				v_textureCoord = a_textureCoord;
+				v_textureIndex = a_textureIndex;
+				v_tilingFactor = a_tilingFactor;
+				gl_Position = u_viewProjection * vec4(a_position, 1.0);
+			}
+		)";
+
+		std::stringstream fragmentSource;
+
+		fragmentSource << R"(
+			#version 450 core
+
+			layout(location = 0) out vec4 color;
+			
+			in vec4			v_color;
+			in vec2			v_textureCoord;
+			in flat float	v_textureIndex;
+			in float		v_tilingFactor;
+			
+			uniform sampler2D u_textures[32];
+			
+			void main()
+			{
+				vec4 textureColor = v_color;
+				switch(int(v_textureIndex))
+				{
+		)";
+
+		for (uint32_t i = 0; i < textureSlots; i++)
+			fragmentSource << "case " << i << ": textureColor *= texture2D(u_textures[" << i << "],  v_textureCoord * v_tilingFactor); break;\r\n";
+
+		fragmentSource << R"(
+				}
+				color = textureColor;
+			}
+		)";
+
 		std::unordered_map<GLenum, std::string> shaderSources;
-		shaderSources[GL_VERTEX_SHADER] = vertexSrc;
-		shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
+		shaderSources[GL_VERTEX_SHADER] = vertexSource;
+		shaderSources[GL_FRAGMENT_SHADER] = fragmentSource.str();
 		Compile(shaderSources);
 	}
 
@@ -80,46 +115,6 @@ namespace Banan
 		UploadUniformMat4(name, value);
 	}
 
-	std::string OpenGLShader::ReadFile(const std::string& path)
-	{
-		std::ifstream file(path, std::ios::in | std::ios::binary);
-
-		BGE_ASSERT(file, "Could not open file: " << path);
-
-		std::string result;
-
-		file.seekg(0, std::ios::end);
-		result.resize(file.tellg());
-		file.seekg(0, std::ios::beg);
-		file.read(result.data(), result.size());
-		file.close();
-
-		return result;
-	}
-
-	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
-	{
-		std::unordered_map<GLenum, std::string> shaderSources;
-
-		const char* typeToken = "#type";
-		size_t typeTokenSize = strlen(typeToken);
-		size_t pos = source.find(typeToken);
-		while (pos != std::string::npos)
-		{
-			size_t eol = source.find_first_of("\r\n", pos);
-			BGE_ASSERT(eol != std::string::npos, "Syntax error");
-			size_t begin = pos + typeTokenSize + 1;
-			std::string type = source.substr(begin, eol - begin);
-			BGE_ASSERT(ShaderFromTypeString(type), "Invalid shader type");
-
-			size_t	nextLinePos = source.find_first_not_of("\r\n", eol);
-			pos = source.find(typeToken, nextLinePos);
-			shaderSources[ShaderFromTypeString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
-		}
-
-		return shaderSources;
-	}
-
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
@@ -128,7 +123,6 @@ namespace Banan
 
 		std::array<GLuint, 2> glShaderIDs;
 
-		// Compile given shaders
 		int glShaderIDIndex = 0;
 		for (auto& key : shaderSources)
 		{
@@ -164,10 +158,8 @@ namespace Banan
 			glShaderIDs[glShaderIDIndex++] = shader;
 		}
 
-		// Link program
 		glLinkProgram(program);
 
-		// Check if linked correctly
 		GLint linked = 0;
 		glGetProgramiv(program, GL_LINK_STATUS, &linked);
 		if (linked == GL_FALSE)
@@ -189,7 +181,6 @@ namespace Banan
 			return;
 		}
 		
-		// Detach all created shaders
 		for (auto ID : glShaderIDs)
 			glDetachShader(program, ID);
 

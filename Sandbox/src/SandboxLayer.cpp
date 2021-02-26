@@ -40,7 +40,7 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 
 	Banan::Renderer2D::BeginScene(m_cameraController.GetCamera());
 
-	float tileSize = 0.1f;
+	float tileSize = 0.5f;
 	for (float y = -5.0f; y < 5.0f; y += tileSize)
 		for (float x = -5.0f; x < 5.0f; x += tileSize)
 			Banan::Renderer2D::DrawQuad({ x, y, 0.0f }, glm::vec2(tileSize), { (x + 5.0f) / 10.f, (y + 5.0f) / 10.f, 0.3f, 1.0f });
@@ -68,8 +68,7 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 	m_frames++;
 	if (m_time >= 1.0f)
 	{
-		std::wstring new_title = L"Sandbox (FPS: " + std::to_wstring(m_frames) + L')';
-		Banan::Application::Get().GetWindow().SetTitle(new_title);
+		m_FPS = m_frames;
 		m_frames = 0U;
 		m_time -= 1.0f;
 	}
@@ -78,14 +77,13 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 void SandboxLayer::OnImGuiRender()
 {
 	auto stats = Banan::Renderer2D::GetStats();
-
 	ImGui::Begin("Statistics:");
-
-	ImGui::Text("Draw Calls %d", stats.drawCalls);
-	ImGui::Text("Quads %d", stats.quads);
-	ImGui::Text("Vertices %d", stats.GetVertices());
-	ImGui::Text("Indices %d", stats.GetIndices());
-
+	ImGui::Text("FPS:        %d", m_FPS);
+	ImGui::Text("Draw Calls: %d", stats.drawCalls);
+	ImGui::Text("Textures:   %d", stats.textures);
+	ImGui::Text("Quads:      %d", stats.quads);
+	ImGui::Text("Vertices:   %d", stats.GetVertices());
+	ImGui::Text("Indices:    %d", stats.GetIndices());
 	ImGui::End();
 }
 

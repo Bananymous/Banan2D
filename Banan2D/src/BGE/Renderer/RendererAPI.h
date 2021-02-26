@@ -26,6 +26,8 @@ namespace Banan
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 	
+		virtual uint32_t GetMaxTextureSlots() = 0;
+
 		static API GetAPI()	{ return s_API; }
 
 	private:

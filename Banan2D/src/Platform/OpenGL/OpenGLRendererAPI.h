@@ -17,6 +17,8 @@ namespace Banan
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
 
+		virtual uint32_t GetMaxTextureSlots() override;
+
 	};
 
 }

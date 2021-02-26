@@ -10,6 +10,7 @@ namespace Banan
 		glm::vec3 position;
 		glm::vec2 size;
 		float rotation;
+		float tilingFactor;
 		union { glm::vec4 tint, color; };
 		Ref<Texture2D> texture;
 
@@ -17,6 +18,7 @@ namespace Banan
 			position	(glm::vec3(0.0f)),
 			size		(glm::vec2(1.0f)),
 			rotation	(0.0f),
+			tilingFactor(1.0f),
 			color		(glm::vec4(1.0f)),
 			texture		(nullptr)
 		{ }
@@ -25,8 +27,18 @@ namespace Banan
 			position	(position),
 			size		(size),
 			rotation	(0.0f),
+			tilingFactor(1.0f),
 			color		(color),
 			texture		(nullptr)
+		{ }
+
+		QuadProperties(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture) :
+			position	(position),
+			size		(size),
+			rotation	(0.0f),
+			tilingFactor(1.0f),
+			color		(glm::vec4(1.0f)),
+			texture		(texture)
 		{ }
 	};
 
@@ -55,6 +67,7 @@ namespace Banan
 		struct Stats
 		{
 			uint32_t drawCalls	= 0;
+			uint32_t textures	= 0;
 			uint32_t quads		= 0;
 			uint32_t GetVertices()	const { return quads * 4; }
 			uint32_t GetIndices()	const { return quads * 6; }
@@ -63,7 +76,10 @@ namespace Banan
 		static void ResetStats();
 
 	private:
-		static void FlushAndReset();
+		static void StartBatch();
+		static void NextBatch();
+
+		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tint);
 
 	};
 

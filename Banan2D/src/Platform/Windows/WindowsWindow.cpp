@@ -7,9 +7,10 @@
 
 #include "BGE/Renderer/RenderContext.h"
 
-
+#ifndef BGE_DISTRIBUTION
 #include <backends/imgui_impl_win32.h>
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 
 namespace Banan
@@ -130,9 +131,10 @@ namespace Banan
 		if (!m_initialized)
 			return ::DefWindowProcW(hWnd, msg, wParam, lParam);
 
-		// Let imgui handle its events
+#ifndef BGE_DISTRIBUTION
 		if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 			return true;
+#endif
 
 		switch (msg)
 		{

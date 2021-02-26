@@ -2,9 +2,12 @@
 
 #include "Window.h"
 #include "Layer.h"
-#include "BGE/ImGui/ImGuiLayer.h"
 
 #include "BGE/Event/WindowEvent.h"
+
+#ifndef BGE_DISTRIBUTION
+#include "BGE/ImGui/ImGuiLayer.h"
+#endif
 
 namespace Banan
 {
@@ -40,8 +43,9 @@ namespace Banan
 
 		Scope<Window> m_window;
 
+#ifndef BGE_DISTRIBUTION
 		ImGuiLayer* m_ImGuiLayer;
-		
+#endif
 		LayerStack m_layers;
 
 	private:

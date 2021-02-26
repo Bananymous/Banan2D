@@ -36,4 +36,11 @@ namespace Banan
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	uint32_t OpenGLRendererAPI::GetMaxTextureSlots()
+	{
+		GLint count;
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &count);
+		return (uint32_t)count;
+	}
+
 }

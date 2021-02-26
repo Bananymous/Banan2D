@@ -20,12 +20,14 @@ private:
 
 	Banan::QuadProperties m_quad;
 
-	glm::vec4 m_color = { 1.0f, 1.0f, 0.0f, 1.0f };
-	uint8_t m_index = 0;
-	int8_t m_dir = -1;
+	glm::vec4 m_color	= { 1.0f, 1.0f, 0.0f, 1.0f };
+	uint8_t m_index		= 0;
+	int8_t m_dir		= -1;
 
 	float m_rotation	= 0.0f;
 
+	bool m_FPSbool		= false;
+	uint32_t m_FPS		= 0U;
 	uint32_t m_frames	= 0U;
 	float m_time		= 0.0f;
 };

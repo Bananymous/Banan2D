@@ -17,8 +17,10 @@ namespace Banan
 
 		Renderer2D::Init();
 
+#ifndef BGE_DISTRIBUTION
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+#endif
 	}
 
 	Application::~Application()
@@ -73,10 +75,12 @@ namespace Banan
 				for (Layer* layer : m_layers)
 					layer->OnUpdate(deltaTimer.GetTime());
 
+#ifndef BGE_DISTRIBUTION
 				m_ImGuiLayer->Begin();
 				for (Layer* layer : m_layers)
 					layer->OnImGuiRender();
 				m_ImGuiLayer->End();
+#endif
 			}
 
 			m_window->OnUpdate(m_minimized);
