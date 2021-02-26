@@ -1,13 +1,13 @@
 #include "bgepch.h"
 #include "WindowsWindow.h"
 
-#include "BGE/Event/WindowEvent.h"
-#include "BGE/Event/MouseEvent.h"
-#include "BGE/Event/KeyEvent.h"
+#include "Banan/Event/WindowEvent.h"
+#include "Banan/Event/MouseEvent.h"
+#include "Banan/Event/KeyEvent.h"
 
-#include "BGE/Renderer/RenderContext.h"
+#include "Banan/Renderer/RenderContext.h"
 
-#ifndef BGE_DISTRIBUTION
+#ifndef BANAN_DISTRIBUTION
 #include <backends/imgui_impl_win32.h>
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
@@ -35,7 +35,7 @@ namespace Banan
 	WindowsWindow::~WindowsWindow()
 	{
 		int status = ::ReleaseDC(m_data.hWnd, m_data.hDC);
-		BGE_ASSERT(status, "Could not release device context!");
+		BANAN_ASSERT(status, "Could not release device context!");
 
 		DestroyScope(m_renderContext);
 
@@ -65,17 +65,17 @@ namespace Banan
 			this
 		);
 
-		BGE_ASSERT(m_data.hWnd, "Failed to create window!");
+		BANAN_ASSERT(m_data.hWnd, "Failed to create window!");
 
 		::SetLastError(0);
 		if (!::SetWindowLongPtrW(m_data.hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this)))
 			if (::GetLastError())
-				BGE_ASSERT(false, "Failed to SetWindowLongPtrW");
+				BANAN_ASSERT(false, "Failed to SetWindowLongPtrW");
 
 		::ShowWindow(m_data.hWnd, SW_SHOW);
 
 		m_data.hDC = ::GetDC(m_data.hWnd);
-		BGE_ASSERT(m_data.hDC, "Could not get device context!");
+		BANAN_ASSERT(m_data.hDC, "Could not get device context!");
 
 		m_renderContext = RenderContext::Create(this);
 		m_renderContext->Init();
@@ -131,7 +131,7 @@ namespace Banan
 		if (!m_initialized)
 			return ::DefWindowProcW(hWnd, msg, wParam, lParam);
 
-#ifndef BGE_DISTRIBUTION
+#ifndef BANAN_DISTRIBUTION
 		if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 			return true;
 #endif

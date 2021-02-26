@@ -119,7 +119,7 @@ namespace Banan
 	{
 		GLuint program = glCreateProgram();
 
-		BGE_ASSERT(shaderSources.size() <= 4, "You can use 2 shaders at most");
+		BANAN_ASSERT(shaderSources.size() <= 4, "You can use 2 shaders at most");
 
 		std::array<GLuint, 2> glShaderIDs;
 
@@ -148,8 +148,8 @@ namespace Banan
 
 				glDeleteShader(shader);
 
-				BGE_PRINT("Failed to compile " << type << " shader!");
-				BGE_ASSERT(false, infoLog.data());
+				BANAN_PRINT("Failed to compile " << type << " shader!");
+				BANAN_ASSERT(false, infoLog.data());
 				
 				break;
 			}
@@ -175,8 +175,8 @@ namespace Banan
 			for (auto ID : glShaderIDs)
 				glDeleteShader(ID);
 
-			BGE_PRINT("Failed to link shaders!");
-			BGE_ASSERT(false, infoLog.data());
+			BANAN_PRINT("Failed to link shaders!");
+			BANAN_ASSERT(false, infoLog.data());
 			
 			return;
 		}

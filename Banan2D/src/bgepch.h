@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BGE/Core/PlatformDetection.h"
+#include "Banan/Core/PlatformDetection.h"
 
-#ifdef BGE_PLATFORM_WINDOWS
+#ifdef BANAN_PLATFORM_WINDOWS
 	#ifndef NOMINMAX
 		#define NOMINMAX
 	#endif
@@ -21,9 +21,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "BGE/Core/ConsoleOutput.h"
+#include "Banan/Core/ConsoleOutput.h"
 
-#ifdef BGE_PLATFORM_WINDOWS
+#ifdef BANAN_PLATFORM_WINDOWS
 	#include <Windows.h>
 	#include <Windowsx.h>
 #endif

@@ -1,5 +1,5 @@
-#include <BananGameEngine.h>
-#include <BGE/Core/EntryPoint.h>
+#include <Banan.h>
+#include <Banan/Core/EntryPoint.h>
 
 #include "SandboxLayer.h"
 

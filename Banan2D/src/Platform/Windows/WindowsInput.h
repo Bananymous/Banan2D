@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BGE/Core/Input.h"
+#include "Banan/Core/Input.h"
 
-#include "BGE/Core/Application.h"
+#include "Banan/Core/Application.h"
 
 #include "WindowsWindow.h"
 

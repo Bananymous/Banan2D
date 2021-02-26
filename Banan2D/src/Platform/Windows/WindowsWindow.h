@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BGE/Core/Window.h"
+#include "Banan/Core/Window.h"
 
 #include <Windows.h>
 

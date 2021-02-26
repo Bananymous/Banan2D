@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BGE/Renderer/RendererAPI.h"
+#include "Banan/Renderer/RendererAPI.h"
 
 namespace Banan
 {

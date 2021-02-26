@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BGE/Renderer/VertexArray.h"
+#include "Banan/Renderer/VertexArray.h"
 
-#include "BGE/Core/Base.h"
+#include "Banan/Core/Base.h"
 
 namespace Banan
 {

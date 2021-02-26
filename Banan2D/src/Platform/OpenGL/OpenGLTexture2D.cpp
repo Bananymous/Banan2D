@@ -28,7 +28,7 @@ namespace Banan
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(true);
 		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-		BGE_ASSERT(data, "Failed to load image");
+		BANAN_ASSERT(data, "Failed to load image");
 		m_width = width;
 		m_height = height;
 
@@ -43,7 +43,7 @@ namespace Banan
 			internalFormat = GL_RGB8;
 			dataFormat = GL_RGB;
 		}
-		BGE_ASSERT(internalFormat && dataFormat, "Texture format is not supported!");
+		BANAN_ASSERT(internalFormat && dataFormat, "Texture format is not supported!");
 
 		m_internalFormat = internalFormat;
 		m_dataFormat = dataFormat;
@@ -69,7 +69,7 @@ namespace Banan
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
-		BGE_ASSERT(size == m_height * m_width * (m_dataFormat == GL_RGBA ? 4 : 3), "Data must be entire texture!");
+		BANAN_ASSERT(size == m_height * m_width * (m_dataFormat == GL_RGBA ? 4 : 3), "Data must be entire texture!");
 		glTextureSubImage2D(m_rendererID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 

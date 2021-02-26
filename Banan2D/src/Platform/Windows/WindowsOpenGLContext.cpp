@@ -12,13 +12,13 @@ namespace Banan
 	WindowsOpenGLContext::WindowsOpenGLContext(WindowsWindow* window) :
 		m_window(window), m_hGLRC(NULL)
 	{
-		BGE_ASSERT(window, "Window handle is null");
+		BANAN_ASSERT(window, "Window handle is null");
 	}
 
 	WindowsOpenGLContext::~WindowsOpenGLContext()
 	{
 		int status = wglDeleteContext(m_hGLRC);
-		BGE_ASSERT(status, "Could not delete OpenGL context!");
+		BANAN_ASSERT(status, "Could not delete OpenGL context!");
 	}
 
 	void WindowsOpenGLContext::Init()
@@ -44,28 +44,28 @@ namespace Banan
 		};
 
 		int pixelformat = ChoosePixelFormat(m_window->GetDeviceContext(), &pfd);
-		BGE_ASSERT(pixelformat, "Failed to choose fitting pixel format!");
+		BANAN_ASSERT(pixelformat, "Failed to choose fitting pixel format!");
 
 		int status = SetPixelFormat(m_window->GetDeviceContext(), pixelformat, &pfd);
-		BGE_ASSERT(status, "Could not set pixel format!");
+		BANAN_ASSERT(status, "Could not set pixel format!");
 
 		m_hGLRC = wglCreateContext(m_window->GetDeviceContext());
-		BGE_ASSERT(m_hGLRC, "Could not create OpenGL context!");
+		BANAN_ASSERT(m_hGLRC, "Could not create OpenGL context!");
 
 		status = wglMakeCurrent(m_window->GetDeviceContext(), m_hGLRC);
-		BGE_ASSERT(status, "Could not change current context!");
+		BANAN_ASSERT(status, "Could not change current context!");
 
 		status = gladLoadWGL(m_window->GetDeviceContext());
-		BGE_ASSERT(status, "Could not load GladWLG!");
+		BANAN_ASSERT(status, "Could not load GladWLG!");
 
 		status = gladLoadGL();
-		BGE_ASSERT(status, "Could not load GladGL!");
+		BANAN_ASSERT(status, "Could not load GladGL!");
 
-		BGE_PRINT("OpenGL Info");
-		BGE_PRINT("  Vendor:\t"			<< glGetString(GL_VENDOR));
-		BGE_PRINT("  Renderer:\t"		<< glGetString(GL_RENDERER));
-		BGE_PRINT("  Version:\t"		<< glGetString(GL_VERSION));
-		BGE_PRINT("  GLSL Version:\t"	<< glGetString(GL_SHADING_LANGUAGE_VERSION));
+		BANAN_PRINT("OpenGL Info");
+		BANAN_PRINT("  Vendor:\t"			<< glGetString(GL_VENDOR));
+		BANAN_PRINT("  Renderer:\t"		<< glGetString(GL_RENDERER));
+		BANAN_PRINT("  Version:\t"		<< glGetString(GL_VERSION));
+		BANAN_PRINT("  GLSL Version:\t"	<< glGetString(GL_SHADING_LANGUAGE_VERSION));
 	}
 
 	void WindowsOpenGLContext::SwapBuffers()

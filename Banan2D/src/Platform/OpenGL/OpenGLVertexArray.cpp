@@ -22,7 +22,7 @@ namespace Banan
 			case Banan::ShaderDataType::Bool:	return GL_BOOL;
 		}
 
-		BGE_ASSERT(false, "Unknown data type!");
+		BANAN_ASSERT(false, "Unknown data type!");
 		return 0;
 	}
 
@@ -48,7 +48,7 @@ namespace Banan
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
-		BGE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		BANAN_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(m_rendererID);
 		vertexBuffer->Bind();

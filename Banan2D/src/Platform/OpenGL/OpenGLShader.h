@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BGE/Renderer/Shader.h"
+#include "Banan/Renderer/Shader.h"
 
 #include <glm/glm.hpp>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BGE/Renderer/Texture2D.h"
+#include "Banan/Renderer/Texture2D.h"
 
 #include <glad/glad.h>
 
