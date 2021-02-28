@@ -7,7 +7,7 @@ namespace Banan
 {
 
 	struct QuadProperties {
-		glm::vec3 position;
+		glm::vec2 position;
 		glm::vec2 size;
 		float rotation;
 		float tilingFactor;
@@ -15,7 +15,7 @@ namespace Banan
 		Ref<Texture2D> texture;
 
 		QuadProperties() :
-			position	(glm::vec3(0.0f)),
+			position	(glm::vec2(0.0f)),
 			size		(glm::vec2(1.0f)),
 			rotation	(0.0f),
 			tilingFactor(1.0f),
@@ -23,7 +23,7 @@ namespace Banan
 			texture		(nullptr)
 		{ }
 
-		QuadProperties(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) :
+		QuadProperties(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color) :
 			position	(position),
 			size		(size),
 			rotation	(0.0f),
@@ -32,7 +32,7 @@ namespace Banan
 			texture		(nullptr)
 		{ }
 
-		QuadProperties(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture) :
+		QuadProperties(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture) :
 			position	(position),
 			size		(size),
 			rotation	(0.0f),
@@ -54,11 +54,11 @@ namespace Banan
 		static void EndScene();
 		static void Flush();
 
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture);
 
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color);
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture);
+		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
+		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture);
 
 		static void DrawQuad(const QuadProperties& properties);
 		static void DrawRotatedQuad(const QuadProperties& properties);
@@ -79,6 +79,7 @@ namespace Banan
 		static void StartBatch();
 		static void NextBatch();
 
+		static float GetTextureIndex(const Ref<Texture2D>& texture);
 		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tint);
 
 	};

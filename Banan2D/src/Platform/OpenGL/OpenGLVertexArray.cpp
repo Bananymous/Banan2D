@@ -26,7 +26,8 @@ namespace Banan
 		return 0;
 	}
 
-	OpenGLVertexArray::OpenGLVertexArray()
+	OpenGLVertexArray::OpenGLVertexArray() :
+		m_vertexBufferIndex(0)
 	{
 		glCreateVertexArrays(1, &m_rendererID);
 	}
@@ -53,19 +54,46 @@ namespace Banan
 		glBindVertexArray(m_rendererID);
 		vertexBuffer->Bind();
 
-		uint32_t index = 0;
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-				element.GetComponentCount(),
-				ShaderDataTypeToOpenGLBaseType(element.type),
-				element.normalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
-				(const void*)element.offset
-			);
-			index++;
+			switch (element.type)
+			{
+				case ShaderDataType::Float: case ShaderDataType::Float2: case ShaderDataType::Float3: case ShaderDataType::Float4:
+				case ShaderDataType::Int:   case ShaderDataType::Int2:   case ShaderDataType::Int3:   case ShaderDataType::Int4:
+				case ShaderDataType::Bool:
+				{
+					glEnableVertexAttribArray(m_vertexBufferIndex);
+					glVertexAttribPointer(m_vertexBufferIndex,
+						element.GetComponentCount(),
+						ShaderDataTypeToOpenGLBaseType(element.type),
+						element.normalized ? GL_TRUE : GL_FALSE,
+						layout.GetStride(),
+						(const void*)element.offset
+					);
+					m_vertexBufferIndex++;
+					break;
+				}
+				case ShaderDataType::Mat3: case ShaderDataType::Mat4:
+				{
+					uint32_t count = element.GetComponentCount();
+					for (uint32_t i = 0; i < count; i++)
+					{
+						glEnableVertexAttribArray(m_vertexBufferIndex);
+						glVertexAttribPointer(m_vertexBufferIndex,
+							count,
+							ShaderDataTypeToOpenGLBaseType(element.type),
+							element.normalized ? GL_TRUE : GL_FALSE,
+							layout.GetStride(),
+							(const void*)(sizeof(float) * count * i)
+						);
+						glVertexAttribDivisor(m_vertexBufferIndex, 1);
+						m_vertexBufferIndex++;
+					}
+					break;
+				}
+				default: BANAN_ASSERT(false, "Unknown ShaderDataType!");
+			}
 		}
 
 		m_vertexBuffers.push_back(vertexBuffer);

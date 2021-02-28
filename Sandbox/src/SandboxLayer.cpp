@@ -14,7 +14,6 @@ void SandboxLayer::OnAttach()
 	m_quad.size = glm::vec2(1.0f, 1.0f);
 	m_quad.texture = Banan::Texture2D::Create("assets/textures/test.png");
 	m_quad.rotation = 0.4f;
-	m_quad.position.z = 1.0f;
 }
 
 void SandboxLayer::OnDetach()
@@ -42,7 +41,7 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 	float tileSize = 0.5f;
 	for (float y = -5.0f; y < 5.0f; y += tileSize)
 		for (float x = -5.0f; x < 5.0f; x += tileSize)
-			Banan::Renderer2D::DrawQuad({ x, y, 0.0f }, glm::vec2(tileSize), { (x + 5.0f) / 10.f, (y + 5.0f) / 10.f, 0.3f, 1.0f });
+			Banan::Renderer2D::DrawQuad({ x, y }, glm::vec2(tileSize), { (x + 5.0f) / 10.f, (y + 5.0f) / 10.f, 0.3f, 1.0f });
 
 	// Textured dude
 	Banan::Renderer2D::DrawRotatedQuad(m_quad);

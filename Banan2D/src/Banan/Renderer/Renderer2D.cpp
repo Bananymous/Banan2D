@@ -158,34 +158,34 @@ namespace Banan
 		StartBatch();
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
 		DrawQuad(transform, nullptr, 1.0f, color);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
 		DrawQuad(transform, texture, 1.0f, glm::vec4(1.0f));
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
 		DrawQuad(transform, nullptr, 1.0f, color);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
@@ -195,7 +195,7 @@ namespace Banan
 
 	void Renderer2D::DrawQuad(const QuadProperties& props)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), props.position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(props.position, 0.0f))
 			* glm::scale(glm::mat4(1.0f), glm::vec3(props.size, 1.0f));
 
 		DrawQuad(transform, props.texture, props.tilingFactor, props.color);
@@ -203,14 +203,14 @@ namespace Banan
 
 	void Renderer2D::DrawRotatedQuad(const QuadProperties& props)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), props.position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(props.position, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), props.rotation, glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::scale(glm::mat4(1.0f), glm::vec3(props.size, 1.0f));
 
 		DrawQuad(transform, props.texture, props.tilingFactor, props.color);
 	}
 
-	static float GetTextureIndex(const Ref<Texture2D>& texture)
+	float Renderer2D::GetTextureIndex(const Ref<Texture2D>& texture)
 	{
 		float textureIndex = 0.0f;
 
@@ -225,6 +225,9 @@ namespace Banan
 
 		if (textureIndex == 0.0f)
 		{
+			if (s_data.textureSlotIndex >= s_data.maxTextureSlots)
+				NextBatch();
+
 			textureIndex = (float)s_data.textureSlotIndex;
 			s_data.textureSlots[s_data.textureSlotIndex] = texture;
 			s_data.textureSlotIndex++;

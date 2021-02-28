@@ -23,4 +23,5 @@ namespace Banan
 		virtual boolean operator==(const Texture2D& other) const = 0;
 
 	};
+
 }

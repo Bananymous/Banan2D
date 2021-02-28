@@ -56,8 +56,8 @@ namespace Banan
 				case Banan::ShaderDataType::Float2:	return 2;
 				case Banan::ShaderDataType::Float3:	return 3;
 				case Banan::ShaderDataType::Float4:	return 4;
-				case Banan::ShaderDataType::Mat3:	return 3 * 3;
-				case Banan::ShaderDataType::Mat4:	return 4 * 4;
+				case Banan::ShaderDataType::Mat3:	return 3;
+				case Banan::ShaderDataType::Mat4:	return 4;
 				case Banan::ShaderDataType::Int:	return 1;
 				case Banan::ShaderDataType::Int2:	return 2;
 				case Banan::ShaderDataType::Int3:	return 3;
