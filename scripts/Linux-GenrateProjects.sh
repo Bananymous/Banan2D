@@ -1,3 +1,5 @@
 #!/bin/sh
 
-../vendor/premake5/premake5 codelite
+pushd ..
+./vendor/premake5/premake5 codelite
+popd
