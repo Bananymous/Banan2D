@@ -1,3 +1,3 @@
-[submodule "Banan2D\\vendor\\ImGui"]
-	path = Banan2D\\vendor\\ImGui
+[submodule "Banan2D/vendor/ImGui"]
+	path = Banan2D/vendor/ImGui
 	url = https://github.com/Bananymous/imgui
