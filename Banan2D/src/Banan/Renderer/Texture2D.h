@@ -2,6 +2,8 @@
 
 #include "Banan/Core/Base.h"
 
+#include <glm/glm.hpp>
+
 #include <string>
 
 namespace Banan

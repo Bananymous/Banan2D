@@ -14,6 +14,7 @@ void SandboxLayer::OnAttach()
 	m_quad.size = glm::vec2(1.0f, 1.0f);
 	m_quad.texture = Banan::Texture2D::Create("assets/textures/test.png");
 	m_quad.rotation = 0.4f;
+
 }
 
 void SandboxLayer::OnDetach()
@@ -27,6 +28,20 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 
 	m_quad.tint = m_color;
 	m_quad.rotation = m_rotation;
+
+
+	static float test = 0.0f;
+	static int zoomdir = 1;
+	test += 0.1f * ts * zoomdir;
+	
+	if (test > 0.3f)
+		zoomdir = -1;
+	else if (test < 0.0f)
+		zoomdir = 1;
+
+	m_quad.min = glm::vec2(test);
+	m_quad.max = glm::vec2(1.0f - test);
+
 
 	Banan::RenderCommand::SetClearColor({ 0.0f, 1.0f, 1.0f, 1.0f });
 	Banan::RenderCommand::Clear();
