@@ -1,6 +1,8 @@
 #include "bgepch.h"
 #include "WindowsWindow.h"
 
+#include "WindowsInput.h"
+
 #include "Banan/Event/WindowEvent.h"
 #include "Banan/Event/MouseEvent.h"
 #include "Banan/Event/KeyEvent.h"
@@ -115,8 +117,11 @@ namespace Banan
 			::DispatchMessageW(&msg);
 		}
 
-		if(!minimized)
+		if (!minimized)
+		{
+			WindowsInput::UpdateControllers();
 			m_renderContext->SwapBuffers();
+		}
 	}
 
 	LRESULT CALLBACK WindowsWindow::WinProc(HWND hWnd, UINT32 msg, WPARAM wParam, LPARAM lParam)

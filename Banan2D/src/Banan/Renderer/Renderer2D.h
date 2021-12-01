@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "Texture2D.h"
+#include "Font.h"
 
 namespace Banan
 {
@@ -70,6 +71,8 @@ namespace Banan
 
 		static void DrawQuad(const QuadProperties& properties);
 		static void DrawRotatedQuad(const QuadProperties& properties);
+
+		static void Draw_Text(const std::string& text, const glm::vec2& position, float size, const glm::vec4& color, const Ref<Font>& font);
 
 
 		struct Stats

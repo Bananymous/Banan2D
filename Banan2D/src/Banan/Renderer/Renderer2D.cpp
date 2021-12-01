@@ -261,6 +261,50 @@ namespace Banan
 		s_data.stats.quads++;
 	}
 
+	void Renderer2D::Draw_Text(const std::string& text, const glm::vec2& position, float size, const glm::vec4& color, const Ref<Font>& font)
+	{
+		if (text.empty())
+			return;
+
+		glm::vec2 cursor = position;
+
+		const auto& char_data = font->GetCharacters();
+		const auto& kerning_data = font->GetKernings();
+
+		QuadProperties char_quad;
+		char_quad.tint = color;
+		char_quad.texture = font->GetTexture();
+
+		for (uint32_t i = 0; i < text.size(); i++)
+		{
+			if (char_data.find(text[i]) != char_data.end())
+			{
+				const auto& current_data = char_data.at(text[i]);
+
+				float kerning = 0.0f;
+				if (i > 0 && kerning_data.find(text[i - 1]) != kerning_data.end())
+				{
+					const auto& kerning_map = kerning_data.at(text[i - 1]);
+					if (kerning_map.find(text[i]) != kerning_map.end())
+						kerning = kerning_map.at(text[i]);
+				}
+
+				char_quad.position = cursor;
+
+				char_quad.position.x += (current_data.offset.x + current_data.size.x * 0.5f + kerning) * size;
+				char_quad.position.y -= (current_data.offset.y + current_data.size.y * 0.5f) * size;
+
+				char_quad.size = current_data.size * size;
+
+				char_quad.min = current_data.min;
+				char_quad.max = current_data.max;
+
+				DrawQuad(char_quad);
+
+				cursor.x += (current_data.advance + kerning) * size;
+			}
+		}
+	}
 
 	Renderer2D::Stats Renderer2D::GetStats()
 	{
