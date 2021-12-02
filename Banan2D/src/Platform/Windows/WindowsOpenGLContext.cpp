@@ -61,11 +61,11 @@ namespace Banan
 		status = gladLoadGL();
 		BANAN_ASSERT(status, "Could not load GladGL!");
 
-		BANAN_PRINT("OpenGL Info");
-		BANAN_PRINT("  Vendor:\t"			<< glGetString(GL_VENDOR));
-		BANAN_PRINT("  Renderer:\t"		<< glGetString(GL_RENDERER));
-		BANAN_PRINT("  Version:\t"		<< glGetString(GL_VERSION));
-		BANAN_PRINT("  GLSL Version:\t"	<< glGetString(GL_SHADING_LANGUAGE_VERSION));
+		BANAN_PRINT("OpenGL Info\n");
+		BANAN_PRINT("  Vendor:       %s\n", glGetString(GL_VENDOR));
+		BANAN_PRINT("  Renderer:     %s\n", glGetString(GL_RENDERER));
+		BANAN_PRINT("  Version:      %s\n", glGetString(GL_VERSION));
+		BANAN_PRINT("  GLSL Version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	}
 
 	void WindowsOpenGLContext::SwapBuffers()

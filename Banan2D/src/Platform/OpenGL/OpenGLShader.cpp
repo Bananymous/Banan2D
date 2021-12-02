@@ -152,7 +152,7 @@ namespace Banan
 
 				glDeleteShader(shader);
 
-				BANAN_PRINT("Failed to compile " << type << " shader!");
+				BANAN_ERROR("Failed to compile %i shader!\n", type);
 				BANAN_ASSERT(false, infoLog.data());
 				
 				break;

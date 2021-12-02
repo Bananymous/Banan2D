@@ -4,6 +4,7 @@
 #include "Banan/Core/Base.h"
 #include "Banan/Core/Application.h"
 #include "Banan/Core/Layer.h"
+#include "Banan/Core/ConsoleOutput.h"
 
 
 #include "Banan/Core/Input.h"

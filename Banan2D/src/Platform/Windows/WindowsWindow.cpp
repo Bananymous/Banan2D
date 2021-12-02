@@ -52,7 +52,7 @@ namespace Banan
 		wc.lpfnWndProc = WinProc;
 		wc.hInstance = s_hInstance;
 		wc.lpszClassName = CLASS_NAME;
-		wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+		wc.hCursor = ::LoadCursorW(NULL, IDC_ARROW);
 		::RegisterClassW(&wc);
 
 		// Create Window

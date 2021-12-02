@@ -12,6 +12,7 @@
 
 #ifdef BANAN_PLATFORM_WINDOWS
 	#include <Windows.h>
+	#define BANAN_DEBUG_BREAK() __debugbreak()
 	#define BANAN_MAIN int WINAPI ::wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
 #else
 	#define BANAN_MAIN int main(int argc, char** argv)
