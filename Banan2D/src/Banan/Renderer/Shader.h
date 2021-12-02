@@ -24,7 +24,7 @@ namespace Banan
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
 
-		static Ref<Shader> Create(uint32_t textureSlots);
+		static Ref<Shader> CreateTextureShader(uint32_t textureSlots);
 
 	};
 

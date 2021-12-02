@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef BANAN_DISTRIBUTION
+#ifndef BANAN_DISABLE_CONSOLE
 	#ifdef BANAN_PLATFORM_WINDOWS
 		#define BANAN_ENABLE_CONSOLE() FILE* stream; AllocConsole(); freopen_s(&stream, "CONOUT$", "wb", stdout)
 		#define BANAN_DEBUG_BREAK() __debugbreak()

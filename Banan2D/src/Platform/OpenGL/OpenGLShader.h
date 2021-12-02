@@ -15,8 +15,10 @@ namespace Banan
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader(uint32_t textureSlots);
+		OpenGLShader() = default;
 		virtual ~OpenGLShader();
+
+		static Ref<OpenGLShader> CreateTextureShader(uint32_t slotCount);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;

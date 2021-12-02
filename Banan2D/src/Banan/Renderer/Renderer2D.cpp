@@ -27,12 +27,12 @@ namespace Banan
 		static const uint32_t maxQuads			= 25000;
 		static const uint32_t maxVertices		= maxQuads * 4;
 		static const uint32_t maxIndices		= maxQuads * 6;
-		uint32_t maxTextureSlots;
+		uint32_t maxTextureSlots				= 0;
 
 		Ref<VertexArray> quadVertexArray;
 		Ref<VertexBuffer> quadVertexBuffer;
 		Ref<Texture2D> whiteTexture;
-		Ref<Shader> shader;
+		Ref<Shader> quadShader;
 
 		uint32_t quadIndexCount				= 0;
 		QuadVertex* quadVertexBufferBase	= nullptr;
@@ -41,7 +41,7 @@ namespace Banan
 		std::vector<Ref<Texture2D>> textureSlots;
 		uint32_t textureSlotIndex = 1;
 
-		glm::vec4 quadVertexPositions[4];
+		glm::vec4 quadVertexPositions[4]{};
 
 		Renderer2D::Stats stats;
 		
@@ -91,9 +91,9 @@ namespace Banan
 		int* samplers = new int[s_data.maxTextureSlots];
 		for (uint32_t i = 0; i < s_data.maxTextureSlots; i++)
 			samplers[i] = i;
-		s_data.shader = Shader::Create(s_data.maxTextureSlots);
-		s_data.shader->Bind();
-		s_data.shader->SetIntArray("u_textures", samplers, s_data.maxTextureSlots);
+		s_data.quadShader = Shader::CreateTextureShader(s_data.maxTextureSlots);
+		s_data.quadShader->Bind();
+		s_data.quadShader->SetIntArray("u_textures", samplers, s_data.maxTextureSlots);
 		delete[] samplers;
 
 		s_data.textureSlots.resize(s_data.maxTextureSlots);
@@ -117,8 +117,8 @@ namespace Banan
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		s_data.shader->Bind();
-		s_data.shader->SetMat4("u_viewProjection", camera.GetViewProjectionMatrix());
+		s_data.quadShader->Bind();
+		s_data.quadShader->SetMat4("u_viewProjection", camera.GetViewProjectionMatrix());
 	
 		StartBatch();
 	}
@@ -231,6 +231,8 @@ namespace Banan
 			textureIndex = (float)s_data.textureSlotIndex;
 			s_data.textureSlots[s_data.textureSlotIndex] = texture;
 			s_data.textureSlotIndex++;
+
+			s_data.stats.textures++;
 		}
 
 		return textureIndex;
@@ -256,8 +258,6 @@ namespace Banan
 
 		s_data.quadIndexCount += 6;
 
-		if (textureIndex > s_data.stats.textures)
-			s_data.stats.textures = (uint32_t)textureIndex;
 		s_data.stats.quads++;
 	}
 

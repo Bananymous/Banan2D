@@ -10,8 +10,13 @@
 namespace Banan
 {
 
-	OpenGLShader::OpenGLShader(uint32_t textureSlots) :
-		m_rendererID(0)
+	OpenGLShader::~OpenGLShader()
+	{
+		glDeleteProgram(m_rendererID);
+	}
+
+
+	Ref<OpenGLShader> OpenGLShader::CreateTextureShader(uint32_t slotCount)
 	{
 		std::string vertexSource = R"(
 			#version 450 core
@@ -60,7 +65,7 @@ namespace Banan
 				{
 		)";
 
-		for (uint32_t i = 0; i < textureSlots; i++)
+		for (uint32_t i = 0; i < slotCount; i++)
 			fragmentSource << "case " << i << ": textureColor *= texture2D(u_textures[" << i << "],  v_textureCoord * v_tilingFactor); break;\r\n";
 
 		fragmentSource << R"(
@@ -72,12 +77,11 @@ namespace Banan
 		std::unordered_map<GLenum, std::string> shaderSources;
 		shaderSources[GL_VERTEX_SHADER] = vertexSource;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSource.str();
-		Compile(shaderSources);
-	}
 
-	OpenGLShader::~OpenGLShader()
-	{
-		glDeleteProgram(m_rendererID);
+
+		Ref<OpenGLShader> shader = CreateRef<OpenGLShader>();
+		shader->Compile(shaderSources);
+		return shader;
 	}
 
 	void OpenGLShader::Bind() const
