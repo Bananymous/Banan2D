@@ -3,8 +3,6 @@
 
 #include "Banan/Core/PlatformDetection.h"
 
-#pragma warning(disable : 26812)
-
 // MACROS
 #define BIT(x) (1 << x)
 
@@ -15,6 +13,7 @@
 	#define BANAN_DEBUG_BREAK() __debugbreak()
 	#define BANAN_MAIN int WINAPI ::wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
 #else
+	#define BANAN_DEBUG_BREAK()
 	#define BANAN_MAIN int main(int argc, char** argv)
 #endif
 

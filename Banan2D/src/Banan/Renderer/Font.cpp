@@ -6,38 +6,53 @@
 #include <fstream>
 #include <iomanip>
 
+#include <filesystem>
+
 namespace Banan
 {
 
-	Font::Font(const std::string& font_data, const std::string& font_image)
+	Font::Font(const std::string& font_file)
 	{
-		m_texture = Texture2D::Create(font_image);
-
-		std::ifstream file(font_data);
+		std::filesystem::path path(font_file);
+		BANAN_ASSERT(std::filesystem::exists(path), "File \"%s\" could not be found.\n", font_file.c_str());
+		if (path.extension() != ".fnt")
+		{
+			BANAN_WARN("Only .fnt files with image texture are supported.\n");
+			m_texture = nullptr;
+			return;
+		}
+				
+		std::ifstream file(font_file);
+		std::string image_path = font_file.substr(0, font_file.find_last_of("/\\") + 1);
 		std::string word;
 
 		float font_size, img_w, img_h;
 
-		file >> word;
-		file >> word;
-
-		file >> word;
+		// Get font size
+		while (strncmp(word.c_str(), "size", 4))
+			file >> word;
 		font_size = (float)std::atof(word.c_str() + 5);
 
-		while (word.substr(0, 4) != "base")
+		// Get image size
+		while (strncmp(word.c_str(), "scaleW", 6))
 			file >> word;
-
-		file >> word;
 		img_w = (float)std::atof(word.c_str() + 7);
-
 		file >> word;
 		img_h = (float)std::atof(word.c_str() + 7);
 
-		while (word != "chars")
+		// Get font image path
+		while (strncmp(word.c_str(), "file", 4))
 			file >> word;
-
+		image_path.append(word.c_str() + 6);
+		while (word.back() != '"') {
+			file >> word;
+			image_path.append(word);
+		}
+		image_path.pop_back();
+			
 		// Read character count
-		file >> word;
+		while (strncmp(word.c_str(), "count", 5))
+			file >> word;
 		uint32_t count = std::atoi(word.c_str() + 6);
 
 		for (uint32_t i = 0; i < count; i++)
@@ -94,38 +109,41 @@ namespace Banan
 		}
 
 		file >> word;
-		if (word != "kernings")
-			return;
-
-		uint32_t kerning_count;
-
-		file >> word;
-		kerning_count = std::atoi(word.c_str() + 6);
-
-		for (uint32_t i = 0; i < kerning_count; i++)
+		if (word == "kernings")
 		{
-			char first, second;
-			float value;
+			uint32_t kerning_count;
 
 			file >> word;
+			kerning_count = std::atoi(word.c_str() + 6);
 
-			file >> word;
-			first = std::atoi(word.c_str() + 6);
+			for (uint32_t i = 0; i < kerning_count; i++)
+			{
+				char first, second;
+				float value;
 
-			file >> word;
-			second = std::atoi(word.c_str() + 7);
+				file >> word;
 
-			file >> word;
-			value = (float)std::atof(word.c_str() + 7);
+				file >> word;
+				first = std::atoi(word.c_str() + 6);
 
-			m_kernings[first][second] = value / font_size;
+				file >> word;
+				second = std::atoi(word.c_str() + 7);
+
+				file >> word;
+				value = (float)std::atof(word.c_str() + 7);
+
+				m_kernings[first][second] = value / font_size;
+			}
 		}
+
+		file.close();
+		m_texture = Texture2D::Create(image_path);
 	}
 
 
-	Ref<Font> Font::Create(const std::string& font_data, const std::string& font_image)
+	Ref<Font> Font::Create(const std::string& font_file)
 	{
-		return CreateRef<Font>(font_data, font_image);
+		return CreateRef<Font>(font_file);
 	}
 
 }

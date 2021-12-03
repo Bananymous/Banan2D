@@ -22,9 +22,9 @@ namespace Banan
 		};
 
 	public:
-		Font(const std::string& font_data, const std::string& font_image);
+		Font(const std::string& font_file);
 
-		static Ref<Font> Create(const std::string& font_data, const std::string& font_image);
+		static Ref<Font> Create(const std::string& font_file);
 
 		void Bind(uint32_t slot = 0) const { m_texture->Bind(); }
 
