@@ -26,7 +26,7 @@
 #include <string.h>
 #include <glad/glad_wgl.h>
 
-static void* get_proc(const char *namez);
+static void* get_proc(const char* namez);
 
 #if defined(_WIN32) || defined(__CYGWIN__)
 #ifndef _WINDOWS_
@@ -40,29 +40,29 @@ static PFNWGLGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 
 #ifdef _MSC_VER
 #ifdef __has_include
-  #if __has_include(<winapifamily.h>)
-    #define HAVE_WINAPIFAMILY 1
-  #endif
+#if __has_include(<winapifamily.h>)
+#define HAVE_WINAPIFAMILY 1
+#endif
 #elif _MSC_VER >= 1700 && !_USING_V110_SDK71_
-  #define HAVE_WINAPIFAMILY 1
+#define HAVE_WINAPIFAMILY 1
 #endif
 #endif
 
 #ifdef HAVE_WINAPIFAMILY
-  #include <winapifamily.h>
-  #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
-    #define IS_UWP 1
-  #endif
+#include <winapifamily.h>
+#if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define IS_UWP 1
+#endif
 #endif
 
 static
 int open_gl(void) {
 #ifndef IS_UWP
     libGL = LoadLibraryW(L"opengl32.dll");
-    if(libGL != NULL) {
-        void (* tmp)(void);
+    if (libGL != NULL) {
+        void (*tmp)(void);
         tmp = (void(*)(void)) GetProcAddress(libGL, "wglGetProcAddress");
-        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC_PRIVATE) tmp;
+        gladGetProcAddressPtr = (PFNWGLGETPROCADDRESSPROC_PRIVATE)tmp;
         return gladGetProcAddressPtr != NULL;
     }
 #endif
@@ -72,8 +72,8 @@ int open_gl(void) {
 
 static
 void close_gl(void) {
-    if(libGL != NULL) {
-        FreeLibrary((HMODULE) libGL);
+    if (libGL != NULL) {
+        FreeLibrary((HMODULE)libGL);
         libGL = NULL;
     }
 }
@@ -89,21 +89,21 @@ static PFNGLXGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 static
 int open_gl(void) {
 #ifdef __APPLE__
-    static const char *NAMES[] = {
+    static const char* NAMES[] = {
         "../Frameworks/OpenGL.framework/OpenGL",
         "/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/OpenGL",
         "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
     };
 #else
-    static const char *NAMES[] = {"libGL.so.1", "libGL.so"};
+    static const char* NAMES[] = { "libGL.so.1", "libGL.so" };
 #endif
 
     unsigned int index = 0;
-    for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
+    for (index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
 
-        if(libGL != NULL) {
+        if (libGL != NULL) {
 #if defined(__APPLE__) || defined(__HAIKU__)
             return 1;
 #else
@@ -119,7 +119,7 @@ int open_gl(void) {
 
 static
 void close_gl(void) {
-    if(libGL != NULL) {
+    if (libGL != NULL) {
         dlclose(libGL);
         libGL = NULL;
     }
@@ -127,18 +127,18 @@ void close_gl(void) {
 #endif
 
 static
-void* get_proc(const char *namez) {
+void* get_proc(const char* namez) {
     void* result = NULL;
-    if(libGL == NULL) return NULL;
+    if (libGL == NULL) return NULL;
 
 #if !defined(__APPLE__) && !defined(__HAIKU__)
-    if(gladGetProcAddressPtr != NULL) {
+    if (gladGetProcAddressPtr != NULL) {
         result = gladGetProcAddressPtr(namez);
     }
 #endif
-    if(result == NULL) {
+    if (result == NULL) {
 #if defined(_WIN32) || defined(__CYGWIN__)
-        result = (void*)GetProcAddress((HMODULE) libGL, namez);
+        result = (void*)GetProcAddress((HMODULE)libGL, namez);
 #else
         result = dlsym(libGL, namez);
 #endif
@@ -150,7 +150,7 @@ void* get_proc(const char *namez) {
 int gladLoadWGL(HDC hdc) {
     int status = 0;
 
-    if(open_gl()) {
+    if (open_gl()) {
         status = gladLoadWGLLoader((GLADloadproc)get_proc, hdc);
         close_gl();
     }
@@ -168,29 +168,29 @@ static void free_exts(void) {
     return;
 }
 
-static int has_ext(const char *ext) {
-    const char *terminator;
-    const char *loc;
-    const char *extensions;
+static int has_ext(const char* ext) {
+    const char* terminator;
+    const char* loc;
+    const char* extensions;
 
-    if(wglGetExtensionsStringEXT == NULL && wglGetExtensionsStringARB == NULL)
+    if (wglGetExtensionsStringEXT == NULL && wglGetExtensionsStringARB == NULL)
         return 0;
 
-    if(wglGetExtensionsStringARB == NULL || GLADWGLhdc == INVALID_HANDLE_VALUE)
+    if (wglGetExtensionsStringARB == NULL || GLADWGLhdc == INVALID_HANDLE_VALUE)
         extensions = wglGetExtensionsStringEXT();
     else
         extensions = wglGetExtensionsStringARB(GLADWGLhdc);
 
-    if(extensions == NULL || ext == NULL)
+    if (extensions == NULL || ext == NULL)
         return 0;
 
-    while(1) {
+    while (1) {
         loc = strstr(extensions, ext);
-        if(loc == NULL)
+        if (loc == NULL)
             break;
 
         terminator = loc + strlen(ext);
-        if((loc == extensions || *(loc - 1) == ' ') &&
+        if ((loc == extensions || *(loc - 1) == ' ') &&
             (*terminator == ' ' || *terminator == '\0'))
         {
             return 1;
@@ -209,41 +209,40 @@ PFNWGLGETEXTENSIONSSTRINGEXTPROC glad_wglGetExtensionsStringEXT = NULL;
 PFNWGLSWAPINTERVALEXTPROC glad_wglSwapIntervalEXT = NULL;
 PFNWGLGETSWAPINTERVALEXTPROC glad_wglGetSwapIntervalEXT = NULL;
 static void load_WGL_ARB_extensions_string(GLADloadproc load) {
-	if(!GLAD_WGL_ARB_extensions_string) return;
-	glad_wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
+    if (!GLAD_WGL_ARB_extensions_string) return;
+    glad_wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
 }
 static void load_WGL_EXT_extensions_string(GLADloadproc load) {
-	if(!GLAD_WGL_EXT_extensions_string) return;
-	glad_wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
+    if (!GLAD_WGL_EXT_extensions_string) return;
+    glad_wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
 }
 static void load_WGL_EXT_swap_control(GLADloadproc load) {
-	if(!GLAD_WGL_EXT_swap_control) return;
-	glad_wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)load("wglSwapIntervalEXT");
-	glad_wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)load("wglGetSwapIntervalEXT");
+    if (!GLAD_WGL_EXT_swap_control) return;
+    glad_wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)load("wglSwapIntervalEXT");
+    glad_wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)load("wglGetSwapIntervalEXT");
 }
 static int find_extensionsWGL(void) {
-	if (!get_exts()) return 0;
-	GLAD_WGL_ARB_extensions_string = has_ext("WGL_ARB_extensions_string");
-	GLAD_WGL_EXT_extensions_string = has_ext("WGL_EXT_extensions_string");
-	GLAD_WGL_EXT_swap_control = has_ext("WGL_EXT_swap_control");
-	free_exts();
-	return 1;
+    if (!get_exts()) return 0;
+    GLAD_WGL_ARB_extensions_string = has_ext("WGL_ARB_extensions_string");
+    GLAD_WGL_EXT_extensions_string = has_ext("WGL_EXT_extensions_string");
+    GLAD_WGL_EXT_swap_control = has_ext("WGL_EXT_swap_control");
+    free_exts();
+    return 1;
 }
 
 static void find_coreWGL(HDC hdc) {
-	GLADWGLhdc = hdc;
+    GLADWGLhdc = hdc;
 }
 
 int gladLoadWGLLoader(GLADloadproc load, HDC hdc) {
-	wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
-	wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
-	if(wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
-	find_coreWGL(hdc);
+    wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)load("wglGetExtensionsStringARB");
+    wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)load("wglGetExtensionsStringEXT");
+    if (wglGetExtensionsStringARB == NULL && wglGetExtensionsStringEXT == NULL) return 0;
+    find_coreWGL(hdc);
 
-	if (!find_extensionsWGL()) return 0;
-	load_WGL_ARB_extensions_string(load);
-	load_WGL_EXT_extensions_string(load);
-	load_WGL_EXT_swap_control(load);
-	return 1;
+    if (!find_extensionsWGL()) return 0;
+    load_WGL_ARB_extensions_string(load);
+    load_WGL_EXT_extensions_string(load);
+    load_WGL_EXT_swap_control(load);
+    return 1;
 }
-

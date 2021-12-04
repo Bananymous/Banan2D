@@ -1,4 +1,4 @@
-#include <Banan.h>
+#include <Banan2D.h>
 #include <Banan/Core/EntryPoint.h>
 
 #include "SandboxLayer.h"

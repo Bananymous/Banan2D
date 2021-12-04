@@ -54,7 +54,7 @@
 extern "C" {
 #endif
 
-typedef void* (* GLADloadproc)(const char *name);
+    typedef void* (*GLADloadproc)(const char* name);
 
 #ifndef GLAPI
 # if defined(GLAD_GLAPI_EXPORT)
@@ -82,48 +82,48 @@ typedef void* (* GLADloadproc)(const char *name);
 # endif
 #endif
 
-GLAPI int gladLoadWGL(HDC hdc);
+    GLAPI int gladLoadWGL(HDC hdc);
 
-GLAPI int gladLoadWGLLoader(GLADloadproc, HDC hdc);
+    GLAPI int gladLoadWGLLoader(GLADloadproc, HDC hdc);
 
-struct _GPU_DEVICE {
-    DWORD  cb;
-    CHAR   DeviceName[32];
-    CHAR   DeviceString[128];
-    DWORD  Flags;
-    RECT   rcVirtualScreen;
-};
-DECLARE_HANDLE(HPBUFFERARB);
-DECLARE_HANDLE(HPBUFFEREXT);
-DECLARE_HANDLE(HVIDEOOUTPUTDEVICENV);
-DECLARE_HANDLE(HPVIDEODEV);
-DECLARE_HANDLE(HPGPUNV);
-DECLARE_HANDLE(HGPUNV);
-DECLARE_HANDLE(HVIDEOINPUTDEVICENV);
-typedef struct _GPU_DEVICE GPU_DEVICE;
-typedef struct _GPU_DEVICE *PGPU_DEVICE;
+    struct _GPU_DEVICE {
+        DWORD  cb;
+        CHAR   DeviceName[32];
+        CHAR   DeviceString[128];
+        DWORD  Flags;
+        RECT   rcVirtualScreen;
+    };
+    DECLARE_HANDLE(HPBUFFERARB);
+    DECLARE_HANDLE(HPBUFFEREXT);
+    DECLARE_HANDLE(HVIDEOOUTPUTDEVICENV);
+    DECLARE_HANDLE(HPVIDEODEV);
+    DECLARE_HANDLE(HPGPUNV);
+    DECLARE_HANDLE(HGPUNV);
+    DECLARE_HANDLE(HVIDEOINPUTDEVICENV);
+    typedef struct _GPU_DEVICE GPU_DEVICE;
+    typedef struct _GPU_DEVICE* PGPU_DEVICE;
 #ifndef WGL_ARB_extensions_string
 #define WGL_ARB_extensions_string 1
-GLAPI int GLAD_WGL_ARB_extensions_string;
-typedef const char * (APIENTRYP PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
-GLAPI PFNWGLGETEXTENSIONSSTRINGARBPROC glad_wglGetExtensionsStringARB;
+    GLAPI int GLAD_WGL_ARB_extensions_string;
+    typedef const char* (APIENTRYP PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
+    GLAPI PFNWGLGETEXTENSIONSSTRINGARBPROC glad_wglGetExtensionsStringARB;
 #define wglGetExtensionsStringARB glad_wglGetExtensionsStringARB
 #endif
 #ifndef WGL_EXT_extensions_string
 #define WGL_EXT_extensions_string 1
-GLAPI int GLAD_WGL_EXT_extensions_string;
-typedef const char * (APIENTRYP PFNWGLGETEXTENSIONSSTRINGEXTPROC)(void);
-GLAPI PFNWGLGETEXTENSIONSSTRINGEXTPROC glad_wglGetExtensionsStringEXT;
+    GLAPI int GLAD_WGL_EXT_extensions_string;
+    typedef const char* (APIENTRYP PFNWGLGETEXTENSIONSSTRINGEXTPROC)(void);
+    GLAPI PFNWGLGETEXTENSIONSSTRINGEXTPROC glad_wglGetExtensionsStringEXT;
 #define wglGetExtensionsStringEXT glad_wglGetExtensionsStringEXT
 #endif
 #ifndef WGL_EXT_swap_control
 #define WGL_EXT_swap_control 1
-GLAPI int GLAD_WGL_EXT_swap_control;
-typedef BOOL (APIENTRYP PFNWGLSWAPINTERVALEXTPROC)(int interval);
-GLAPI PFNWGLSWAPINTERVALEXTPROC glad_wglSwapIntervalEXT;
+    GLAPI int GLAD_WGL_EXT_swap_control;
+    typedef BOOL(APIENTRYP PFNWGLSWAPINTERVALEXTPROC)(int interval);
+    GLAPI PFNWGLSWAPINTERVALEXTPROC glad_wglSwapIntervalEXT;
 #define wglSwapIntervalEXT glad_wglSwapIntervalEXT
-typedef int (APIENTRYP PFNWGLGETSWAPINTERVALEXTPROC)(void);
-GLAPI PFNWGLGETSWAPINTERVALEXTPROC glad_wglGetSwapIntervalEXT;
+    typedef int (APIENTRYP PFNWGLGETSWAPINTERVALEXTPROC)(void);
+    GLAPI PFNWGLGETSWAPINTERVALEXTPROC glad_wglGetSwapIntervalEXT;
 #define wglGetSwapIntervalEXT glad_wglGetSwapIntervalEXT
 #endif
 

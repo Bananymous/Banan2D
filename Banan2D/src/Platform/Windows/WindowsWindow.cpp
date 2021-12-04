@@ -48,23 +48,24 @@ namespace Banan
 	void WindowsWindow::Init()
 	{
 		// Window Class
-		WNDCLASS wc = {};
-		wc.lpfnWndProc = WinProc;
-		wc.hInstance = s_hInstance;
-		wc.lpszClassName = CLASS_NAME;
-		wc.hCursor = ::LoadCursorW(NULL, IDC_ARROW);
+		WNDCLASS wc{};
+		wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+		wc.lpfnWndProc		= WinProc;
+		wc.hInstance		= s_hInstance;
+		wc.hCursor			= ::LoadCursorW(NULL, IDC_ARROW);
+		wc.lpszClassName	= CLASS_NAME;
 		::RegisterClassW(&wc);
 
 		// Create Window
 		m_data.hWnd = ::CreateWindowExW(
 			0,
-			CLASS_NAME,
+			wc.lpszClassName,
 			m_data.title.c_str(),
 			WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT, CW_USEDEFAULT, m_data.width, m_data.height,
 			NULL,
 			NULL,
-			s_hInstance,
+			wc.hInstance,
 			this
 		);
 
@@ -72,10 +73,7 @@ namespace Banan
 
 		::SetLastError(0);
 		if (!::SetWindowLongPtrW(m_data.hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this)))
-			if (::GetLastError())
-				BANAN_ASSERT(false, "Failed to SetWindowLongPtrW");
-
-		::ShowWindow(m_data.hWnd, SW_SHOW);
+			BANAN_ASSERT(!::GetLastError(), "Failed to SetWindowLongPtrW");
 
 		m_data.hDC = ::GetDC(m_data.hWnd);
 		BANAN_ASSERT(m_data.hDC, "Could not get device context!");
@@ -83,6 +81,8 @@ namespace Banan
 		m_renderContext = RenderContext::Create(this);
 		m_renderContext->Init();
 		m_renderContext->SetVSync(m_data.vsync);
+
+		::ShowWindow(m_data.hWnd, SW_SHOW);
 	}
 
 	void WindowsWindow::SetHInstance(HINSTANCE hInstace)
@@ -103,6 +103,10 @@ namespace Banan
 		::SetWindowTextW(m_data.hWnd, title.c_str());
 	}
 
+	void* WindowsWindow::GetRenderContext()
+	{
+		return m_renderContext->GetContext();
+	}
 
 	bool WindowsWindow::IsFocused() const
 	{
@@ -127,6 +131,11 @@ namespace Banan
 
 	LRESULT CALLBACK WindowsWindow::WinProc(HWND hWnd, UINT32 msg, WPARAM wParam, LPARAM lParam)
 	{
+#ifndef BANAN_DISTRIBUTION
+		if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+			return true;
+#endif
+
 		WindowsWindow* window = reinterpret_cast<WindowsWindow*>(::GetWindowLongPtrW(hWnd, GWLP_USERDATA));;
 		if (window) return window->m_WinProc(hWnd, msg, wParam, lParam);
 		return ::DefWindowProcW(hWnd, msg, wParam, lParam);
@@ -136,11 +145,6 @@ namespace Banan
 	{
 		if (!m_initialized)
 			return ::DefWindowProcW(hWnd, msg, wParam, lParam);
-
-#ifndef BANAN_DISTRIBUTION
-		if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-			return true;
-#endif
 
 		switch (msg)
 		{

@@ -4,8 +4,6 @@
 #include <chrono>
 
 #include <Xinput.h>
-#pragma comment(lib, "Xinput.lib")
-
 
 namespace Banan
 {

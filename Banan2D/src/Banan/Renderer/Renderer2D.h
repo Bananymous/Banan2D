@@ -7,48 +7,20 @@
 namespace Banan
 {
 
-	struct QuadProperties {
-		glm::vec2 position;
-		glm::vec2 size;
-		float rotation;
-		float tilingFactor;
-		union { glm::vec4 tint, color; };
-		Ref<Texture2D> texture;
+	struct QuadProperties
+	{
+		glm::vec2 position	= glm::vec2(0.0f);
+		glm::vec2 size		= glm::vec2(1.0f);
+		float rotation		= 0.0f;
+		float tilingFactor	= 1.0f;
+		union
+		{
+			glm::vec4 tint, color = glm::vec4(1.0f);
+		};
 
-		glm::vec2 min, max;
-
-		QuadProperties() :
-			position	(glm::vec2(0.0f)),
-			size		(glm::vec2(1.0f)),
-			rotation	(0.0f),
-			tilingFactor(1.0f),
-			color		(glm::vec4(1.0f)),
-			texture		(nullptr),
-			min			(0.0f),
-			max			(1.0f)
-		{ }
-
-		QuadProperties(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color) :
-			position	(position),
-			size		(size),
-			rotation	(0.0f),
-			tilingFactor(1.0f),
-			color		(color),
-			texture		(nullptr),
-			min			(0.0f),
-			max			(1.0f)
-		{ }
-
-		QuadProperties(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture) :
-			position	(position),
-			size		(size),
-			rotation	(0.0f),
-			tilingFactor(1.0f),
-			color		(glm::vec4(1.0f)),
-			texture		(texture),
-			min			(0.0f),
-			max			(1.0f)
-		{ }
+		glm::vec2 min = glm::vec2(0.0f);
+		glm::vec2 max = glm::vec2(1.0f);
+		Ref<Texture2D> texture = nullptr;
 	};
 
 	class Renderer2D
@@ -74,7 +46,6 @@ namespace Banan
 
 		static void Draw_Text(const std::string& text, const glm::vec2& position, float size, const glm::vec4& color, const Ref<Font>& font);
 
-
 		struct Stats
 		{
 			uint32_t drawCalls	= 0;
@@ -92,7 +63,6 @@ namespace Banan
 
 		static float GetTextureIndex(const Ref<Texture2D>& texture);
 		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec2& min, const glm::vec2& max, float tilingFactor, const glm::vec4& tint);
-
 	};
 
 }

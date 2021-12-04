@@ -43,23 +43,26 @@ namespace Banan
 			0, 0, 0
 		};
 
-		int pixelformat = ChoosePixelFormat(m_window->GetDeviceContext(), &pfd);
-		BANAN_ASSERT(pixelformat, "Failed to choose fitting pixel format!");
+		HDC dc = m_window->GetDeviceContext();
 
-		int status = SetPixelFormat(m_window->GetDeviceContext(), pixelformat, &pfd);
-		BANAN_ASSERT(status, "Could not set pixel format!");
+		int pixelformat = ChoosePixelFormat(dc, &pfd);
+		BANAN_ASSERT(pixelformat, "Failed to choose fitting pixel format!\n");
 
-		m_hGLRC = wglCreateContext(m_window->GetDeviceContext());
-		BANAN_ASSERT(m_hGLRC, "Could not create OpenGL context!");
+		int status = SetPixelFormat(dc, pixelformat, &pfd);
+		BANAN_ASSERT(status, "Could not set pixel format!\n");
 
-		status = wglMakeCurrent(m_window->GetDeviceContext(), m_hGLRC);
-		BANAN_ASSERT(status, "Could not change current context!");
+		m_hGLRC = wglCreateContext(dc);
+		BANAN_ASSERT(m_hGLRC, "Could not create OpenGL context!\n");
 
-		status = gladLoadWGL(m_window->GetDeviceContext());
-		BANAN_ASSERT(status, "Could not load GladWLG!");
+		status = wglMakeCurrent(dc, m_hGLRC);
+		BANAN_ASSERT(status, "Could not change current context!\n");
+
+		status = gladLoadWGL(dc);
+		BANAN_ASSERT(status, "Could not load GladWLG!\n");
 
 		status = gladLoadGL();
-		BANAN_ASSERT(status, "Could not load GladGL!");
+		BANAN_ASSERT(status, "Could not load GladGL!\n");
+
 
 		BANAN_PRINT("OpenGL Info\n");
 		BANAN_PRINT("  Vendor:       %s\n", glGetString(GL_VENDOR));

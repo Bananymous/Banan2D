@@ -11,7 +11,6 @@ namespace Banan
 		virtual ~OpenGLContext() = default;
 
 		static Scope<RenderContext> Create(Window* window);
-
 	};
 
 }

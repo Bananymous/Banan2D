@@ -4,6 +4,9 @@
 
 #include <Windows.h>
 
+#pragma warning(push)
+#pragma warning(disable: 26495)
+
 namespace Banan
 {
 	class RenderContext;
@@ -23,6 +26,8 @@ namespace Banan
 		virtual bool GetVSync() const override		{ return m_data.vsync; }
 
 		virtual void SetTitle(const std::wstring& title) override;
+
+		void* GetRenderContext();
 
 	public:
 		static void SetHInstance(HINSTANCE hInstance);
@@ -62,3 +67,5 @@ namespace Banan
 	};
 
 }
+
+#pragma warning(pop)

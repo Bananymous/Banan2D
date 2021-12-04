@@ -38,7 +38,6 @@ namespace Banan {
 		}
 
 		WindowsWindow& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
-
 		ImGui_ImplWin32_Init(window.GetHandle());
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
@@ -74,6 +73,7 @@ namespace Banan {
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		ImGui::Render();
+
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -85,6 +85,5 @@ namespace Banan {
 			wglMakeCurrent(window.GetDeviceContext(), backup_context);
 		}
 	}
-
 
 }

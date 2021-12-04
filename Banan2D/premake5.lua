@@ -24,7 +24,7 @@ project "Banan2D"
 	{
 		"src",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.imgui}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}"
 	}
@@ -37,8 +37,9 @@ project "Banan2D"
 	links
 	{
 		"Glad",
-		"ImGui",
-		"opengl32.lib"
+		"imgui",
+		"opengl32.lib",
+		"Xinput.lib"
 	}
 
 	filter "system:windows"
