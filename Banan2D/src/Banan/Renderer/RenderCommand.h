@@ -16,7 +16,11 @@ namespace Banan
 
 		static void SetClearColor(const glm::vec4& color)										{ s_rendererAPI->SetClearColor(color); }
 		static void Clear()																		{ s_rendererAPI->Clear(); }
+
 		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)	{ s_rendererAPI->DrawIndexed(vertexArray, indexCount); }
+		static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)		{ s_rendererAPI->DrawLines(vertexArray, vertexCount); }
+
+		static void SetLineWidth(float width)													{ s_rendererAPI->SetLineWidth(width); }
 
 		static uint32_t GetMaxTextureSlots()													{ return s_rendererAPI->GetMaxTextureSlots(); };
 

@@ -25,7 +25,8 @@ namespace Banan
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
 
 		static Ref<Shader> CreateTextureShader(uint32_t textureSlots);
-
+		static Ref<Shader> CreateCircleShader();
+		static Ref<Shader> CreateLineShader();
 	};
 
 }

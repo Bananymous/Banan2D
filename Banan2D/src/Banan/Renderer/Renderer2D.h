@@ -44,6 +44,10 @@ namespace Banan
 		static void DrawQuad(const QuadProperties& properties);
 		static void DrawRotatedQuad(const QuadProperties& properties);
 
+		static void DrawCircle(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f);
+
+		static void DrawLine(const glm::vec2& from, const glm::vec2& to, const glm::vec4& color);
+
 		static void Draw_Text(const std::string& text, const glm::vec2& position, float size, const glm::vec4& color, const Ref<Font>& font);
 
 		struct Stats
@@ -63,6 +67,7 @@ namespace Banan
 
 		static float GetTextureIndex(const Ref<Texture2D>& texture);
 		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec2& min, const glm::vec2& max, float tilingFactor, const glm::vec4& tint);
+		static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness, float fade);
 	};
 
 }

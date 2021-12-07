@@ -19,6 +19,8 @@ namespace Banan
 		virtual ~OpenGLShader();
 
 		static Ref<OpenGLShader> CreateTextureShader(uint32_t slotCount);
+		static Ref<OpenGLShader> CreateCircleShader();
+		static Ref<OpenGLShader> CreateLineShader();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
