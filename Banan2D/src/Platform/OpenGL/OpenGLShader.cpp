@@ -29,17 +29,23 @@ namespace Banan
 
 			uniform mat4 u_viewProjection;
 
-			out vec4		v_color;
-			out vec2		v_textureCoord;
-			out flat float	v_textureIndex;
-			out float		v_tilingFactor;
+			struct VertexOutput
+			{
+				vec4 color;
+				vec2 textureCoord;
+				float tilingFactor;
+			};
+
+			layout(location = 0) out VertexOutput Output;
+			layout(location = 3) out flat float v_textureIndex;
 
 			void main()
 			{
-				v_color = a_color;
-				v_textureCoord = a_textureCoord;
+				Output.color = a_color;
+				Output.textureCoord = a_textureCoord;
+				Output.tilingFactor = a_tilingFactor;
 				v_textureIndex = a_textureIndex;
-				v_tilingFactor = a_tilingFactor;
+
 				gl_Position = u_viewProjection * vec4(a_position, 1.0);
 			}
 		)";
@@ -51,22 +57,27 @@ namespace Banan
 
 			layout(location = 0) out vec4 o_color;
 			
-			in vec4			v_color;
-			in vec2			v_textureCoord;
-			in flat float	v_textureIndex;
-			in float		v_tilingFactor;
+			struct VertexOutput
+			{
+				vec4 color;
+				vec2 textureCoord;
+				float tilingFactor;
+			};
+
+			layout(location = 0) in VertexOutput Input;
+			layout(location = 3) in flat float v_textureIndex;
 			
 			uniform sampler2D u_textures[32];
 			
 			void main()
 			{
-				vec4 textureColor = v_color;
+				vec4 textureColor = Input.color;
 				switch(int(v_textureIndex))
 				{
 		)";
 
 		for (uint32_t i = 0; i < slotCount; i++)
-			fragmentSource << "case " << i << ": textureColor *= texture2D(u_textures[" << i << "],  v_textureCoord * v_tilingFactor); break;\r\n";
+			fragmentSource << "case " << i << ": textureColor *= texture2D(u_textures[" << i << "],  Input.textureCoord * Input.tilingFactor); break;\r\n";
 
 		fragmentSource << R"(
 				}
@@ -97,17 +108,22 @@ namespace Banan
 
 			uniform mat4 u_viewProjection;
 
-			out vec3		v_localPosition;
-			out vec4		v_color;
-			out float		v_thickness;
-			out float		v_fade;
+			struct VertexOutput
+			{
+				vec3 localPosition;
+				vec4 color;
+				float thickness;
+				float fade;
+			};
+
+			layout(location = 0) out VertexOutput Output;
 
 			void main()
 			{
-				v_localPosition = a_localPosition;
-				v_color = a_color;
-				v_thickness = a_thickness;
-				v_fade = a_fade;
+				Output.localPosition = a_localPosition;
+				Output.color = a_color;
+				Output.thickness = a_thickness;
+				Output.fade = a_fade;
 
 				gl_Position = u_viewProjection * vec4(a_worldPosition, 1.0);
 			}
@@ -118,21 +134,26 @@ namespace Banan
 
 			layout(location = 0) out vec4 o_color;
 
-			in vec3		v_localPosition;
-			in vec4		v_color;
-			in float	v_thickness;
-			in float	v_fade;
+			struct VertexOutput
+			{
+				vec3 localPosition;
+				vec4 color;
+				float thickness;
+				float fade;
+			};
+
+			layout(location = 0) in VertexOutput Input;
 
 			void main()
 			{
-				float distance = 1.0 - length(v_localPosition);
-				float circle = smoothstep(0.0, v_fade, distance);
-				circle *= smoothstep(v_thickness + v_fade, v_thickness, distance);
+				float distance = 1.0 - length(Input.localPosition);
+				float circle = smoothstep(0.0, Input.fade, distance);
+				circle *= smoothstep(Input.thickness + Input.fade, Input.thickness, distance);
 
 				if (circle == 0.0)
 					discard;
 
-				o_color = v_color;
+				o_color = Input.color;
 				o_color.a *= circle;
 			}
 		)";
@@ -156,11 +177,16 @@ namespace Banan
 
 			uniform mat4 u_viewProjection;
 
-			out vec4		v_color;
+			struct VertexOutput
+			{
+				vec4 color;
+			};
+
+			layout(location = 0) out VertexOutput Output;
 
 			void main()
 			{
-				v_color = a_color;
+				Output.color = a_color;
 
 				gl_Position = u_viewProjection * vec4(a_position, 1.0);
 			}
@@ -171,11 +197,16 @@ namespace Banan
 
 			layout(location = 0) out vec4 o_color;
 
-			in vec4 v_color;
+			struct VertexOutput
+			{
+				vec4 color;
+			};
+
+			layout(location = 0) in VertexOutput Input;
 
 			void main()
 			{
-				o_color = v_color;
+				o_color = Input.color;
 			}
 		)";
 
@@ -283,7 +314,7 @@ namespace Banan
 			for (auto ID : glShaderIDs)
 				glDeleteShader(ID);
 
-			BANAN_PRINT("Failed to link shaders!");
+			BANAN_PRINT("Failed to link shaders!\n");
 			BANAN_ASSERT(false, infoLog.data());
 			
 			return;
