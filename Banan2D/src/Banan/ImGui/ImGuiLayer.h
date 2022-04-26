@@ -2,27 +2,19 @@
 
 #include "Banan/Core/Layer.h"
 
-#include "Banan/Event/MouseEvent.h"
-#include "Banan/Event/KeyEvent.h"
-
-namespace Banan {
+namespace Banan
+{
 
 	class ImGuiLayer : public Layer
 	{
+	protected:
+		ImGuiLayer(const std::string& name) : Layer(name) {}
+
 	public:
-		ImGuiLayer();
-		~ImGuiLayer() = default;
+		virtual void Begin() = 0;
+		virtual void End()   = 0;
 
-		virtual void OnAttach()			override;
-		virtual void OnDetach()			override;
-		virtual void OnEvent(Event& e)	override;
-
-		void Begin();
-		void End();
-
-	private:
-		bool m_blockEvents = true;
-
+		static ImGuiLayer* Create();
 	};
 
 }

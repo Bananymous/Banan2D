@@ -18,7 +18,7 @@ namespace Banan
 		Renderer2D::Init();
 
 #ifndef BANAN_DISTRIBUTION
-		m_ImGuiLayer = new ImGuiLayer();
+		m_ImGuiLayer = ImGuiLayer::Create();
 		PushOverlay(m_ImGuiLayer);
 #endif
 	}

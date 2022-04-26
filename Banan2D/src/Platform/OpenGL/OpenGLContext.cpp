@@ -1,9 +1,14 @@
 #include "bgepch.h"
 #include "OpenGLContext.h"
 
+// TODO
+
 #ifdef BANAN_PLATFORM_WINDOWS
-	#include "Platform/Windows/WindowsOpenGLContext.h"
-	#include "Platform/Windows/WindowsWindow.h"
+	#include "../Windows/WindowsOpenGLContext.h"
+	#include "../Windows/WindowsWindow.h"
+#elif defined BANAN_PLATFORM_LINUX
+	//#include "../Linux/LinuxOpenGLContext.h"
+	//#include "../Linux/LinuxWindow.h"
 #endif
 
 namespace Banan
@@ -13,7 +18,13 @@ namespace Banan
 	{
 #ifdef BANAN_PLATFORM_WINDOWS
 		return CreateScope<WindowsOpenGLContext>(dynamic_cast<WindowsWindow*>(window));
+#elif defined BANAN_PLATFORM_LINUX
+		//return CreateScope<LinuxOpenGLContext>(dynamic_cast<WindowsWindow*>(window));
+#else
+	#error UNSUPPORTED PLATFORM
 #endif
+
+		return nullptr;
 	}
 
 }

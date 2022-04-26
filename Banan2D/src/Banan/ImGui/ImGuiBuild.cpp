@@ -5,7 +5,15 @@
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <backends/imgui_impl_opengl3.cpp>
 
-#define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
+#ifdef BANAN_PLATFORM_WINDOWS
+
 #include <backends/imgui_impl_win32.cpp>
+
+#elif defined BANAN_PLATFORM_LINUX
+
+// LINUX IMPL (GLFW?)
+// #include <backends/imgui_impl_glfw.cpp>
+
+#endif
 
 #endif

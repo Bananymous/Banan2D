@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Banan/Core/PlatformDetection.h"
 
 #ifdef BANAN_PLATFORM_WINDOWS

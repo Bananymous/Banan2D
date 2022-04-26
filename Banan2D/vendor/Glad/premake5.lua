@@ -6,14 +6,23 @@ project "Glad"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    files
-    {
-        "include/glad/glad.h",
-		"include/glad/glad_wgl.h",
-        "include/KHR/khrplatform.h",
-        "src/glad.c",
-        "src/glad_wgl.c"
-    }
+    if os.host() == "windows" then
+        files
+        {
+            "include/glad/glad.h",
+            "include/glad/glad_wgl.h",
+            "include/KHR/khrplatform.h",
+            "src/glad.c",
+            "src/glad_wgl.c"
+        }
+    else
+        files
+        {
+            "include/glad/glad.h",
+            "include/KHR/khrplatform.h",
+            "src/glad.c",
+        }
+    end    
 
     includedirs
     {

@@ -260,7 +260,7 @@ namespace Banan
 
 		BANAN_ASSERT(shaderSources.size() <= 4, "You can use 2 shaders at most");
 
-		std::array<GLuint, 2> glShaderIDs;
+		std::array<GLuint, 2> glShaderIDs{};
 
 		int glShaderIDIndex = 0;
 		for (auto& key : shaderSources)

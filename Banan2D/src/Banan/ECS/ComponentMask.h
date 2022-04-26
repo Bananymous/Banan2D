@@ -92,7 +92,7 @@ namespace Banan::ECS
 			{
 				if (m_bits.size() != other.m_bits.size())
 				{
-					uint64_t size = std::max(m_bits.size(), other.m_bits.size());
+					uint64_t size = m_bits.size() > other.m_bits.size() ? m_bits.size() : other.m_bits.size();
 					m_bits.resize(size);
 					other.m_bits.resize(size);
 				}

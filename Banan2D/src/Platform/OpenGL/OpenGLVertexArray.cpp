@@ -3,6 +3,9 @@
 
 #include <glad/glad.h>
 
+#pragma warning(push)
+#pragma warning(disable : 4312)
+
 namespace Banan
 {
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
@@ -69,7 +72,7 @@ namespace Banan
 						ShaderDataTypeToOpenGLBaseType(element.type),
 						element.normalized ? GL_TRUE : GL_FALSE,
 						layout.GetStride(),
-						(const void*)element.offset
+						(const void*)(element.offset)
 					);
 					m_vertexBufferIndex++;
 					break;
@@ -108,3 +111,5 @@ namespace Banan
 	}
 
 }
+
+#pragma warning(pop)

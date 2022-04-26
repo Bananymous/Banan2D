@@ -2,6 +2,9 @@
 
 #include "Banan/Core/Base.h"
 
+#pragma warning(push)
+#pragma warning(disable : 26812)
+
 namespace Banan
 {
 
@@ -60,3 +63,5 @@ namespace Banan
 	};
 
 }
+
+#pragma warning(pop)

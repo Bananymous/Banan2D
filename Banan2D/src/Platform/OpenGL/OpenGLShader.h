@@ -15,7 +15,6 @@ namespace Banan
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader() = default;
 		virtual ~OpenGLShader();
 
 		static Ref<OpenGLShader> CreateTextureShader(uint32_t slotCount);
@@ -49,8 +48,7 @@ namespace Banan
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
 	private:
-		uint32_t m_rendererID;
-
+		uint32_t m_rendererID = 0;
 	};
 
 }

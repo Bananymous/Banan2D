@@ -10,15 +10,39 @@ project "Banan2D"
 	pchheader "bgepch.h"
 	pchsource "src/bgepch.cpp"
 
-	files
-	{
-		"src/**.h",
-		"src/**.cpp",
-		"vendor/stb_image/**.h",
-		"vendor/stb_image/**.cpp",
-		"vendor/glm/glm/**.hpp",
-		"vendor/glm/glm/**.inl"
-	}
+	if os.host() == "windows" then
+		files
+		{
+			"src/*.h",
+			"src/*.cpp",
+			"src/Banan/**.h",
+			"src/Banan/**.cpp",
+			"src/Platform/OpenGL/**.h",
+			"src/Platform/OpenGL/**.cpp",
+			"src/Platform/Windows/**.h",
+			"src/Platform/Windows/**.cpp",
+			"vendor/stb_image/**.h",
+			"vendor/stb_image/**.cpp",
+			"vendor/glm/glm/**.hpp",
+			"vendor/glm/glm/**.inl"
+		}
+	else
+		files
+		{
+			"src/*.h",
+			"src/*.cpp",
+			"src/Banan/**.h",
+			"src/Banan/**.cpp",
+			"src/Platform/OpenGL/**.h",
+			"src/Platform/OpenGL/**.cpp",
+			"src/Platform/Linux/**.h",
+			"src/Platform/Linux/**.cpp",
+			"vendor/stb_image/**.h",
+			"vendor/stb_image/**.cpp",
+			"vendor/glm/glm/**.hpp",
+			"vendor/glm/glm/**.inl"
+		}
+	end
 
 	includedirs
 	{
@@ -28,19 +52,26 @@ project "Banan2D"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}"
 	}
-	
-	defines
-	{
-		"_CRT_SECURE_NO_WARNINGS"
-	}
 
-	links
-	{
-		"Glad",
-		"imgui",
-		"opengl32.lib",
-		"Xinput.lib"
-	}
+	if os.host() == "windows" then
+		defines
+		{
+			"_CRT_SECURE_NO_WARNINGS"
+		}
+		links
+		{
+			"Glad",
+			"imgui",
+			"opengl32.lib",
+			"Xinput.lib"
+		}
+	else
+		links
+		{
+			"imgui",
+			"opengl32.lib"
+		}
+	end
 
 	filter "system:windows"
 		systemversion "latest"

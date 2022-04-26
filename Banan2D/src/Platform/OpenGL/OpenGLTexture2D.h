@@ -22,7 +22,7 @@ namespace Banan
 		virtual void Bind(uint32_t slot = 0) const override;
 
 
-		virtual boolean operator==(const Texture2D& other) const override
+		virtual bool operator==(const Texture2D& other) const override
 		{
 			return m_rendererID == ((OpenGLTexture2D&)other).m_rendererID;
 		}

@@ -87,13 +87,13 @@ namespace Banan
 			s_data.quadVertexArray = VertexArray::Create();
 
 			s_data.quadVertexBuffer = VertexBuffer::Create(s_data.maxVertices * sizeof(QuadVertex));
-			s_data.quadVertexBuffer->SetLayout({
+			s_data.quadVertexBuffer->SetLayout(BufferLayout({
 				{ ShaderDataType::Float3, "a_position"     },
 				{ ShaderDataType::Float4, "a_color"        },
 				{ ShaderDataType::Float2, "a_textureCoord" },
 				{ ShaderDataType::Float,  "a_textureIndex" },
 				{ ShaderDataType::Float,  "a_tilingFactor" }
-			});
+			}));
 			s_data.quadVertexArray->AddVertexBuffer(s_data.quadVertexBuffer);
 
 			s_data.quadVertexBufferBase = new QuadVertex[s_data.maxVertices];
@@ -121,13 +121,13 @@ namespace Banan
 			s_data.circleVertexArray = VertexArray::Create();
 
 			s_data.circleVertexBuffer = VertexBuffer::Create(s_data.maxVertices * sizeof(QuadVertex));
-			s_data.circleVertexBuffer->SetLayout({
+			s_data.circleVertexBuffer->SetLayout(BufferLayout({
 				{ ShaderDataType::Float3, "a_worldPosition" },
 				{ ShaderDataType::Float3, "a_localPosition" },
 				{ ShaderDataType::Float4, "a_color"			},
 				{ ShaderDataType::Float,  "a_thickness"		},
 				{ ShaderDataType::Float,  "a_fade"			}
-			});
+			}));
 			s_data.circleVertexArray->AddVertexBuffer(s_data.circleVertexBuffer);
 			s_data.circleVertexArray->SetIndexBuffer(s_data.quadVertexArray->GetIndexBuffer()); // Use quad IB
 			s_data.circleVertexBufferBase = new CircleVertex[s_data.maxVertices];
@@ -138,10 +138,10 @@ namespace Banan
 			s_data.lineVertexArray = VertexArray::Create();
 
 			s_data.lineVertexBuffer = VertexBuffer::Create(s_data.maxVertices * sizeof(LineVertex));
-			s_data.lineVertexBuffer->SetLayout({
+			s_data.lineVertexBuffer->SetLayout(BufferLayout({
 				{ ShaderDataType::Float3, "a_position" },
 				{ ShaderDataType::Float4, "a_color"    }
-			});
+			}));
 			s_data.lineVertexArray->AddVertexBuffer(s_data.lineVertexBuffer);
 			s_data.lineVertexBufferBase = new LineVertex[s_data.maxVertices];
 		}

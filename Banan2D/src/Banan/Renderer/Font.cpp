@@ -8,6 +8,8 @@
 
 #include <filesystem>
 
+#include <cstring>
+
 namespace Banan
 {
 
