@@ -1,4 +1,4 @@
-#include "../../bgepch.h"
+#include "bgepch.h"
 #include "OpenGLShader.h"
 
 #include <glad/glad.h>
