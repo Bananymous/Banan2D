@@ -5,7 +5,15 @@
 
 #include "../Event/WindowEvent.h"
 
-#ifndef BANAN_DISTRIBUTION
+#ifdef BANAN_DISTRIBUTION
+	#ifndef BANAN_DISABLE_IMGUI
+		#define BANAN_DISABLE_IMGUI
+	#endif
+#endif
+
+#define BANAN_DISABLE_IMGUI
+
+#ifndef BANAN_DISABLE_IMGUI 
 #include "../ImGui/ImGuiLayer.h"
 #endif
 
@@ -31,9 +39,10 @@ namespace Banan
 		static Application& Get() { return *s_instance; }
 		Window& GetWindow() const { return *m_window; }
 
-	private:
+	public:
 		void Run();
 
+	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
@@ -43,7 +52,7 @@ namespace Banan
 
 		Scope<Window> m_window;
 
-#ifndef BANAN_DISTRIBUTION
+#ifndef BANAN_DISABLE_IMGUI
 		ImGuiLayer* m_ImGuiLayer;
 #endif
 		LayerStack m_layers;

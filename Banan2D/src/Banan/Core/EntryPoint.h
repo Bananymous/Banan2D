@@ -49,6 +49,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 }
 
+#elif defined BANAN_PLATFORM_LINUX
+
+int main(int argc, char** argv)
+{
+	auto app = Banan::CreateApplication();
+	app->Run();
+	delete app;
+}
+
 #else
 
 #error Only supports windows (for now)

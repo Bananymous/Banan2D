@@ -1,6 +1,6 @@
 #include "SandboxLayer.h"
 
-#include <imgui/imgui.h>
+//#include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
 SandboxLayer::SandboxLayer() :
@@ -90,6 +90,7 @@ void SandboxLayer::OnUpdate(Banan::Timestep ts)
 
 void SandboxLayer::OnImGuiRender()
 {
+	#if 0
 	auto stats = Banan::Renderer2D::GetStats();
 	ImGui::Begin("Statistics:");
 	ImGui::Text("FPS:        %d", m_FPS);
@@ -99,6 +100,7 @@ void SandboxLayer::OnImGuiRender()
 	ImGui::Text("Vertices:   %d", stats.GetVertices());
 	ImGui::Text("Indices:    %d", stats.GetIndices());
 	ImGui::End();
+	#endif
 }
 
 void SandboxLayer::OnEvent(Banan::Event& e)

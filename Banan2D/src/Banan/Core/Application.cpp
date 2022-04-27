@@ -17,7 +17,7 @@ namespace Banan
 
 		Renderer2D::Init();
 
-#ifndef BANAN_DISTRIBUTION
+#ifndef BANAN_DISABLE_IMGUI
 		m_ImGuiLayer = ImGuiLayer::Create();
 		PushOverlay(m_ImGuiLayer);
 #endif
@@ -75,7 +75,7 @@ namespace Banan
 				for (Layer* layer : m_layers)
 					layer->OnUpdate(deltaTimer.GetTime());
 
-#ifndef BANAN_DISTRIBUTION
+#ifndef BANAN_DISABLE_IMGUI
 				m_ImGuiLayer->Begin();
 				for (Layer* layer : m_layers)
 					layer->OnImGuiRender();

@@ -44,8 +44,6 @@ namespace Banan
 		scope.reset(nullptr);
 	}
 
-
-
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 
@@ -54,4 +52,5 @@ namespace Banan
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
+
 }

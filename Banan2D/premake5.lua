@@ -26,7 +26,7 @@ project "Banan2D"
 			"vendor/glm/glm/**.hpp",
 			"vendor/glm/glm/**.inl"
 		}
-	else
+	else if os.host() == "linux" then
 		files
 		{
 			"src/*.h",
@@ -65,11 +65,16 @@ project "Banan2D"
 			"opengl32.lib",
 			"Xinput.lib"
 		}
-	else
+	else if os.host() == "linux" then
+		libdirs
+		{
+			os.findlib("X11")
+		}
 		links
 		{
-			"imgui",
-			"opengl32.lib"
+			"X11",
+			"Glad",
+			"imgui"
 		}
 	end
 
