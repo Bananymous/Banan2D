@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Event/Event.h"
+#include "../Event/Event.h"
 
 #include <string>
 #include <functional>
@@ -26,7 +26,6 @@ namespace Banan
 		virtual void SetTitle(const std::wstring& title) = 0;
 
 		static Scope<Window> Create(const std::wstring& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback);
-
 	};
 
 }

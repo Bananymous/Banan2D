@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Renderer/VertexArray.h"
+#include "./VertexArray.h"
 
 #include <glm/glm.hpp>
 
@@ -35,7 +35,6 @@ namespace Banan
 
 	private:
 		static API s_API;
-
 	};
 
 }

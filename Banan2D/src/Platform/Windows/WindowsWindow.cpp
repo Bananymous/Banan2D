@@ -1,22 +1,22 @@
 #include "bgepch.h"
 #include "WindowsWindow.h"
 
-#include "WindowsInput.h"
+#include "./WindowsInput.h"
 
-#include "Banan/Event/WindowEvent.h"
-#include "Banan/Event/MouseEvent.h"
-#include "Banan/Event/KeyEvent.h"
-
-#include "Banan/Renderer/RenderContext.h"
+#include "../../Banan/Event/WindowEvent.h"
+#include "../../Banan/Event/MouseEvent.h"
+#include "../../Banan/Event/KeyEvent.h"
+#include "../../Banan/Renderer/RenderContext.h"
 
 #ifndef BANAN_DISTRIBUTION
-#include <backends/imgui_impl_win32.h>
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	#include <backends/imgui_impl_win32.h>
+	extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 
 
 namespace Banan
 {
+	
 	HINSTANCE WindowsWindow::s_hInstance = NULL;
 
 	const wchar_t CLASS_NAME[] = L"Window class";

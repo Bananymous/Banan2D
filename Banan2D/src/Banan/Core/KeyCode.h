@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-
-namespace Banan {
+namespace Banan
+{
 
 	using KeyCode = uint8_t;
 
@@ -140,4 +140,5 @@ namespace Banan {
 			Period		= 0xBE
 		};
 	}
+	
 }

@@ -1,14 +1,12 @@
 #include "bgepch.h"
-
 #include "WindowsImGuiLayer.h"
+
+#include "../../Banan/Core/Application.h"
+#include "./WindowsWindow.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_win32.h>
 #include <backends/imgui_impl_opengl3.h>
-
-#include "Banan/Core/Application.h"
-
-#include "Platform/Windows/WindowsWindow.h"
 
 
 namespace Banan

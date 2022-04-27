@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Core/Window.h"
+#include "../Core/Window.h"
 
 namespace Banan
 {
@@ -17,7 +17,6 @@ namespace Banan
 		virtual void* GetContext() = 0;
 
 		static Scope<RenderContext> Create(Window* window);
-
 	};
 
 }

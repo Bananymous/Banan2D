@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "Application.h"
 
-#include "Banan/Renderer/Renderer2D.h"
+#include "../Renderer/Renderer2D.h"
 
-#include "DeltaTimer.h"
+#include "./DeltaTimer.h"
 
 namespace Banan
 {

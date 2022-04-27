@@ -1,8 +1,8 @@
 #pragma once
 
-#include "KeyCode.h"
-#include "MouseCode.h"
-#include "ControllerCode.h"
+#include "./KeyCode.h"
+#include "./MouseCode.h"
+#include "./ControllerCode.h"
 
 #include <utility>
 
@@ -47,7 +47,6 @@ namespace Banan
 
 	private:
 		static Input* s_instance;
-
 	};
 
 }

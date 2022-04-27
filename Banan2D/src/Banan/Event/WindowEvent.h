@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event.h"
+#include "./Event.h"
 
 namespace Banan
 {
@@ -21,7 +21,6 @@ namespace Banan
 
 	private:
 		uint32_t m_width, m_height;
-
 	};
 
 	class WindowCloseEvent : public Event
@@ -33,7 +32,6 @@ namespace Banan
 		static EventType GetStaticType()			{ return EventType::WindowClose; }
 		virtual EventType GetType() const override	{ return GetStaticType(); }
 		virtual int GetCategory() const override	{ return EventCategory::window; }
-
 	};
 
 }

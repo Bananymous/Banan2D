@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Buffer.h"
-
-#include "Banan/Core/Base.h"
+#include "./Buffer.h"
+#include "../Core/Base.h"
 
 namespace Banan
 {
@@ -22,7 +21,6 @@ namespace Banan
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;
 
 		static Ref<VertexArray> Create();
-
 	};
 
 }

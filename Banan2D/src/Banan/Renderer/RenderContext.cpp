@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "RenderContext.h"
 
-#include "RendererAPI.h"
+#include "./RendererAPI.h"
 
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "../../Platform/OpenGL/OpenGLContext.h"
 
 namespace Banan
 {

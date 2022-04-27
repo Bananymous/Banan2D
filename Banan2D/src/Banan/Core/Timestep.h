@@ -16,7 +16,6 @@ namespace Banan
 
 	private:
 		float m_time;
-
 	};
 
 }

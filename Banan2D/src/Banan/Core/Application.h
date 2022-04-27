@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Window.h"
-#include "Layer.h"
+#include "./Window.h"
+#include "./Layer.h"
 
-#include "Banan/Event/WindowEvent.h"
+#include "../Event/WindowEvent.h"
 
 #ifndef BANAN_DISTRIBUTION
-#include "Banan/ImGui/ImGuiLayer.h"
+#include "../ImGui/ImGuiLayer.h"
 #endif
 
 namespace Banan

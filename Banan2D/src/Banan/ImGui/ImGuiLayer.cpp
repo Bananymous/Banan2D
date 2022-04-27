@@ -5,8 +5,8 @@
 
 #ifdef BANAN_PLATFORM_WINDOWS
 	#include "../../Platform/Windows/WindowsImGuiLayer.h"
-#elif defined BANANA_PLATFORM_LINUX
-	#include "../../Platform/Linux/LinuxImGuiLayer.h"
+#elif defined BANAN_PLATFORM_LINUX
+	//#include "../../Platform/Linux/LinuxImGuiLayer.h"
 #endif
 
 namespace Banan

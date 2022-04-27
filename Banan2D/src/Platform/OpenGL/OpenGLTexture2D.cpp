@@ -1,4 +1,4 @@
-#include "bgepch.h"
+#include "../../bgepch.h"
 #include "OpenGLTexture2D.h"
 
 #include <stb_image.h>

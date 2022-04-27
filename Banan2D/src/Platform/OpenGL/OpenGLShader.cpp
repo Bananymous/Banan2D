@@ -1,10 +1,11 @@
-#include "bgepch.h"
+#include "../../bgepch.h"
 #include "OpenGLShader.h"
 
 #include <glad/glad.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <sstream>
 #include <fstream>
 
 namespace Banan
@@ -14,7 +15,6 @@ namespace Banan
 	{
 		glDeleteProgram(m_rendererID);
 	}
-
 
 	Ref<OpenGLShader> OpenGLShader::CreateTextureShader(uint32_t slotCount)
 	{

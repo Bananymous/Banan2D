@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "Shader.h"
 
-#include "RendererAPI.h"
+#include "./RendererAPI.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "../../Platform/OpenGL/OpenGLShader.h"
 
 namespace Banan
 {

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Banan/Renderer/VertexArray.h"
-
-#include "Banan/Core/Base.h"
+#include "../../Banan/Renderer/VertexArray.h"
+#include "../../Banan/Core/Base.h"
 
 namespace Banan
 {
@@ -27,7 +26,6 @@ namespace Banan
 		uint32_t m_vertexBufferIndex;
 		std::vector<Ref<VertexBuffer>> m_vertexBuffers;
 		Ref<IndexBuffer> m_indexBuffer;
-
 	};
 
 }

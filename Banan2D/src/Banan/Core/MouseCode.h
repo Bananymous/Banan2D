@@ -4,6 +4,7 @@
 
 namespace Banan
 {
+
 	using MouseCode = uint8_t;
 
 	namespace MouseButton
@@ -21,4 +22,5 @@ namespace Banan
 			ButtonMiddle = Button2
 		};
 	}
+	
 }

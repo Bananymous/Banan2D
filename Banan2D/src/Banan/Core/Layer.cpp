@@ -1,6 +1,8 @@
 #include "bgepch.h"
 #include "Layer.h"
 
+#include <algorithm>
+
 namespace Banan
 {
 

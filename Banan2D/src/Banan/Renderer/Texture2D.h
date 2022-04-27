@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Core/Base.h"
+#include "../Core/Base.h"
 
 #include <glm/glm.hpp>
 
@@ -24,7 +24,6 @@ namespace Banan
 		static Ref<Texture2D> Create(const void* data, uint32_t width, uint32_t height);
 
 		virtual bool operator==(const Texture2D& other) const = 0;
-
 	};
 
 }

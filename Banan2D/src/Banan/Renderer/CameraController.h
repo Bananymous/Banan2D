@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Camera.h"
+#include "./Camera.h"
 
-#include "Banan/Core/Timestep.h"
+#include "../Core/Timestep.h"
 
-#include "Banan/Event/WindowEvent.h"
-#include "Banan/Event/MouseEvent.h"
+#include "../Event/WindowEvent.h"
+#include "../Event/MouseEvent.h"
 
 namespace Banan
 {
@@ -37,7 +37,6 @@ namespace Banan
 		float m_cameraMoveSpeed		= 2.0f;
 
 		OrthographicCamera m_camera;
-
 	};
 
 }

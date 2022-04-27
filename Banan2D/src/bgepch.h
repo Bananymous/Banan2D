@@ -1,9 +1,14 @@
-#include "Banan/Core/PlatformDetection.h"
+#pragma once
+
+#include "./Banan/Core/PlatformDetection.h"
 
 #ifdef BANAN_PLATFORM_WINDOWS
 	#ifndef NOMINMAX
 		#define NOMINMAX
 	#endif
+
+	#include <Windows.h>
+	#include <Windowsx.h>
 #endif
 
 #include <iostream>
@@ -19,9 +24,4 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Banan/Core/ConsoleOutput.h"
-
-#ifdef BANAN_PLATFORM_WINDOWS
-	#include <Windows.h>
-	#include <Windowsx.h>
-#endif
+#include "./Banan/Core/ConsoleOutput.h"

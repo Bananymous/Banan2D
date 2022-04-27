@@ -1,10 +1,9 @@
 #include "bgepch.h"
 #include "Renderer2D.h"
 
-#include "VertexArray.h"
-#include "Shader.h"
-
-#include "RenderCommand.h"
+#include "./VertexArray.h"
+#include "./Shader.h"
+#include "./RenderCommand.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -1,15 +1,17 @@
 #pragma once
 
-#include "Timestep.h"
+#include "./Timestep.h"
+
 #include <chrono>
 
 namespace Banan
 {
-	using namespace std::chrono;
-	using clock = high_resolution_clock;
 
 	class DeltaTimer
 	{
+		using clock = std::chrono::high_resolution_clock;
+		using duration = std::chrono::duration<float>;
+
 	public:
 		void Tick()
 		{
@@ -22,7 +24,7 @@ namespace Banan
 
 	private:
 		clock::time_point m_lastTime	= clock::now();
-		duration<float> m_delta			= 0ms;
+		duration m_delta				= std::chrono::milliseconds(0);
 	};
 
 }

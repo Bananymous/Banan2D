@@ -6,7 +6,6 @@
 namespace Banan
 {
 
-
 	void OpenGLMessageCallback(
 		unsigned source,
 		unsigned type,

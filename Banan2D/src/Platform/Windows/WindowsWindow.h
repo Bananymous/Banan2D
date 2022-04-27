@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Core/Window.h"
+#include "../../Banan/Core/Window.h"
 
 #include <Windows.h>
 
@@ -9,6 +9,7 @@
 
 namespace Banan
 {
+	
 	class RenderContext;
 
 	class WindowsWindow : public Window

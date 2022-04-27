@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Banan/Core/Base.h"
+#include "../Core/Base.h"
 
 #pragma warning(push)
-#pragma warning(disable : 26812)
+#pragma warning(disable : 26812) // Prefer enum class over enum
 
 namespace Banan
 {
@@ -59,7 +59,6 @@ namespace Banan
 
 	private:
 		Event& m_event;
-
 	};
 
 }

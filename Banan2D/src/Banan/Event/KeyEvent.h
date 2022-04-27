@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Event.h"
-#include "Banan/Core/KeyCode.h"
+#include "./Event.h"
+#include "../Core/KeyCode.h"
 
 namespace Banan
 {
@@ -23,7 +23,6 @@ namespace Banan
 	private:
 		KeyCode m_keycode;
 		uint16_t m_repeatCount;
-
 	};
 
 	class KeyReleaseEvent : public Event
@@ -41,7 +40,6 @@ namespace Banan
 
 	private:
 		KeyCode m_keycode;
-
 	};
 
 	class KeyTypeEvent : public Event
@@ -59,7 +57,6 @@ namespace Banan
 
 	private:
 		KeyCode m_keycode;
-
 	};
 
 }

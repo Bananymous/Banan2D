@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "Texture2D.h"
 
-#include "RendererAPI.h"
+#include "./RendererAPI.h"
 
-#include "Platform/OpenGL/OpenGLTexture2D.h"
+#include "../../Platform/OpenGL/OpenGLTexture2D.h"
 
 namespace Banan
 {

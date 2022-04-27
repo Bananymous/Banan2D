@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-namespace Banan {
+namespace Banan
+{
 
 	using ControllerCode = uint16_t;
 
@@ -26,4 +27,5 @@ namespace Banan {
 			Y				= 0x8000
 		};
 	}
+	
 }

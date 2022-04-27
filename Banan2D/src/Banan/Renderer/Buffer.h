@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Banan/Core/ConsoleOutput.h"
-
-#include "Banan/Core/Base.h"
+#include "../Core/ConsoleOutput.h"
+#include "../Core/Base.h"
 
 #include <string>
 #include <vector>
@@ -77,7 +76,6 @@ namespace Banan
 		uint32_t size;
 		uint32_t offset;
 		bool normalized;
-
 	};
 
 	class BufferLayout
@@ -113,7 +111,6 @@ namespace Banan
 	private:
 		std::vector<BufferElement> m_elements;
 		uint32_t m_stride;
-
 	};
 
 
@@ -132,7 +129,6 @@ namespace Banan
 
 		static Ref<VertexBuffer> Create(uint32_t size);
 		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
-
 	};
 
 	class IndexBuffer
@@ -146,7 +142,6 @@ namespace Banan
 		virtual uint32_t GetCount() const = 0;
 
 		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
-
 	};
 
 }

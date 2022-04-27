@@ -4,8 +4,8 @@ extern Banan::Application* Banan::CreateApplication();
 
 #ifdef BANAN_PLATFORM_WINDOWS
 
-#include "Banan/Core/ConsoleOutput.h"
-#include "Platform/Windows/WindowsWindow.h"
+#include "./ConsoleOutput.h"
+#include "../../Platform/Windows/WindowsWindow.h"
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
 {

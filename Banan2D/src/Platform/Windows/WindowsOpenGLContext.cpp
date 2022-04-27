@@ -1,7 +1,7 @@
 #include "bgepch.h"
 #include "WindowsOpenGLContext.h"
 
-#include "WindowsWindow.h"
+#include "./WindowsWindow.h"
 
 #include <glad/glad.h>
 #include <glad/glad_wgl.h>

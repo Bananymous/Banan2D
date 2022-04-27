@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Banan/Event/Event.h"
+#include "../Event/Event.h"
 
-#include "Banan/Core/Timestep.h"
+#include "./Timestep.h"
 
 #include <string>
 #include <vector>
@@ -29,7 +29,6 @@ namespace Banan
 
 	protected:
 		std::string m_debugName;
-
 	};
 
 
@@ -51,6 +50,5 @@ namespace Banan
 	private:
 		std::vector<Layer*> m_layers;
 		uint32_t m_lastInsertIndex = 0;
-
 	};
 }

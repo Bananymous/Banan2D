@@ -8,6 +8,7 @@
 
 namespace Banan
 {
+	
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)

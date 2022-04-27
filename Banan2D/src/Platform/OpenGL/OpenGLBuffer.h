@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Renderer/Buffer.h"
+#include "../../Banan/Renderer/Buffer.h"
 
 namespace Banan
 {
@@ -23,7 +23,6 @@ namespace Banan
 	private:
 		uint32_t m_rendererID;
 		BufferLayout m_layout;
-
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
@@ -40,7 +39,6 @@ namespace Banan
 	private:
 		uint32_t m_rendererID;
 		uint32_t m_count;
-
 	};
 
 }

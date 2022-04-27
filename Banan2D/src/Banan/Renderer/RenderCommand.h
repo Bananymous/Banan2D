@@ -1,8 +1,8 @@
 #pragma once
 
-#include "RendererAPI.h"
+#include "./RendererAPI.h"
 
-#include "Banan/Core/Base.h"
+#include "../Core/Base.h"
 
 namespace Banan
 {
@@ -26,7 +26,6 @@ namespace Banan
 
 	private:
 		static RendererAPI* s_rendererAPI;
-
 	};
 
 }

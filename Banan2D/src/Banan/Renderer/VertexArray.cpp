@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "VertexArray.h"
 
-#include "RendererAPI.h"
+#include "./RendererAPI.h"
 
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "../../Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace Banan
 {

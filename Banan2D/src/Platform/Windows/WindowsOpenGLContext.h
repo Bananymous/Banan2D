@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "../OpenGL/OpenGLContext.h"
 
 namespace Banan
 {

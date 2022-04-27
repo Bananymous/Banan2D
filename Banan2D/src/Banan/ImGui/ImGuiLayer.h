@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Banan/Core/Layer.h"
+#include "../Core/Layer.h"
 
 namespace Banan
 {

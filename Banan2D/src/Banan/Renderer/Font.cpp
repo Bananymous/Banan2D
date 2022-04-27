@@ -1,11 +1,10 @@
 #include "bgepch.h"
 #include "Font.h"
 
-#include "RendererAPI.h"
+#include "./RendererAPI.h"
 
 #include <fstream>
 #include <iomanip>
-
 #include <filesystem>
 
 #include <cstring>

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Event.h"
-#include "Banan/Core/MouseCode.h"
+#include "./Event.h"
+#include "../Core/MouseCode.h"
 
 namespace Banan
 {
+
 	class MouseMoveEvent : public Event
 	{
 	public:
@@ -21,7 +22,6 @@ namespace Banan
 
 	private:
 		int32_t m_mouseX, m_mouseY;
-
 	};
 
 	class MouseScrollEvent : public Event
@@ -39,7 +39,6 @@ namespace Banan
 
 	private:
 		int m_offset;
-
 	};
 
 	class MousePressEvent : public Event
@@ -57,7 +56,6 @@ namespace Banan
 
 	private:
 		MouseCode m_mouseButton;
-
 	};
 
 	class MouseReleaseEvent : public Event
@@ -75,6 +73,6 @@ namespace Banan
 
 	private:
 		MouseCode m_mouseButton;
-
 	};
+
 }
