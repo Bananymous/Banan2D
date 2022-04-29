@@ -61,9 +61,7 @@ project "Banan2D"
 		links
 		{
 			"Glad",
-			"imgui",
-			"opengl32.lib",
-			"Xinput.lib"
+			"imgui"
 		}
 	elseif os.host() == "linux" then
 		libdirs
@@ -72,7 +70,6 @@ project "Banan2D"
 		}
 		links
 		{
-			"X11",
 			"Glad",
 			"imgui"
 		}

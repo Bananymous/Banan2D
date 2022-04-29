@@ -20,10 +20,30 @@ project "Sandbox"
 		"%{IncludeDir.glm}"
 	}
 
-	links
-	{
-		"Banan2D"
-	}
+
+	if os.host() == "windows" then
+		links
+		{
+			"Banan2D",
+			"Glad",
+			"imgui",
+			"opengl32.lib",
+			"XInput.lib"
+		}
+	elseif os.host() == "linux" then
+		libdirs
+		{
+			os.findlib("X11")
+		}
+		links
+		{
+			"Banan2D",
+			"Glad",
+			"imgui",
+			"X11"
+		}
+	end
+
 
 	filter "system:windows"
 		systemversion "latest"
