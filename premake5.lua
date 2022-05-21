@@ -34,4 +34,3 @@ group ""
 
 include "Banan2D"
 include "Sandbox"
-include "Testing"

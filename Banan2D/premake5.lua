@@ -67,10 +67,6 @@ project "Banan2D"
 			"imgui"
 		}
 	elseif os.host() == "linux" then
-		libdirs
-		{
-			os.findlib("X11")
-		}
 		links
 		{
 			"Glad",

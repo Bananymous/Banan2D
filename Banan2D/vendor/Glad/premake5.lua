@@ -22,6 +22,7 @@ project "Glad"
             "include/glad/glad_glx.h",
             "include/KHR/khrplatform.h",
             "src/glad.c",
+            "src/glad_glx.c"
         }
     end    
 

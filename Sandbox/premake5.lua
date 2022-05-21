@@ -31,16 +31,13 @@ project "Sandbox"
 			"XInput.lib"
 		}
 	elseif os.host() == "linux" then
-		libdirs
-		{
-			os.findlib("X11")
-		}
 		links
 		{
 			"Banan2D",
 			"Glad",
 			"imgui",
-			"X11"
+			"X11",
+			"dl"
 		}
 	end
 
