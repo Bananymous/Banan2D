@@ -1,4 +1,7 @@
 #include "bgepch.h"
+
+#if !BANAN_USE_GLFW
+
 #include "WindowsWindow.h"
 
 #include "./WindowsInput.h"
@@ -13,15 +16,16 @@
 	extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 
+#include <windowsx.h>
 
 namespace Banan
 {
 	
 	HINSTANCE WindowsWindow::s_hInstance = NULL;
 
-	const wchar_t CLASS_NAME[] = L"Window class";
+	LPWSTR CLASS_NAME = L"Window class";
 
-	WindowsWindow::WindowsWindow(const std::wstring& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback)
+	WindowsWindow::WindowsWindow(const std::string& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback)
 	{
 		m_data.title = title;
 		m_data.width = width;
@@ -60,7 +64,7 @@ namespace Banan
 		m_data.hWnd = ::CreateWindowExW(
 			0,
 			wc.lpszClassName,
-			m_data.title.c_str(),
+			std::wstring(m_data.title.begin(), m_data.title.end()).c_str(),
 			WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT, CW_USEDEFAULT, m_data.width, m_data.height,
 			NULL,
@@ -97,15 +101,10 @@ namespace Banan
 		m_renderContext->SetVSync(enable);
 	}
 
-	void WindowsWindow::SetTitle(const std::wstring& title)
+	void WindowsWindow::SetTitle(const std::string& title)
 	{
 		m_data.title = title;
-		::SetWindowTextW(m_data.hWnd, title.c_str());
-	}
-
-	void* WindowsWindow::GetRenderContext()
-	{
-		return m_renderContext->GetContext();
+		::SetWindowTextW(m_data.hWnd, std::wstring(m_data.title.begin(), m_data.title.end()).c_str());
 	}
 
 	bool WindowsWindow::IsFocused() const
@@ -176,7 +175,7 @@ namespace Banan
 			case WM_MOUSEWHEEL:
 			{
 				int delta = GET_WHEEL_DELTA_WPARAM(wParam);
-				MouseScrollEvent e(delta);
+				MouseScrollEvent e((float)delta / (float)WHEEL_DELTA);
 				m_data.eventCallback(e);
 				break;
 			}
@@ -273,3 +272,5 @@ namespace Banan
 	}
 
 }
+
+#endif

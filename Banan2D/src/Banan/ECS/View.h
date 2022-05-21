@@ -55,17 +55,19 @@ namespace Banan::ECS
 			return ViewIterator<T, Ts...>(other);
 		}
 
-		decltype(auto) operator*()
+		T& operator*()
 		{
-			if constexpr (sizeof...(Ts) == 0)
-			{
-				return GetHelper<T&>(0ULL);
-			}
-			else
-			{
-				uint64_t index = 0;
-				return std::tie(GetHelper<T&>(index++), GetHelper<Ts&>(index++)...);
-			}
+			return GetHelper<T&>(0ULL);
+			//
+			//if constexpr (sizeof...(Ts) == 0)
+			//{
+			//	return GetHelper<T&>(0ULL);
+			//}
+			//else
+			//{
+			//	uint64_t index = 0;
+			//	return std::tie(GetHelper<T&>(index++), GetHelper<Ts&>(index++)...);
+			//}
 		}
 
 		ViewIterator<T, Ts...>& operator++()

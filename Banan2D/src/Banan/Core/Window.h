@@ -23,9 +23,9 @@ namespace Banan
 		virtual void SetVSync(bool enable) = 0;
 		virtual bool GetVSync() const = 0;
 
-		virtual void SetTitle(const std::wstring& title) = 0;
+		virtual void SetTitle(const std::string& title) = 0;
 
-		static Scope<Window> Create(const std::wstring& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback);
+		static Scope<Window> Create(const std::string& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback);
 	};
 
 }

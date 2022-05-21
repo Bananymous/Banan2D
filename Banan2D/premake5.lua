@@ -17,6 +17,8 @@ project "Banan2D"
 			"src/*.cpp",
 			"src/Banan/**.h",
 			"src/Banan/**.cpp",
+			"src/Platform/GLFW/**.h",
+			"src/Platform/GLFW/**.cpp",
 			"src/Platform/OpenGL/**.h",
 			"src/Platform/OpenGL/**.cpp",
 			"src/Platform/Windows/**.h",
@@ -49,6 +51,7 @@ project "Banan2D"
 		"src",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.imgui}",
+		"%{IncludeDir.glfw}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}"
 	}
@@ -74,6 +77,9 @@ project "Banan2D"
 			"imgui"
 		}
 	end
+
+	filter "options:glfw"
+		defines "BANAN_USE_GLFW"
 
 	filter "system:windows"
 		systemversion "latest"

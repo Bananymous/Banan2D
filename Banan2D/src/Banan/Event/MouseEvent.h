@@ -27,18 +27,18 @@ namespace Banan
 	class MouseScrollEvent : public Event
 	{
 	public:
-		MouseScrollEvent(int offset) :
+		MouseScrollEvent(float offset) :
 			m_offset(offset)
 		{ }
 
-		int GetOffset() const { return m_offset; }
+		float GetOffset() const { return m_offset; }
 
 		static EventType GetStaticType()			{ return EventType::MouseScrolled; }
 		virtual EventType GetType() const override	{ return GetStaticType(); }
 		virtual int GetCategory() const override	{ return EventCategory::Mouse; }
 
 	private:
-		int m_offset;
+		float m_offset;
 	};
 
 	class MousePressEvent : public Event

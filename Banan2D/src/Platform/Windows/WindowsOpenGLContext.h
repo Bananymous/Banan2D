@@ -2,6 +2,8 @@
 
 #include "../OpenGL/OpenGLContext.h"
 
+#include <Windows.h>
+
 namespace Banan
 {
 	class WindowsWindow;
@@ -14,8 +16,6 @@ namespace Banan
 
 		virtual void Init() override;
 		virtual void SwapBuffers() override;
-
-		virtual void* GetContext() override { return m_hGLRC; };
 
 		void SetVSync(bool enable);
 

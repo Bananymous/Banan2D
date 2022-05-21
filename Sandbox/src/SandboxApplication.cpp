@@ -7,7 +7,7 @@ class Sandbox : public Banan::Application
 {
 public:
 	Sandbox() :
-		Application(L"Sandbox", 1280, 720, false)
+		Application("Sandbox", 1280, 720, false)
 	{
 		PushLayer(new SandboxLayer());
 	}

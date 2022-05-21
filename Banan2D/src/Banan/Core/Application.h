@@ -23,7 +23,7 @@ namespace Banan
 	class Application
 	{
 	public:
-		Application(const std::wstring& title, uint32_t width, uint32_t height, bool vsync = true);
+		Application(const std::string& title, uint32_t width, uint32_t height, bool vsync = true);
 		virtual ~Application();
 
 		Application(const Application&) = delete;

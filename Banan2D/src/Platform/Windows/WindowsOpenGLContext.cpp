@@ -1,4 +1,7 @@
 #include "bgepch.h"
+
+#if !BANAN_USE_GLFW
+
 #include "WindowsOpenGLContext.h"
 
 #include "./WindowsWindow.h"
@@ -82,3 +85,5 @@ namespace Banan
 	}
 
 }
+
+#endif

@@ -15,7 +15,7 @@ namespace Banan
 	class WindowsWindow : public Window
 	{
 	public:
-		WindowsWindow(const std::wstring& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback);
+		WindowsWindow(const std::string& title, uint32_t width, uint32_t height, bool vsync, const EventCallbackFn& callback);
 		~WindowsWindow();
 
 		virtual void OnUpdate(bool minimized) override;
@@ -26,9 +26,7 @@ namespace Banan
 		virtual void SetVSync(bool enable) override;
 		virtual bool GetVSync() const override		{ return m_data.vsync; }
 
-		virtual void SetTitle(const std::wstring& title) override;
-
-		void* GetRenderContext();
+		virtual void SetTitle(const std::string& title) override;
 
 	public:
 		static void SetHInstance(HINSTANCE hInstance);
@@ -52,7 +50,7 @@ namespace Banan
 
 		struct WindowData
 		{
-			std::wstring title;
+			std::string title;
 			uint32_t width;
 			uint32_t height;
 			bool vsync;

@@ -2,7 +2,16 @@
 
 extern Banan::Application* Banan::CreateApplication();
 
-#ifdef BANAN_PLATFORM_WINDOWS
+#ifdef BANAN_USE_GLFW
+
+int main(int argc, char** argv)
+{
+	auto app = Banan::CreateApplication();
+	app->Run();
+	delete app;
+}
+
+#elif defined BANAN_PLATFORM_WINDOWS
 
 #include "./ConsoleOutput.h"
 #include "../../Platform/Windows/WindowsWindow.h"
@@ -60,6 +69,6 @@ int main(int argc, char** argv)
 
 #else
 
-#error Only supports windows (for now)
+#error Unsupported platform (for now)
 
 #endif

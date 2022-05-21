@@ -62,7 +62,7 @@ namespace Banan
 
 	bool OrthographicCameraController::OnMouseScroll(MouseScrollEvent& e)
 	{
-		m_zoomLevel *= (1.0f - e.GetOffset() * 0.002f);
+		m_zoomLevel *= (1.0f - e.GetOffset() * 0.25f);
 		m_zoomLevel = std::clamp(m_zoomLevel, 0.25f, 20.0f);
 		m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
 		return false;

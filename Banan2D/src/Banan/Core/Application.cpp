@@ -9,7 +9,7 @@ namespace Banan
 {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application(const std::wstring& title, uint32_t width, uint32_t height, bool vsync)
+	Application::Application(const std::string& title, uint32_t width, uint32_t height, bool vsync)
 	{
 		s_instance = this;
 

@@ -1,16 +1,5 @@
 #pragma once
 
-#include "./Banan/Core/PlatformDetection.h"
-
-#ifdef BANAN_PLATFORM_WINDOWS
-	#ifndef NOMINMAX
-		#define NOMINMAX
-	#endif
-
-	#include <Windows.h>
-	#include <Windowsx.h>
-#endif
-
 #include <iostream>
 #include <memory>
 #include <algorithm>

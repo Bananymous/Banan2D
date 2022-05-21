@@ -14,8 +14,6 @@ namespace Banan
 
 		virtual void SetVSync(bool enable) = 0;
 
-		virtual void* GetContext() = 0;
-
 		static Scope<RenderContext> Create(Window* window);
 	};
 

@@ -1,5 +1,4 @@
 project "Sandbox"
-	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -25,6 +24,7 @@ project "Sandbox"
 		links
 		{
 			"Banan2D",
+			"GLFW",
 			"Glad",
 			"imgui",
 			"opengl32.lib",
@@ -44,8 +44,15 @@ project "Sandbox"
 		}
 	end
 
+	filter "options:glfw"
+		defines "BANAN_USE_GLFW"
 
-	filter "system:windows"
+	filter { "system:windows", "options:glfw" }
+		kind "ConsoleApp"
+		systemversion "latest"
+
+	filter { "system:windows", "not options:glfw" }
+		kind "WindowedApp"
 		systemversion "latest"
 
 	filter "configurations:Debug"

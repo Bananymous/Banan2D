@@ -161,11 +161,11 @@ int main(int argc, char** argv)
 
 		std::cout << std::endl;
 
-		for (auto [pos, vel] : registry.View<position, velocity>())
-		{
-			std::cout << pos.x << ", " << pos.y << std::endl;
-			std::cout << vel.x << ", " << vel.y << std::endl;
-		}
+		//for (auto [pos, vel] : registry.View<position, velocity>())
+		//{
+		//	std::cout << pos.x << ", " << pos.y << std::endl;
+		//	std::cout << vel.x << ", " << vel.y << std::endl;
+		//}
 	}
 
 	std::cin.get();
