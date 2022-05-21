@@ -1,5 +1,0 @@
-﻿  main.cpp
-C:\Dev\VisualStudio\C++\Banan2D\Banan2D\src\Banan\ECS\Component.h(32,22): error C2187: syntax error: '<' was unexpected here
-C:\Dev\VisualStudio\C++\Banan2D\Banan2D\src\Banan\ECS\Component.h(31,4): message : This diagnostic occurred in the compiler generated function 'Banan::ECS::internal::Component<T>::Component(Args &&...)'
-C:\Dev\VisualStudio\C++\Banan2D\Banan2D\src\Banan\ECS\Component.h(41): message : see reference to class template instantiation 'Banan::ECS::internal::Component<T>' being compiled
-C:\Dev\VisualStudio\C++\Banan2D\Banan2D\src\Banan\ECS\Archetype.h(215): fatal error C1075: '{': no matching token found
