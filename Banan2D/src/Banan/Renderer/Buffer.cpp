@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "Buffer.h"
 
-#include "./RendererAPI.h"
+#include "Banan/Renderer/RendererAPI.h"
 
-#include "../../Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Banan
 {
@@ -12,8 +12,8 @@ namespace Banan
 	{
 		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None:		BANAN_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:		return CreateRef<OpenGLVertexBuffer>(size);
+			case RendererAPI::API::None:		BANAN_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL:		return CreateRef<OpenGLVertexBuffer>(size);
 		}
 
 		BANAN_ASSERT(false, "Unknown RendererAPI!");

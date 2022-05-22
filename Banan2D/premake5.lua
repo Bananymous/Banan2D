@@ -10,46 +10,27 @@ project "Banan2D"
 	pchheader "bgepch.h"
 	pchsource "src/bgepch.cpp"
 
-	if os.host() == "windows" then
-		files
-		{
-			"src/*.h",
-			"src/*.cpp",
-			"src/Banan/**.h",
-			"src/Banan/**.cpp",
-			"src/Platform/GLFW/**.h",
-			"src/Platform/GLFW/**.cpp",
-			"src/Platform/OpenGL/**.h",
-			"src/Platform/OpenGL/**.cpp",
-			"src/Platform/Windows/**.h",
-			"src/Platform/Windows/**.cpp",
-			"vendor/stb_image/**.h",
-			"vendor/stb_image/**.cpp",
-			"vendor/glm/glm/**.hpp",
-			"vendor/glm/glm/**.inl"
-		}
-	elseif os.host() == "linux" then
-		files
-		{
-			"src/*.h",
-			"src/*.cpp",
-			"src/Banan/**.h",
-			"src/Banan/**.cpp",
-			"src/Platform/GLFW/**.h",
-			"src/Platform/GLFW/**.cpp",
-			"src/Platform/OpenGL/**.h",
-			"src/Platform/OpenGL/**.cpp",
-			"src/Platform/Linux/**.h",
-			"src/Platform/Linux/**.cpp",
-			"vendor/stb_image/**.h",
-			"vendor/stb_image/**.cpp",
-			"vendor/glm/glm/**.hpp",
-			"vendor/glm/glm/**.inl"
-		}
-	end
 
-	includedirs
-	{
+	-- PROJECT FILES
+
+	files {
+		"src/*.h",
+		"src/*.cpp",
+		"src/Banan/**.h",
+		"src/Banan/**.cpp",
+		"src/Platform/OpenGL/**.h",
+		"src/Platform/OpenGL/**.cpp",
+		"vendor/stb_image/**.h",
+		"vendor/stb_image/**.cpp",
+		"vendor/glm/glm/**.hpp",
+		"vendor/glm/glm/**.inl"
+	}
+
+
+
+	-- INCLUDE DIRECTORIES
+
+	includedirs {
 		"src",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.imgui}",
@@ -57,19 +38,43 @@ project "Banan2D"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}"
 	}
+	
 
-	if os.host() == "windows" then
-		defines
-		{
-			"_CRT_SECURE_NO_WARNINGS"
+
+	-- PROJECT FILES
+
+	filter { "options:glfw" }
+		files {
+			"src/Platform/GLFW/**.h",
+			"src/Platform/GLFW/**.cpp"
 		}
-	end
+
+	filter { "system:windows", "not options:glfw" }
+		files {
+			"src/Platform/Windows/**.h",
+			"src/Platform/Windows/**.cpp"
+		}
+
+	filter { "system:linux", "not options:glfw" }
+		files {
+			"src/Platform/Linux/**.h",
+			"src/Platform/Linux/**.cpp"
+		}
+
+
+
+	-- PLATFORM SPECIFIC
 
 	filter "options:glfw"
 		defines "BANAN_USE_GLFW"
 
 	filter "system:windows"
+		defines "_CRT_SECURE_NO_WARNINGS"
 		systemversion "latest"
+
+
+
+	-- CONFIGURATIONS
 
 	filter "configurations:Debug"
 		defines "BANAN_DEBUG"

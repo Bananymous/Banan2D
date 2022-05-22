@@ -1,11 +1,8 @@
 #include "bgepch.h"
-
-#if BANAN_USE_GLFW
-
 #include "GLFWInput.h"
 
-#include "../../Banan/Core/Input.h"
-#include "../../Banan/Core/Application.h"
+#include "Banan/Core/Input.h"
+#include "Banan/Core/Application.h"
 
 #include <GLFW/glfw3.h>
 
@@ -79,5 +76,3 @@ namespace Banan
 	}
 
 }
-
-#endif

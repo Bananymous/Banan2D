@@ -1,13 +1,7 @@
 #include "bgepch.h"
 #include "Font.h"
 
-#include "./RendererAPI.h"
-
-#include <fstream>
-#include <iomanip>
-#include <filesystem>
-
-#include <cstring>
+#include "Banan/Renderer/RendererAPI.h"
 
 namespace Banan
 {

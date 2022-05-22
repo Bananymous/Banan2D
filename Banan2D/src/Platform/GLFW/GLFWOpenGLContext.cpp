@@ -1,10 +1,7 @@
 #include "bgepch.h"
-
-#ifdef BANAN_USE_GLFW
-
 #include "GLFWOpenGLContext.h"
 
-#include "./GLFWWindow.h"
+#include "Platform/GLFW/GLFWWindow.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -42,5 +39,3 @@ namespace Banan
 	}
 
 }
-
-#endif

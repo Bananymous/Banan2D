@@ -1,11 +1,8 @@
 #include "bgepch.h"
-
-#ifndef BANAN_USE_GLFW
-
 #include "LinuxWindow.h"
 
-#include "../../Banan/Core/ConsoleOutput.h"
-#include "../../Banan/Renderer/RenderContext.h"
+#include "Banan/Core/ConsoleOutput.h"
+#include "Banan/Renderer/RenderContext.h"
 
 namespace Banan
 {
@@ -79,5 +76,3 @@ namespace Banan
     }
 
 }
-
-#endif

@@ -13,8 +13,8 @@ int main(int argc, char** argv)
 
 #elif defined BANAN_PLATFORM_WINDOWS
 
-#include "./ConsoleOutput.h"
-#include "../../Platform/Windows/WindowsWindow.h"
+#include "Banan/Core/ConsoleOutput.h"
+#include "Platform/Windows/WindowsWindow.h"
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
 {

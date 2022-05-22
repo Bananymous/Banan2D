@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Archetype.h"
+#include "Banan/ECS/Archetype.h"
 
 namespace Banan::ECS
 {

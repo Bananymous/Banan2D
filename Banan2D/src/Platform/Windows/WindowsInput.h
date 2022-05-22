@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Banan/Core/Input.h"
-#include "../../Banan/Core/Application.h"
+#include "Banan/Core/Input.h"
+#include "Banan/Core/Application.h"
 
-#include "./WindowsWindow.h"
+#include "Platform/Windows/WindowsWindow.h"
 
 namespace Banan
 {

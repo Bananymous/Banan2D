@@ -1,11 +1,11 @@
 #pragma once
 
-#include "./Camera.h"
+#include "Banan/Core/Timestep.h"
 
-#include "../Core/Timestep.h"
+#include "Banan/Event/WindowEvent.h"
+#include "Banan/Event/MouseEvent.h"
 
-#include "../Event/WindowEvent.h"
-#include "../Event/MouseEvent.h"
+#include "Banan/Renderer/Camera.h"
 
 namespace Banan
 {

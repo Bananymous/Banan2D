@@ -1,7 +1,7 @@
 #include "bgepch.h"
 #include "CameraController.h"
 
-#include "../Core/Input.h"
+#include "Banan/Core/Input.h"
 
 namespace Banan
 {

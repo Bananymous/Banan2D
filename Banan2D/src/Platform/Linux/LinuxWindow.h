@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Banan/Core/Window.h"
+#include "Banan/Core/Window.h"
 
 #include <glad/glad_glx.h>
 

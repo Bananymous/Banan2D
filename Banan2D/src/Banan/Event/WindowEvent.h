@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./Event.h"
+#include "Banan/Event/Event.h"
 
 namespace Banan
 {

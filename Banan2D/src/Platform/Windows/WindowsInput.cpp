@@ -1,12 +1,9 @@
 #include "bgepch.h"
-
-#if !BANAN_USE_GLFW
-
 #include "WindowsInput.h"
 
-#include <chrono>
-
 #include <Xinput.h>
+
+#include <chrono>
 
 namespace Banan
 {
@@ -114,5 +111,3 @@ namespace Banan
 	}
 
 }
-
-#endif

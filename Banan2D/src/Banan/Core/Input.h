@@ -1,8 +1,8 @@
 #pragma once
 
-#include "./KeyCode.h"
-#include "./MouseCode.h"
-#include "./ControllerCode.h"
+#include "Banan/Core/KeyCode.h"
+#include "Banan/Core/MouseCode.h"
+#include "Banan/Core/ControllerCode.h"
 
 #include <utility>
 

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../Banan/Renderer/VertexArray.h"
-#include "../../Banan/Core/Base.h"
+#include "Banan/Core/Base.h"
+
+#include "Banan/Renderer/VertexArray.h"
 
 namespace Banan
 {

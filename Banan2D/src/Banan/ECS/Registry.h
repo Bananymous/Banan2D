@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Archetype.h"
-#include "View.h"
+#include "Banan/ECS/Archetype.h"
+#include "Banan/ECS/View.h"
 
 #include <unordered_set>
 

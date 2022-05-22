@@ -1,8 +1,8 @@
 #pragma once
 
-#include "./Camera.h"
-#include "./Texture2D.h"
-#include "./Font.h"
+#include "Banan/Renderer/Camera.h"
+#include "Banan/Renderer/Texture2D.h"
+#include "Banan/Renderer/Font.h"
 
 namespace Banan
 {

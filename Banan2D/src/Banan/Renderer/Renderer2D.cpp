@@ -1,9 +1,9 @@
 #include "bgepch.h"
 #include "Renderer2D.h"
 
-#include "./VertexArray.h"
-#include "./Shader.h"
-#include "./RenderCommand.h"
+#include "Banan/Renderer/VertexArray.h"
+#include "Banan/Renderer/Shader.h"
+#include "Banan/Renderer/RenderCommand.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 

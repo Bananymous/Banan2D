@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../OpenGL/OpenGLContext.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 #include <glad/glad_glx.h>
 
@@ -17,9 +17,7 @@ namespace Banan
 		virtual void Init() override;
 		virtual void SwapBuffers() override;
 
-		virtual void* GetContext() override { return m_glc; };
-
-		void SetVSync(bool enable);
+		virtual void SetVSync(bool enable) override;
 
 	private:
         GLXContext m_glc;

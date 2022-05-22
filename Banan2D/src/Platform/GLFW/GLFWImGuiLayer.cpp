@@ -1,11 +1,9 @@
 #include "bgepch.h"
-
-#ifdef BANAN_USE_GLFW
-
 #include "GLFWImGuiLayer.h"
 
-#include "../../Banan/Core/Application.h"
-#include "./GLFWWindow.h"
+#include "Banan/Core/Application.h"
+
+#include "Platform/GLFW/GLFWWindow.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
@@ -88,5 +86,3 @@ namespace Banan
 	}
 
 }
-
-#endif

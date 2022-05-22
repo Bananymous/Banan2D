@@ -1,11 +1,9 @@
 #include "bgepch.h"
-
-#ifndef BANAN_USE_GLFW
-
 #include "WindowsImGuiLayer.h"
 
-#include "../../Banan/Core/Application.h"
-#include "./WindowsWindow.h"
+#include "Banan/Core/Application.h"
+
+#include "Platform/Windows/WindowsWindow.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_win32.h>
@@ -87,5 +85,3 @@ namespace Banan
 	}
 
 }
-
-#endif

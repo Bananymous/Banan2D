@@ -10,7 +10,7 @@
 #elif defined BANAN_PLATFORM_WINDOWS
 	#include <backends/imgui_impl_win32.cpp>
 #elif defined BANAN_PLATFORM_LINUX
-	//#include <backends/imgui_impl_glfw.cpp>
+	// TODO
 #endif
 
 #endif

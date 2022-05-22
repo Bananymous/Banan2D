@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Base.h"
+#include "Banan/Core/Base.h"
 
 #include <glm/glm.hpp>
 

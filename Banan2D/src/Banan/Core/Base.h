@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "./PlatformDetection.h"
+#include "Banan/Core/PlatformDetection.h"
 
 // MACROS
 #define BIT(x) (1 << x)
@@ -11,7 +11,11 @@
 #if defined BANAN_PLATFORM_WINDOWS
 	#include <Windows.h>
 	#define BANAN_DEBUG_BREAK() __debugbreak()
-	#define BANAN_MAIN int WINAPI ::wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
+	#ifdef BANAN_USE_GLFW
+		#define BANAN_MAIN int main(int argc, char** argv)
+	#else
+		#define BANAN_MAIN int WINAPI ::wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
+	#endif
 	#define BANAN_FUNCTION_NAME __FUNCTION__
 #elif defined BANAN_PLATFORM_LINUX
 	#include <signal.h>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Core/ConsoleOutput.h"
-#include "../Core/Base.h"
+#include "Banan/Core/ConsoleOutput.h"
+#include "Banan/Core/Base.h"
 
 #include <string>
 #include <vector>

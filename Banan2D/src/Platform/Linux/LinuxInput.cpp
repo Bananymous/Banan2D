@@ -1,7 +1,4 @@
 #include "bgepch.h"
-
-#ifndef BANAN_USE_GLFW
-
 #include "LinuxInput.h"
 
 namespace Banan
@@ -65,5 +62,3 @@ namespace Banan
     }
 	
 }
-
-#endif

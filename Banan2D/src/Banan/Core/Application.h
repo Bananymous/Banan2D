@@ -1,9 +1,9 @@
 #pragma once
 
-#include "./Window.h"
-#include "./Layer.h"
+#include "Banan/Core/Window.h"
+#include "Banan/Core/Layer.h"
 
-#include "../Event/WindowEvent.h"
+#include "Banan/Event/WindowEvent.h"
 
 #ifdef BANAN_DISTRIBUTION
 	#ifndef BANAN_DISABLE_IMGUI
@@ -11,10 +11,8 @@
 	#endif
 #endif
 
-#define BANAN_DISABLE_IMGUI
-
 #ifndef BANAN_DISABLE_IMGUI 
-#include "../ImGui/ImGuiLayer.h"
+	#include "Banan/ImGui/ImGuiLayer.h"
 #endif
 
 namespace Banan

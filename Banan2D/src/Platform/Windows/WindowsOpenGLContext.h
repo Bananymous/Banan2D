@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../OpenGL/OpenGLContext.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 #include <Windows.h>
 

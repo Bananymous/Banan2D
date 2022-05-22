@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Event/Event.h"
+#include "Banan/Event/Event.h"
 
-#include "./Timestep.h"
+#include "Banan/Core/Timestep.h"
 
 #include <string>
 #include <vector>

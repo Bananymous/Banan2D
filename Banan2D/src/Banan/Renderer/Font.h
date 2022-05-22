@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../Core/Base.h"
-#include "./Texture2D.h"
+#include "Banan/Core/Base.h"
+
+#include "Banan/Renderer/Texture2D.h"
 
 #include <glm/glm.hpp>
 

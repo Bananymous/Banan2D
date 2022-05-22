@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Banan/Renderer/RenderContext.h"
+#include "Banan/Renderer/RenderContext.h"
 
 namespace Banan
 {

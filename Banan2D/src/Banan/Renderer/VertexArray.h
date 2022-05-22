@@ -1,7 +1,8 @@
 #pragma once
 
-#include "./Buffer.h"
-#include "../Core/Base.h"
+#include "Banan/Core/Base.h"
+
+#include "Banan/Renderer/Buffer.h"
 
 namespace Banan
 {

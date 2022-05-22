@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Event/Event.h"
+#include "Banan/Event/Event.h"
 
 #include <string>
 #include <functional>

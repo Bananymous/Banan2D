@@ -1,15 +1,12 @@
 #include "bgepch.h"
-
-#ifdef BANAN_USE_GLFW
-
 #include "GLFWWindow.h"
 
-#include "../../Banan/Renderer/RendererAPI.h"
-#include "../../Banan/Renderer/RenderContext.h"
+#include "Banan/Renderer/RendererAPI.h"
+#include "Banan/Renderer/RenderContext.h"
 
-#include "../../Banan/Event/WindowEvent.h"
-#include "../../Banan/Event/KeyEvent.h"
-#include "../../Banan/Event/MouseEvent.h"
+#include "Banan/Event/WindowEvent.h"
+#include "Banan/Event/KeyEvent.h"
+#include "Banan/Event/MouseEvent.h"
 
 #include <GLFW/glfw3.h>
 
@@ -162,7 +159,4 @@ namespace Banan
 			});
 	}
 
-
 }
-
-#endif

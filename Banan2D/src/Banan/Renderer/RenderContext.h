@@ -1,9 +1,11 @@
 #pragma once
 
-#include "../Core/Window.h"
+#include "Banan/Core/Base.h"
 
 namespace Banan
 {
+	class Window;
+
 	class RenderContext
 	{
 	public:

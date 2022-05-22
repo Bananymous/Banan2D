@@ -1,8 +1,8 @@
 #pragma once
 
-#include "./RendererAPI.h"
+#include "Banan/Core/Base.h"
 
-#include "../Core/Base.h"
+#include "Banan/Renderer/RendererAPI.h"
 
 namespace Banan
 {

@@ -6,45 +6,37 @@ project "Sandbox"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files
-	{
+	files {
 		"src/**.h",
 		"src/**.cpp"
 	}
 
-	includedirs
-	{
+	includedirs {
 		"%{wks.location}/Banan2D/src",
 		"%{wks.location}/Banan2D/vendor",
 		"%{IncludeDir.glm}"
 	}
 
 
-	if os.host() == "windows" then
-		links
-		{
-			"Banan2D",
-			"GLFW",
-			"Glad",
-			"imgui",
-			"opengl32.lib",
-			"XInput.lib"
-		}
-	elseif os.host() == "linux" then
-		links
-		{
-			"Banan2D",
-			"GLFW",
-			"Glad",
-			"imgui",
-			"pthread",
-			"X11",
-			"dl"
-		}
-	end
+	-- LINKS
+
+	links { "Banan2D", "Glad", "imgui" }
 
 	filter "options:glfw"
-		defines "BANAN_USE_GLFW"
+		links { "GLFW" }
+
+	filter { "system:windows", "not options:glfw" }
+		links { "opengl32.lib", "XInput.lib" }
+
+	filter { "system:linux" }
+		links { "pthread", "X11", "dl" }
+
+
+
+	-- PLATFORM SPECIFIC
+
+	filter { "action:vs*" }
+		flags "NoImplicitLink"
 
 	filter { "system:windows", "options:glfw" }
 		kind "ConsoleApp"
@@ -56,6 +48,12 @@ project "Sandbox"
 
 	filter "not system:windows"
 		kind "ConsoleApp"
+
+	filter "options:glfw"
+		defines "BANAN_USE_GLFW"
+
+
+	-- CONFIGURATIONS
 
 	filter "configurations:Debug"
 		defines "BANAN_DEBUG"

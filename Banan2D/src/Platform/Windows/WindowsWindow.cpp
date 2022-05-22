@@ -1,15 +1,13 @@
 #include "bgepch.h"
-
-#if !BANAN_USE_GLFW
-
 #include "WindowsWindow.h"
 
-#include "./WindowsInput.h"
+#include "Banan/Event/WindowEvent.h"
+#include "Banan/Event/MouseEvent.h"
+#include "Banan/Event/KeyEvent.h"
 
-#include "../../Banan/Event/WindowEvent.h"
-#include "../../Banan/Event/MouseEvent.h"
-#include "../../Banan/Event/KeyEvent.h"
-#include "../../Banan/Renderer/RenderContext.h"
+#include "Banan/Renderer/RenderContext.h"
+
+#include "Platform/Windows/WindowsInput.h"
 
 #ifndef BANAN_DISTRIBUTION
 	#include <backends/imgui_impl_win32.h>
@@ -272,5 +270,3 @@ namespace Banan
 	}
 
 }
-
-#endif

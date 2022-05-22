@@ -4,11 +4,11 @@
 // TODO
 
 #ifdef BANAN_USE_GLFW
-	#include "../../Platform/GLFW/GLFWWindow.h"
+	#include "Platform/GLFW/GLFWWindow.h"
 #elif defined BANAN_PLATFORM_WINDOWS
-	#include "../../Platform/Windows/WindowsWindow.h"
+	#include "Platform/Windows/WindowsWindow.h"
 #elif defined BANAN_PLATFORM_LINUX
-	#include "../../Platform/Linux/LinuxWindow.h"
+	#include "Platform/Linux/LinuxWindow.h"
 #endif
 
 namespace Banan
@@ -22,10 +22,7 @@ namespace Banan
 		return CreateScope<WindowsWindow>(title, width, height, vsync, callback);
 #elif defined BANAN_PLATFORM_LINUX
 		return CreateScope<LinuxWindow>(title, width, height, vsync, callback);
-#else
-	#error UNSUPPORTED PLATFORM
 #endif
-
 		return nullptr;
 	}
 

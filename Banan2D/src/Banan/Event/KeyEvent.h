@@ -1,7 +1,8 @@
 #pragma once
 
-#include "./Event.h"
-#include "../Core/KeyCode.h"
+#include "Banan/Core/KeyCode.h"
+
+#include "Banan/Event/Event.h"
 
 namespace Banan
 {

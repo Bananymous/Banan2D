@@ -1,12 +1,9 @@
 #include "bgepch.h"
-
-#ifndef BANAN_USE_GLFW
-
 #include "LinuxOpenGLContext.h"
 
-#include "../../Banan/Core/ConsoleOutput.h"
+#include "Banan/Core/ConsoleOutput.h"
 
-#include "./LinuxWindow.h"
+#include "Platform/Linux/LinuxWindow.h"
 
 #include <glad/glad.h>
 
@@ -49,5 +46,3 @@ namespace Banan
 	}
 
 }
-
-#endif

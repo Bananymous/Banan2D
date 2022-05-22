@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./Base.h"
+#include "Banan/Core/Base.h"
 
 #ifndef BANAN_DISABLE_CONSOLE
 	#define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
