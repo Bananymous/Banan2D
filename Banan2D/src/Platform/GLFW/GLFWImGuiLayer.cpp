@@ -1,6 +1,6 @@
 #include "bgepch.h"
 
-#if BANAN_USE_GLFW
+#ifdef BANAN_USE_GLFW
 
 #include "GLFWImGuiLayer.h"
 

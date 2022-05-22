@@ -19,7 +19,7 @@ namespace Banan
 
 	Scope<RenderContext> OpenGLContext::Create(Window* window)
 	{
-#if BANAN_USE_GLFW
+#ifdef BANAN_USE_GLFW
 		return CreateScope<GLFWOpenGLContext>(dynamic_cast<GLFWWindow*>(window));
 #elif defined BANAN_PLATFORM_WINDOWS
 		return CreateScope<WindowsOpenGLContext>(dynamic_cast<WindowsWindow*>(window));

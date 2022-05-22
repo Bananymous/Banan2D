@@ -35,6 +35,8 @@ project "Banan2D"
 			"src/*.cpp",
 			"src/Banan/**.h",
 			"src/Banan/**.cpp",
+			"src/Platform/GLFW/**.h",
+			"src/Platform/GLFW/**.cpp",
 			"src/Platform/OpenGL/**.h",
 			"src/Platform/OpenGL/**.cpp",
 			"src/Platform/Linux/**.h",
@@ -60,17 +62,6 @@ project "Banan2D"
 		defines
 		{
 			"_CRT_SECURE_NO_WARNINGS"
-		}
-		links
-		{
-			"Glad",
-			"imgui"
-		}
-	elseif os.host() == "linux" then
-		links
-		{
-			"Glad",
-			"imgui"
 		}
 	end
 

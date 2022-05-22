@@ -34,8 +34,10 @@ project "Sandbox"
 		links
 		{
 			"Banan2D",
+			"GLFW",
 			"Glad",
 			"imgui",
+			"pthread",
 			"X11",
 			"dl"
 		}
@@ -51,6 +53,9 @@ project "Sandbox"
 	filter { "system:windows", "not options:glfw" }
 		kind "WindowedApp"
 		systemversion "latest"
+
+	filter "not system:windows"
+		kind "ConsoleApp"
 
 	filter "configurations:Debug"
 		defines "BANAN_DEBUG"

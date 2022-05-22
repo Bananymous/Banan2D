@@ -1,14 +1,13 @@
 #include "bgepch.h"
 
-#if BANAN_USE_GLFW
+#ifdef BANAN_USE_GLFW
 
 #include "GLFWOpenGLContext.h"
 
 #include "./GLFWWindow.h"
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace Banan
 {
@@ -28,6 +27,8 @@ namespace Banan
 		BANAN_PRINT("  Renderer:     %s\n", glGetString(GL_RENDERER));
 		BANAN_PRINT("  Version:      %s\n", glGetString(GL_VERSION));
 		BANAN_PRINT("  GLSL Version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+		BANAN_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Banan2D requires at least OpenGL version 4.5!\n");
 	}
 
 	void GLFWOpenGLContext::SwapBuffers()
