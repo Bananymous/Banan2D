@@ -27,6 +27,8 @@ namespace Banan::ECS
 			registry.m_emptyArchetype.Clear();
 			registry.m_archetypes.clear();
 			registry.m_entities.clear();
+
+			return *this;
 		}
 		Registry(Registry&& registry) noexcept :
 			m_archetypes(std::move(registry.m_archetypes)),
@@ -111,7 +113,7 @@ namespace Banan::ECS
 		void EmplaceOrReplace(Entity entity, Args... args)
 		{
 			internal::Archetype* pAt = GetArchetype(entity);
-			if (pAt->HasAllOf(internal::GetComponentMask<T>()))
+			if (pAt->HasAllOf(internal::ComponentMask::GetComponentMask<T>()))
 				pAt->Replace<T>(entity, std::forward<Args>(args)...);
 			else
 				Emplace<T>(entity, std::forward<Args>(args)...);
@@ -175,7 +177,7 @@ namespace Banan::ECS
 		template<typename T, typename... Ts>
 		bool HasAllOf(Entity entity) const
 		{
-			return GetArchetype(entity)->HasAllOf(internal::GetComponentMask<T, Ts...>());
+			return GetArchetype(entity)->HasAllOf(internal::ComponentMask::GetComponentMask<T, Ts...>());
 		}
 
 		template<typename T, typename... Ts>

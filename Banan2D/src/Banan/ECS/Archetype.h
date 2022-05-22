@@ -108,7 +108,7 @@ namespace Banan::ECS
 				for (auto& comp : comps)
 					if (comp->type() == typeid(T))
 						return std::any_cast<T&>(*comp.get());
-				throw std::out_of_range("Component not found\n" BANAN_FUNCTION_NAME);
+				throw std::out_of_range("Component not found\n%s\n", BANAN_FUNCTION_NAME);
 			}
 
 			template<typename T>
@@ -117,7 +117,7 @@ namespace Banan::ECS
 				for (auto& comp : comps)
 					if (comp->type() == typeid(T))
 						return std::any_cast<T&>(*comp.get());
-				throw std::out_of_range("Component not found\n" BANAN_FUNCTION_NAME);
+				throw std::out_of_range("Component not found\n%s\n", BANAN_FUNCTION_NAME);
 			}
 
 			template<typename T>
@@ -127,7 +127,7 @@ namespace Banan::ECS
 				for (auto& comp : comps)
 					if (comp->type() == typeid(T))
 						return comp;
-				throw std::out_of_range("Component not found\n" BANAN_FUNCTION_NAME);
+				throw std::out_of_range("Component not found\n%s\n", BANAN_FUNCTION_NAME);
 			}
 
 		private:

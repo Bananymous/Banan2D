@@ -159,7 +159,7 @@ namespace Banan::ECS
 
 	private:
 		View(std::unordered_map<internal::ComponentMask, internal::Archetype>& archetypes) :
-			m_componentMask(internal::GetComponentMask<T>()),
+			m_componentMask(internal::ComponentMask::GetComponentMask<T>()),
 			m_archetypes(archetypes),
 			m_begin(&m_archetypes, m_componentMask, m_archetypes.begin()),
 			m_end  (&m_archetypes, m_componentMask, m_archetypes.end())

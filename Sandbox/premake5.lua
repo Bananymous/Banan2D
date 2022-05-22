@@ -28,7 +28,7 @@ project "Sandbox"
 	filter { "system:windows", "not options:glfw" }
 		links { "opengl32.lib", "XInput.lib" }
 
-	filter { "system:linux" }
+	filter { "system:linux", "options:glfw" }
 		links { "pthread", "X11", "dl" }
 
 
@@ -46,8 +46,9 @@ project "Sandbox"
 		kind "WindowedApp"
 		systemversion "latest"
 
-	filter "not system:windows"
-		kind "ConsoleApp"
+	filter { "system:linux", "options:glfw" }
+		kind "WindowedApp"
+		systemversion "latest"
 
 	filter "options:glfw"
 		defines "BANAN_USE_GLFW"

@@ -7,8 +7,6 @@ namespace Banan::ECS
 {
 	namespace internal
 	{
-		struct ComponentMask;
-
 		uint64_t										g_componentCount = 0;
 		std::unordered_map<std::type_index, uint64_t>	g_componentIDs;
 
@@ -23,13 +21,6 @@ namespace Banan::ECS
 				return ID;
 			}
 			return it->second;
-		}
-		template<typename... Comps>
-		ComponentMask GetComponentMask()
-		{
-			ComponentMask mask;
-			((mask.set(GetComponentID<Comps>())), ...);
-			return mask;
 		}
 
 		struct ComponentMask
@@ -101,6 +92,14 @@ namespace Banan::ECS
 			}
 
 			uint64_t size() const { return m_bits.size(); }
+
+			template<typename... Comps>
+			static ComponentMask GetComponentMask()
+			{
+				ComponentMask mask;
+				((mask.set(GetComponentID<Comps>())), ...);
+				return mask;
+			}
 
 		private:
 			mutable std::vector<bool> m_bits;
