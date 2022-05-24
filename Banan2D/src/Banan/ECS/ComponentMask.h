@@ -26,8 +26,7 @@ namespace Banan::ECS
 		struct ComponentMask
 		{
 			ComponentMask() :
-				m_count(0),
-				m_bits(g_componentCount, false)
+				m_count(0)
 			{ }
 
 			ComponentMask(const ComponentMask& other) :
@@ -37,17 +36,34 @@ namespace Banan::ECS
 
 			void set(uint64_t bit, bool state = true)
 			{
-				if (bit >= m_bits.size())
-					m_bits.resize(bit + 1);
-				if (state)	m_count += !test(bit);
-				else		m_count -= test(bit);
-				m_bits[bit] = state;
+				if (state)
+				{
+					if (bit >= m_bits.size())
+					{
+						m_bits.resize(bit + 1);
+						m_bits[bit] = true;
+						m_count++;
+					}
+					else if (!m_bits[bit])
+					{
+						m_bits[bit] = true;
+						m_count++;
+					}
+				}
+				else
+				{
+					if (bit < m_bits.size() && m_bits[bit])
+					{
+						m_bits[bit] = false;
+						m_count--;
+					}
+				}
 			}
 
 			bool test(uint64_t bit) const
 			{
 				if (bit >= m_bits.size())
-					m_bits.resize(bit + 1);
+					return false;
 				return m_bits[bit];
 			}
 
@@ -56,39 +72,45 @@ namespace Banan::ECS
 			// counts set bits in range [from, to[
 			uint64_t count(uint64_t from, uint64_t to) const
 			{
-				if (m_bits.size() < to)
-					m_bits.resize(to);
-
-				auto begin = m_bits.begin() + from;
-				auto end = m_bits.begin() + to;
+				if (to > m_bits.size())
+					to = m_bits.size();
 
 				uint64_t result = 0;
-				for (; begin != end; begin++)
-					result += *begin;
+				for (uint64_t i = from; i < to; i++)
+					result += m_bits[i];
 
 				return result;
 			}
 			
 			bool has_all(const ComponentMask& other) const
 			{
-				if (m_bits.size() < other.m_bits.size())
-					m_bits.resize(other.m_bits.size());
-				for (uint64_t i = 0; i < other.m_bits.size(); i++)
-					if (other.test(i) && !test(i))
+				for (uint64_t i = this->size(); i < other.size(); i++)
+					if (other.m_bits[i])
 						return false;
+
+				uint64_t min_size = this->size() < other.size() ? this->size() : other.size();
+
+				for (uint64_t i = 0; i < min_size; i++)
+					if (other.m_bits[i] && !m_bits[i])
+						return false;
+
 				return true;
 			}
 
 			bool operator==(const ComponentMask& other) const
 			{
-				if (m_bits.size() != other.m_bits.size())
-				{
-					uint64_t size = m_bits.size() > other.m_bits.size() ? m_bits.size() : other.m_bits.size();
-					m_bits.resize(size);
-					other.m_bits.resize(size);
-				}
+				const ComponentMask& s = this->size() < other.size() ? *this : other;
+				const ComponentMask& b = this->size() > other.size() ? *this : other;
 
-				return m_bits == other.m_bits;
+				for (uint64_t i = 0; i < s.size(); i++)
+					if (s.m_bits[i] != b.m_bits[i])
+						return false;
+
+				for (uint64_t i = s.size(); i < b.size(); i++)
+					if (b.m_bits[i])
+						return false;
+
+				return true;
 			}
 
 			uint64_t size() const { return m_bits.size(); }
@@ -102,7 +124,7 @@ namespace Banan::ECS
 			}
 
 		private:
-			mutable std::vector<bool> m_bits;
+			std::vector<bool> m_bits;
 			uint64_t m_count;
 
 			friend struct std::hash<ComponentMask>;

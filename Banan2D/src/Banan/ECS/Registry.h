@@ -200,6 +200,18 @@ namespace Banan::ECS
 				func(e);
 		}
 
+
+
+		void Clean()
+		{
+			for (auto it = m_archetypes.begin(); it != m_archetypes.end();)
+			{
+				if (it->second.GetEntities().empty())
+					it = m_archetypes.erase(it);
+				else it++;
+			}
+		}
+
 	private:
 		template<typename T>
 		Ref<std::any>* EmplaceBase(Entity entity)
