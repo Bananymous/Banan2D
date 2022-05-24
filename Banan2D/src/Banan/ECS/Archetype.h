@@ -91,7 +91,7 @@ namespace Banan::ECS
 					ComponentMask& GetComponentMask()		{ return m_componentMask; }
 			const	ComponentMask& GetComponentMask() const	{ return m_componentMask; }
 
-			std::unordered_map<Entity, std::vector<Ref<std::any>>>& GetComponents()
+			std::unordered_map<Entity, std::vector<Ref<std::any>>>& GetEntities()
 			{
 				return m_components;
 			}
@@ -108,7 +108,9 @@ namespace Banan::ECS
 				for (auto& comp : comps)
 					if (comp->type() == typeid(T))
 						return std::any_cast<T&>(*comp.get());
-				throw std::out_of_range("Component not found\n%s\n", BANAN_FUNCTION_NAME);
+				char buf[1024];
+				sprintf_s(buf, sizeof(buf), "Component not found\n%s\n", BANAN_FUNCTION_NAME);
+				throw std::out_of_range(buf);
 			}
 
 			template<typename T>
@@ -117,7 +119,9 @@ namespace Banan::ECS
 				for (auto& comp : comps)
 					if (comp->type() == typeid(T))
 						return std::any_cast<T&>(*comp.get());
-				throw std::out_of_range("Component not found\n%s\n", BANAN_FUNCTION_NAME);
+				char buf[1024];
+				sprintf_s(buf, sizeof(buf), "Component not found\n%s\n", BANAN_FUNCTION_NAME);
+				throw std::out_of_range(buf);
 			}
 
 			template<typename T>
@@ -127,7 +131,9 @@ namespace Banan::ECS
 				for (auto& comp : comps)
 					if (comp->type() == typeid(T))
 						return comp;
-				throw std::out_of_range("Component not found\n%s\n", BANAN_FUNCTION_NAME);
+				char buf[1024];
+				sprintf_s(buf, sizeof(buf), "Component not found\n%s\n", BANAN_FUNCTION_NAME);
+				throw std::out_of_range(buf);
 			}
 
 		private:

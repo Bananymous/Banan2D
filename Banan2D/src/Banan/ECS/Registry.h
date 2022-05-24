@@ -121,7 +121,7 @@ namespace Banan::ECS
 
 		// Remove a component from an entity
 		template<typename T>
-		void Remove(Entity entity)
+		void Erase(Entity entity)
 		{
 			using namespace internal;
 
@@ -150,6 +150,14 @@ namespace Banan::ECS
 			// Add and destroy entites from corresponding archetypes
 			pAtOld->DestroyEntity(entity);
 			pAtNew->AddEntity(entity, compPointers);
+		}
+
+		// Safely remove component from entity. Removes only if the entity has the asked component
+		template<typename T>
+		void Remove(Entity entity)
+		{
+			if (HasAllOf<T>(entity))
+				Erase<T>(entity);
 		}
 
 		template<typename T>
@@ -184,6 +192,12 @@ namespace Banan::ECS
 		Banan::ECS::View<T, Ts...> View()
 		{
 			return Banan::ECS::View<T, Ts...>(m_archetypes);
+		}
+
+		void Each(const std::function<void(Entity entity)>& func)
+		{
+			for (Entity e : m_entities)
+				func(e);
 		}
 
 	private:

@@ -16,7 +16,7 @@ namespace Banan::ECS
 			auto it = g_componentIDs.find(typeid(T));
 			if (it == g_componentIDs.end())
 			{
-				uint64_t ID = ++g_componentCount;
+				uint64_t ID = g_componentCount++;
 				g_componentIDs[typeid(T)] = ID;
 				return ID;
 			}
