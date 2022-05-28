@@ -21,8 +21,8 @@
 
 	#define BANAN_PRINT(...) CAT(BANAN_PRINT_, IS_1(NARGS(__VA_ARGS__)))(__VA_ARGS__) 
 
-	#define BANAN_WARN(...)  printf("\x1b[93m"); BANAN_PRINT(__VA_ARGS__); printf("\x1b[0m")
-	#define BANAN_ERROR(...) printf("\x1b[91m"); BANAN_PRINT(__VA_ARGS__); printf("\x1b[0m")
+	#define BANAN_WARN(...)  do { printf("\x1b[93m"); BANAN_PRINT(__VA_ARGS__); printf("\x1b[0m"); } while (false)
+	#define BANAN_ERROR(...) do { printf("\x1b[91m"); BANAN_PRINT(__VA_ARGS__); printf("\x1b[0m"); } while (false)
 
 	#define BANAN_ASSERT(expr, ...) if(!(expr)) { BANAN_ERROR(__VA_ARGS__); BANAN_DEBUG_BREAK(); } 
 	#include <cstdio>

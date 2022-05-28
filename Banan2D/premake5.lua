@@ -46,7 +46,9 @@ project "Banan2D"
 	filter { "options:glfw" }
 		files {
 			"src/Platform/GLFW/**.h",
-			"src/Platform/GLFW/**.cpp"
+			"src/Platform/GLFW/**.cpp",
+			"src/Platform/Linux/LinuxServer.h",
+			"src/Platform/Linux/LinuxServer.cpp"
 		}
 
 	filter { "system:windows", "not options:glfw" }

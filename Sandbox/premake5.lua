@@ -22,7 +22,7 @@ project "Sandbox"
 
 	links { "Banan2D", "Glad", "imgui" }
 
-	filter "options:glfw"
+	filter { "options:glfw" }
 		links { "GLFW" }
 
 	filter { "system:windows", "not options:glfw" }

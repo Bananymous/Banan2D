@@ -20,7 +20,7 @@ namespace Banan::Networking
 		virtual bool IsActive() const = 0;
 
 		virtual void Send(const Message& message, Socket socket) = 0;
-		virtual void SendAll(const Message& message, Socket skip = InvalidSocket) = 0;
+		virtual void SendAll(const Message& message, Socket skip = BANAN_INVALID_SOCKET) = 0;
 
 		virtual void SetMessageCallback(std::function<void(Socket, const Message&)> callback) = 0;
 		virtual void SetConnectionCallback(std::function<void(Socket)> callback) = 0;
@@ -28,7 +28,9 @@ namespace Banan::Networking
 
 		virtual void QueryUpdates() = 0;
 
-		static Scope<Server> Create(int port, TransportLayer tl = TransportLayer::TCP, InternetLayer ip = InternetLayer::IPv4);
+		virtual std::string GetIP(Socket socket) const = 0;
+
+		static Scope<Server> Create(int port, TransportLayer tl = TransportLayer::TCP, InternetLayer il = InternetLayer::IPv4);
 	};
 
 }
