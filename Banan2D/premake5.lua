@@ -11,6 +11,7 @@ project "Banan2D"
 	pchsource "src/bgepch.cpp"
 
 
+
 	-- PROJECT FILES
 
 	files {
@@ -46,21 +47,34 @@ project "Banan2D"
 	filter { "options:glfw" }
 		files {
 			"src/Platform/GLFW/**.h",
-			"src/Platform/GLFW/**.cpp",
-			"src/Platform/Linux/LinuxServer.h",
-			"src/Platform/Linux/LinuxServer.cpp"
+			"src/Platform/GLFW/**.cpp"
 		}
 
-	filter { "system:windows", "not options:glfw" }
+	filter { "system:linux" }
+		files {
+			"src/Platform/Linux/**.h",
+			"src/Platform/Linux/**.cpp"
+		}
+
+	filter { "system:windows" }
 		files {
 			"src/Platform/Windows/**.h",
 			"src/Platform/Windows/**.cpp"
 		}
 
-	filter { "system:linux", "not options:glfw" }
-		files {
-			"src/Platform/Linux/**.h",
-			"src/Platform/Linux/**.cpp"
+	filter { "system:linux", "options:glfw" }
+		removefiles {
+			"src/Platform/Linux/LinuxInput.*",
+			"src/Platform/Linux/LinuxOpenGLContext.*",
+			"src/Platform/Linux/LinuxWindow.*"
+		}
+
+	filter { "system:windows", "options:glfw" }
+		removefiles {
+			"src/Platform/Windows/WindowsImGuiLayer.*",
+			"src/Platform/Windows/WindowsInput.*",
+			"src/Platform/Windows/OpenGLContext.*",
+			"src/Platform/Windows/WindowsWindows.*"
 		}
 
 
