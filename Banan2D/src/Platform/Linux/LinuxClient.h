@@ -11,6 +11,7 @@ namespace Banan::Networking
 	{
 	public:
 		LinuxClient(const std::string& ip, int port, TransportLayer tl, InternetLayer il);
+		~LinuxClient();
 
 		virtual void Connect() override;
 		virtual void Disconnect() override;
@@ -19,9 +20,9 @@ namespace Banan::Networking
 
 		virtual void Send(const Message& message) override;
 
-		virtual void SetMessageCallback(std::function<void(const Message&)> callback) override;
-		virtual void SetConnectionCallback(std::function<void()> callback) override;
-		virtual void SetDisconnectionCallback(std::function<void()> callback) override;
+		virtual void SetMessageCallback(std::function<void(const Message&)> callback) override	{ m_messageCallback = callback; }
+		virtual void SetConnectionCallback(std::function<void()> callback) override				{ m_connectionCallback = callback; }
+		virtual void SetDisconnectionCallback(std::function<void()> callback) override			{ m_disconnectionCallback = callback; }
 
 		virtual void QueryUpdates() override;
 
@@ -38,7 +39,6 @@ namespace Banan::Networking
 
 		std::atomic<bool>					m_active;
 
-		// TODO thread pools
 		std::thread							m_recvThread;
 		std::thread							m_sendThread;
 

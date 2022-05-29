@@ -12,6 +12,8 @@ namespace Banan::Networking
 	class Client
 	{
 	public:
+		virtual ~Client() {}
+
 		virtual void Connect() = 0;
 		virtual void Disconnect() = 0;
 
