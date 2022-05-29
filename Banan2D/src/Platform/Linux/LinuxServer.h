@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include <thread>
 
+#include <poll.h>
+
 namespace Banan::Networking
 {
 
@@ -34,9 +36,9 @@ namespace Banan::Networking
 		void SendThread();
 		void RecvThread();
 
-		void Kick(Socket socket);
+		void Kick(int socket);
 
-		bool HasData(Socket socket) const;
+		bool HasData(int socket) const;
 
 	private:
 		std::function<void(Socket, const Message&)> 	m_messageCallback;
@@ -45,22 +47,21 @@ namespace Banan::Networking
 
 		std::atomic<bool>								m_active;
 		
-		int												m_socket;
-		fd_set											m_clients;
-		std::unordered_set<Socket>						m_clientSet;
+		int												m_listening;
+		std::vector<pollfd>								m_sockets;
 
 		// TODO thread pools
 		std::thread										m_recvThread;
 		std::thread										m_sendThread;
 
-		ThreadSafeQueue<std::pair<Socket, Message>>		m_recievedMessages;
-		ThreadSafeQueue<Socket>							m_connections;
-		ThreadSafeQueue<Socket>							m_disconnections;
+		ThreadSafeQueue<std::pair<int, Message>>		m_recievedMessages;
+		ThreadSafeQueue<int>							m_connections;
+		ThreadSafeQueue<int>							m_disconnections;
 
-		ThreadSafeQueue<std::pair<Socket, Message>>		m_toSend;
+		ThreadSafeQueue<std::pair<int, Message>>		m_toSend;
 
 		mutable std::mutex								m_ipMutex;
-		std::unordered_map<Socket, std::string>			m_ipMap;
+		std::unordered_map<int, std::string>			m_ipMap;
 
 		struct PendingMessage
 		{
@@ -68,9 +69,12 @@ namespace Banan::Networking
 			uint64_t	current_size;
 			void*		data;
 		};
+		// no mutex needed since used only by send thread
 		std::unordered_map<int, PendingMessage>			m_pendingMessages;
 
-		InternetLayer									m_internetLayer;
+		const int										m_port;
+		const TransportLayer							m_transportLayer;
+		const InternetLayer								m_internetLayer;
 	};
 
 }
