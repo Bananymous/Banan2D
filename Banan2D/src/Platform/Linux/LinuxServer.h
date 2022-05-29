@@ -66,7 +66,7 @@ namespace Banan::Networking
 		{
 			uint64_t	total_size;
 			uint64_t	current_size;
-			uint8_t*	data;
+			void*		data;
 		};
 		std::unordered_map<int, PendingMessage>			m_pendingMessages;
 

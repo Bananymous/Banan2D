@@ -284,6 +284,8 @@ namespace Banan::Networking
 
 					if (it == m_pendingMessages.end())
 					{
+						// TODO handle messages with first recv less than sizeof(Message::size_type) bytes
+
 						Message::size_type size;
 						int bytes = recv(sock, &size, sizeof(size), 0);
 						if (bytes == -1)
@@ -317,8 +319,8 @@ namespace Banan::Networking
 							PendingMessage& pending = m_pendingMessages[sock];
 							pending.total_size = size;
 							pending.current_size = sizeof(size);
-							pending.data = (uint8_t*)buffer;
-							break;	
+							pending.data = buffer;
+							continue;	
 						}
 
 						bytes = recv(sock, ptr, size - sizeof(size), 0);
@@ -340,14 +342,14 @@ namespace Banan::Networking
 							PendingMessage& pending = m_pendingMessages[sock];
 							pending.total_size = size;
 							pending.current_size = bytes + sizeof(size);
-							pending.data = (uint8_t*)buffer;
+							pending.data = buffer;
 						}
 					}
 					else
 					{
 						PendingMessage& pending = it->second;
 
-						int bytes = recv(sock, pending.data + pending.current_size, pending.total_size - pending.current_size, 0);
+						int bytes = recv(sock, (uint8_t*)pending.data + pending.current_size, pending.total_size - pending.current_size, 0);
 						if (bytes == -1)
 							BANAN_WARN("Error on recv() (errno: %d)\n", errno);
 						if (bytes <= 0)

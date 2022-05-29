@@ -17,6 +17,7 @@ namespace Banan::Networking
 #elif defined BANAN_PLATFORM_LINUX
 		return CreateScope<LinuxServer>(port, tl, il);
 #endif
+		return nullptr;
 	}
 
 }
