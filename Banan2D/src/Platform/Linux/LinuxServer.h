@@ -7,6 +7,8 @@
 
 #include <poll.h>
 
+#define BANAN_MAX_MESSAGE_SIZE 1'000'000
+
 namespace Banan::Networking
 {
 
@@ -40,6 +42,8 @@ namespace Banan::Networking
 
 		bool HasData(int socket) const;
 
+		std::pair<int, std::string> AcceptConnection();
+
 	private:
 		std::function<void(Socket, const Message&)> 	m_messageCallback;
 		std::function<void(Socket)>                 	m_connectionCallback;
@@ -48,7 +52,8 @@ namespace Banan::Networking
 		std::atomic<bool>								m_active;
 		
 		int												m_listening;
-		std::vector<pollfd>								m_sockets;
+		int												m_efd;
+		std::vector<int>								m_sfds;
 
 		// TODO thread pools
 		std::thread										m_recvThread;
@@ -65,9 +70,9 @@ namespace Banan::Networking
 
 		struct PendingMessage
 		{
-			uint64_t	total_size;
-			uint64_t	current_size;
-			void*		data;
+			uint64_t	target = 0;
+			uint64_t	current = 0;
+			char*		data = nullptr;
 		};
 		// no mutex needed since used only by send thread
 		std::unordered_map<int, PendingMessage>			m_pendingMessages;

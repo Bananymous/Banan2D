@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Banan/Networking/Serialize.h"
+
 #include "Banan/Core/ConsoleOutput.h"
 
-#include <cstdlib> // malloc, free
-#include <cstring> // memcpy
+#include <cstring>
+#include <sstream>
 #include <string>
 #include <typeinfo>
 
@@ -12,8 +14,6 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
-
-#define BANAN_INVALID_SOCKET (~Socket(0))
 
 namespace Banan::Networking
 {
@@ -100,78 +100,62 @@ namespace Banan::Networking
 
 	struct Message
 	{
-		using size_type = uint64_t;
-		using hash_type = uint64_t;
-
 	public:
-		Message() : m_data(nullptr) {}
+		Message() : m_data(nullptr) { }
 
-		// data must be allocated with std::malloc
-		static Message CreateMove(void* data)
+		template<typename T>
+		static Message Create(const T& object)
 		{
+			std::stringstream ss;
+
+			ss << bytes(object);
+
+			uint64_t size = ss.tellg() + sizeof(uint64_t) + sizeof(uint64_t);
+			uint64_t hash = typeid(T).hash_code();
+
+			std::stringstream temp;
+			temp << bytes(size);
+			temp << bytes(hash);
+			temp << ss.rdbuf();
+
+			ss = std::move(temp);
+
 			Message message;
-			message.m_data = data;
+			message.m_data = ss.str();
+
 			return message;
 		}
 
-		template<typename T>
-		Message(T* data, size_type data_size)
+		static Message Create(void* data, uint64_t size)
 		{
-			size_type size = data_size + sizeof(size_type) + sizeof(hash_type);
-
-			m_data = std::malloc(size);
-			BANAN_ASSERT(m_data, "Could not allocate space for message!\n");
-
-			uint8_t* ptr = (uint8_t*)m_data;
-
-			*(size_type*)ptr = size;					ptr += sizeof(size_type);
-			*(hash_type*)ptr = typeid(T).hash_code();	ptr += sizeof(hash_type);
-			std::memcpy(ptr, data, data_size);
+			Message message;
+			message.m_data.resize(size);
+			std::memcpy(message.m_data.data(), data, size);
+			return message;
 		}
-
-		template<typename T, typename std::enable_if<!std::is_same<T, Message>::value, int>::type = 0>
-		Message(const T& object) :
-			Message(&object, sizeof(T))
-		{}
 
 		Message(const Message& other)
 		{
-			size_type size = *(size_type*)other.m_data;
-
-			m_data = std::malloc(size);
-			BANAN_ASSERT(m_data, "Could not allocate space for message!\n");
-
-			std::memcpy(m_data, other.m_data, size);
+			m_data = other.m_data;	
 		}
 
 		Message(Message&& other)
 		{
-			m_data = other.m_data;
-			other.m_data = nullptr;
+			m_data = std::move(other.m_data);
+			other.m_data = std::string();
 		}
 
 		Message& operator=(const Message& other)
 		{
-			size_type size = *(size_type*)other.m_data;
-
-			m_data = std::malloc(size);
-			BANAN_ASSERT(m_data, "Could not allocate space for message!\n");
-
-			std::memcpy(m_data, other.m_data, size);
-
+			m_data = other.m_data;
 			return *this;
 		}
 
 		Message& operator=(Message&& other)
 		{
-			m_data = other.m_data;
-			other.m_data = nullptr;
+			m_data = std::move(other.m_data);
+			other.m_data = std::string();
 			return *this;
-		}
-
-		~Message()
-		{
-			std::free(m_data);
 		}
 
 		template<typename T>
@@ -180,39 +164,40 @@ namespace Banan::Networking
 			return GetTypeHash() == typeid(T).hash_code();
 		}
 
-		inline hash_type GetTypeHash() const
+		inline uint64_t GetTypeHash() const
 		{
-			return *(hash_type*)((size_type*)m_data + 1);
+			const char* ptr = m_data.data();
+			ptr += sizeof(uint64_t);
+			return *(uint64_t*)ptr;
 		}
 
-		inline size_type Size() const
+		inline uint64_t Size() const
 		{
-			return *(size_type*)m_data;
+			return m_data.size();
 		}
 
 		template<typename T>
 		inline T GetObject() const
 		{
-			uint8_t* ptr = (uint8_t*)m_data;
-			ptr += sizeof(size_type);
-			ptr += sizeof(hash_type);
-			return *(T*)ptr;
+			uint64_t size, hash;
+			T object;
+
+			std::stringstream ss(m_data);
+
+			ss >> size;
+			ss >> hash;
+			ss >> object;
+
+			return object;
 		}
 
-		inline void* GetSerialized() const
+		inline const char* GetSerialized() const
 		{
-			return m_data;
+			return m_data.data();
 		}
 
 	private:
-		void* m_data;
+		std::string	m_data;
 	};
-
-	template<>
-	inline std::string Message::GetObject<std::string>() const
-	{
-		constexpr uint64_t s = sizeof(size_type) + sizeof(hash_type);
-		return std::string((char*)((uint8_t*)m_data + s), *(size_type*)m_data - s);
-	}
 
 }

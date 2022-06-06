@@ -11,6 +11,7 @@ project "Banan2D"
 	pchsource "src/bgepch.cpp"
 
 
+	buildoptions { "-fpermissive" }
 
 	-- PROJECT FILES
 

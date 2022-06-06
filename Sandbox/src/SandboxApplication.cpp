@@ -37,6 +37,8 @@ Banan::Application* Banan::CreateApplication()
 #include "Banan/Networking/Server.h"
 #include "Banan/Networking/Client.h"
 
+#include <sstream>
+
 void PrintUsage()
 {
 	BANAN_PRINT("Please specify valid type.\n");
@@ -62,6 +64,19 @@ int ParseArguments(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
+	using Banan::Networking::bits;
+
+	std::string str = "Hello World!";
+
+	std::stringstream ss;
+	
+	ss << bits(str);
+
+	std::string res;
+	ss >> bits(res);
+
+	std::printf("%s\n", res.c_str());
+
 	using namespace Banan::Networking;
 
 	int type = ParseArguments(argc, argv);
