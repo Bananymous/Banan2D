@@ -10,9 +10,6 @@ project "Banan2D"
 	pchheader "bgepch.h"
 	pchsource "src/bgepch.cpp"
 
-
-	buildoptions { "-fpermissive" }
-
 	-- PROJECT FILES
 
 	files {

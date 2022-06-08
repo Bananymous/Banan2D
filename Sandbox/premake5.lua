@@ -6,8 +6,6 @@ project "Sandbox"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-	buildoptions { "-fpermissive" }
-
 	files {
 		"src/**.h",
 		"src/**.cpp"
