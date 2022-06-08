@@ -7,18 +7,18 @@
 
 #include <poll.h>
 
-#define BANAN_MAX_MESSAGE_SIZE 1'000'000
-
 namespace Banan::Networking
 {
 
+	// TODO confirm thread safety
+	
 	class LinuxServer : public Server
 	{
 	public:
-		LinuxServer(int port, TransportLayer tl, InternetLayer il);
+		LinuxServer();
 		~LinuxServer();
 
-		virtual void Start() override;
+		virtual void Start(int port, InternetLayer il = InternetLayer::IPv4) override;
 		virtual void Stop() override;
 
 		virtual bool IsActive() const override { return m_active; }
@@ -42,7 +42,7 @@ namespace Banan::Networking
 
 		bool HasData(int socket) const;
 
-		std::pair<int, std::string> AcceptConnection();
+		bool AcceptConnection();
 
 	private:
 		std::function<void(Socket, const Message&)> 	m_messageCallback;
@@ -52,7 +52,9 @@ namespace Banan::Networking
 		std::atomic<bool>								m_active;
 		
 		int												m_listening;
-		int												m_efd;
+		int												m_epfd;
+
+		std::mutex										m_sfdMutex;
 		std::vector<int>								m_sfds;
 
 		// TODO thread pools
@@ -76,10 +78,6 @@ namespace Banan::Networking
 		};
 		// no mutex needed since used only by send thread
 		std::unordered_map<int, PendingMessage>			m_pendingMessages;
-
-		const int										m_port;
-		const TransportLayer							m_transportLayer;
-		const InternetLayer								m_internetLayer;
 	};
 
 }

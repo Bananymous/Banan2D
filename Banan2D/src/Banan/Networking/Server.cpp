@@ -10,12 +10,12 @@
 namespace Banan::Networking
 {
 
-	Scope<Server> Server::Create(int port, TransportLayer tl, InternetLayer il)
+	Scope<Server> Server::Create()
 	{
 #if defined BANAN_PLATFORM_WINDOWS
-		return CreateScope<WindowsServer>(port, tl, il);
+		return CreateScope<WindowsServer>();
 #elif defined BANAN_PLATFORM_LINUX
-		return CreateScope<LinuxServer>(port, tl, il);
+		return CreateScope<LinuxServer>();
 #endif
 		return nullptr;
 	}

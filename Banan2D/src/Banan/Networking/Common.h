@@ -15,6 +15,8 @@
 #include <mutex>
 #include <condition_variable>
 
+#define BANAN_MAX_MESSAGE_SIZE 1'000'000
+
 namespace Banan::Networking
 {
 
@@ -24,12 +26,6 @@ namespace Banan::Networking
 	{
 		IPv4,
 		IPv6
-	};
-
-	enum class TransportLayer
-	{
-		TCP,
-		UDP
 	};
 
 	template<typename T>
@@ -101,27 +97,25 @@ namespace Banan::Networking
 	struct Message
 	{
 	public:
-		Message() : m_data(nullptr) { }
+		Message() = default;
 
 		template<typename T>
 		static Message Create(const T& object)
 		{
-			std::stringstream ss;
+			std::stringstream objstream;
+			Banan::Networking::Serialize(objstream, object);
 
-			ss << bytes(object);
-
-			uint64_t size = ss.tellg() + sizeof(uint64_t) + sizeof(uint64_t);
+			uint64_t size = objstream.tellp() + sizeof(uint64_t) + sizeof(uint64_t);
 			uint64_t hash = typeid(T).hash_code();
 
-			std::stringstream temp;
-			temp << bytes(size);
-			temp << bytes(hash);
-			temp << ss.rdbuf();
+			std::stringstream full;
 
-			ss = std::move(temp);
+			full << bits(size);
+			full << bits(hash);
+			full << objstream.rdbuf();
 
 			Message message;
-			message.m_data = ss.str();
+			message.m_data = full.str();
 
 			return message;
 		}
@@ -177,18 +171,14 @@ namespace Banan::Networking
 		}
 
 		template<typename T>
-		inline T GetObject() const
+		inline void GetObject(T& out) const
 		{
-			uint64_t size, hash;
-			T object;
+			std::istringstream iss(m_data);
 
-			std::stringstream ss(m_data);
+			uint64_t size; iss >> bits(size);
+			uint64_t hash; iss >> bits(hash);
 
-			ss >> size;
-			ss >> hash;
-			ss >> object;
-
-			return object;
+			Banan::Networking::Deserialize(iss, out);
 		}
 
 		inline const char* GetSerialized() const

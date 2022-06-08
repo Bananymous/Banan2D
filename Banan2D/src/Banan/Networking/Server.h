@@ -14,7 +14,7 @@ namespace Banan::Networking
 	public:
 		virtual ~Server() {}
 
-		virtual void Start() = 0;
+		virtual void Start(int port, InternetLayer il = InternetLayer::IPv4) = 0;
 		virtual void Stop() = 0;
 
 		virtual bool IsActive() const = 0;
@@ -30,7 +30,7 @@ namespace Banan::Networking
 
 		virtual std::string GetIP(Socket socket) const = 0;
 
-		static Scope<Server> Create(int port, TransportLayer tl = TransportLayer::TCP, InternetLayer il = InternetLayer::IPv4);
+		static Scope<Server> Create();
 	};
 
 }

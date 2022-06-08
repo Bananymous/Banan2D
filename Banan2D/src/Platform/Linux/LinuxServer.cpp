@@ -4,7 +4,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
-#include <arpa/inet.h>
 #include <unistd.h>
 #include <netdb.h>
 
@@ -15,12 +14,9 @@ epoll_event g_events[BANAN_MAX_EVENTS];
 namespace Banan::Networking
 {
 
-	LinuxServer::LinuxServer(int port, TransportLayer tl, InternetLayer il) :
+	LinuxServer::LinuxServer() :
 		m_active(false),
-		m_listening(-1),
-		m_port(port),
-		m_transportLayer(tl),
-		m_internetLayer(il)
+		m_listening(-1)
 	{}
 
 	LinuxServer::~LinuxServer()
@@ -28,64 +24,56 @@ namespace Banan::Networking
 		Stop();
 	}
 
-	void LinuxServer::Start()
+	void LinuxServer::Start(int port, InternetLayer il)
 	{
-		int ret, domain = 0, type = 0, opt = 1;
+		int ret, family;
+		addrinfo* res = NULL;
+		addrinfo* ptr = NULL;
+		addrinfo hints{};
 
-		if (m_internetLayer == InternetLayer::IPv4)
-			domain = AF_INET;
-		else if (m_internetLayer == InternetLayer::IPv6)
-			domain = AF_INET6;
+		if (il == InternetLayer::IPv4)
+			family = AF_INET;
+		else if (il == InternetLayer::IPv6)
+			family = AF_INET6;
 		
-		if (m_transportLayer == TransportLayer::TCP)
-			type = SOCK_STREAM;
-		else if (m_transportLayer == TransportLayer::UDP)
-			type = SOCK_DGRAM;
+		hints.ai_family = family;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_flags = AI_PASSIVE;
 
-		// Create socket
-		m_listening = socket(domain, type, SOCK_NONBLOCK);
-		BANAN_ASSERT(m_listening != -1, "Could not create socket for server (errno: %d)\n", errno);
+		ret = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &res);
+		BANAN_ASSERT(ret == 0, "getaddrinfo() (%s)\n", strerror(errno));
 
-		ret = setsockopt(m_listening, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
-		if (ret == -1)
-			BANAN_WARN("setsockopt() failed (errno: %d)\n", errno);
-
-		if (m_internetLayer == InternetLayer::IPv4)
+		for (ptr = res; ptr != NULL; ptr->ai_next)
 		{
-			sockaddr_in hint;
-			hint.sin_family = AF_INET;
-			hint.sin_addr.s_addr = INADDR_ANY;
-			hint.sin_port = htons(m_port);
+			m_listening = socket(ptr->ai_family, ptr->ai_socktype | SOCK_NONBLOCK, 0);
+			if (m_listening == -1)
+				continue;
 
-			// Bind socket to address and port
-			ret = bind(m_listening, (sockaddr*)&hint, sizeof(hint));
-			BANAN_ASSERT(ret != -1, "Could not bind the socket (errno: %d)\n", errno);
-		}
-		else if (m_internetLayer == InternetLayer::IPv6)
-		{
-			sockaddr_in6 hint;
-			hint.sin6_family = AF_INET6;
-			hint.sin6_addr = in6addr_any;
-			hint.sin6_port = htons(m_port);
+			int opt = 1;
+			setsockopt(m_listening, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 
-			// Bind socket to address and port
-			ret = bind(m_listening, (sockaddr*)&hint, sizeof(hint));
-			BANAN_ASSERT(ret != -1, "Could not bind the socket (errno: %d)\n", errno);
+			ret = bind(m_listening, ptr->ai_addr, ptr->ai_addrlen);
+			if (ret == 0)
+				break;
+			
+			close(m_listening);
 		}
 
-		// Set socket to listening mode
+		freeaddrinfo(res);
+		BANAN_ASSERT(ptr, "socket(), bind() (%s)\n", strerror(errno));
+
 		ret = listen(m_listening, SOMAXCONN);
-		BANAN_ASSERT(ret != -1, "Could not set socket to listening (errno: %d)\n", errno);
+		BANAN_ASSERT(ret != -1, "listen() (%s)\n", strerror(errno));
 
-		m_efd = epoll_create1(0);
-		BANAN_ASSERT(m_efd != -1, "Error epoll_create1()\n");
+		m_epfd = epoll_create1(0);
+		BANAN_ASSERT(m_epfd != -1, "epoll_create1() (%s)\n", strerror(errno));
 
 		epoll_event event{};
 		event.data.fd = m_listening;
 		event.events = EPOLLET | EPOLLIN;
 
-		ret = epoll_ctl(m_efd, EPOLL_CTL_ADD, m_listening, &event);
-		BANAN_ASSERT("epoll_ctl() (%d)\n", errno);
+		ret = epoll_ctl(m_epfd, EPOLL_CTL_ADD, m_listening, &event);
+		BANAN_ASSERT(ret != -1, "epoll_ctl() (%s)\n", strerror(errno));
 
 		m_active = true;
 		m_recvThread = std::thread(&LinuxServer::RecvThread, this);
@@ -96,33 +84,28 @@ namespace Banan::Networking
 	{
 		m_active = false;
 
-		m_connections.Kill();
-		m_disconnections.Kill();
-		m_recievedMessages.Kill();
-		m_toSend.Kill();
-
-		shutdown(m_listening, SHUT_RDWR);
-
+		shutdown(m_listening, SHUT_RD);
 		if (m_recvThread.joinable())
 			m_recvThread.join();
 
+		m_toSend.Kill();
 		if (m_sendThread.joinable())
 			m_sendThread.join();
 
+		for (auto& sfd : m_sfds)
+			close(sfd);
+		close(m_listening);
+
+
+		m_sfds.clear();
+		m_toSend.Clear();
 		m_connections.Clear();
 		m_disconnections.Clear();
 		m_recievedMessages.Clear();
 
 		for (auto& [_, msg] : m_pendingMessages)
-			std::free(msg.data);
+			delete[] msg.data;
 		m_pendingMessages.clear();
-
-		for (auto& sfd : m_sfds)
-			close(sfd);
-		m_sfds.clear();
-
-		close(m_listening);
-		m_listening = -1;
 	}
 
 	void LinuxServer::Send(const Message& message, Socket socket)
@@ -132,9 +115,11 @@ namespace Banan::Networking
 
 	void LinuxServer::SendAll(const Message& message, Socket skip)
 	{
+		m_sfdMutex.lock();
 		for (int sfd : m_sfds)
 			if (sfd != skip)
 				Send(message, sfd);
+		m_sfdMutex.unlock();
 	}
 
 	void LinuxServer::QueryUpdates()
@@ -175,11 +160,14 @@ namespace Banan::Networking
 
 	void LinuxServer::Kick(int socket)
 	{
-		m_sfds.erase(std::find(m_sfds.begin(), m_sfds.end(), (int)socket));
+		m_sfdMutex.lock();
+		auto it = std::find(m_sfds.begin(), m_sfds.end(), (int)socket);
+		if (it == m_sfds.end())
+			return;
+		m_sfds.erase(it);
+		m_sfdMutex.unlock();
 
-		epoll_ctl(m_efd, EPOLL_CTL_DEL, socket, NULL);
-
-		close(socket);
+		close(socket); // closing should remove fd from epoll
 
 		m_pendingMessages.erase(socket);
 		
@@ -190,7 +178,7 @@ namespace Banan::Networking
 		m_disconnections.Push(socket);
 	}
 
-	std::pair<int, std::string> LinuxServer::AcceptConnection()
+	bool LinuxServer::AcceptConnection()
 	{
 		sockaddr addr;
 		socklen_t size = sizeof(addr);
@@ -198,9 +186,10 @@ namespace Banan::Networking
 		int client = accept4(m_listening, &addr, &size, SOCK_NONBLOCK);
 		if (client == -1)
 		{
-			if (errno != EAGAIN && errno != EWOULDBLOCK)
-				BANAN_WARN("accept() (%d)\n", errno);
-			return { -1, std::string() };
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+				return false;
+			BANAN_WARN("accept() (%s)\n", strerror(errno));
+			return true;
 		}
 
 		char host[NI_MAXHOST]{};
@@ -213,18 +202,41 @@ namespace Banan::Networking
 			std::sprintf(serv, "?");
 		}
 
-		std::string ip = std::string(host) + ':' + std::string(serv);
-		return { client, ip };
+		epoll_event event{};
+		event.data.fd = client;
+		event.events  =	EPOLLET |	// Edge triggered mode
+						EPOLLIN |	// Read events
+						EPOLLRDHUP;	// Disconnection events
+
+		ret = epoll_ctl(m_epfd, EPOLL_CTL_ADD, client, &event);
+		if (ret == -1)
+		{
+			BANAN_WARN("epoll_ctl() (%s)\n", strerror(errno));
+			close(client);
+			return true;
+		}
+
+		m_sfdMutex.lock();
+		m_sfds.push_back(client);
+		m_sfdMutex.unlock();
+
+		m_ipMutex.lock();
+		m_ipMap[client] = std::string(host) + ':' + std::string(serv);
+		m_ipMutex.unlock();
+
+		m_connections.Push(client);
+
+		return true;
 	}
 
 	void LinuxServer::RecvThread()
 	{
 		while (m_active)
 		{
-			int nfds = epoll_wait(m_efd, g_events, BANAN_MAX_EVENTS, -1);
+			int nfds = epoll_wait(m_epfd, g_events, BANAN_MAX_EVENTS, -1);
 			if (nfds == -1)
 			{
-				BANAN_WARN("epoll_wait() (%d)\n", errno);
+				BANAN_WARN("epoll_wait() (%s)\n", strerror(errno));
 				continue;
 			}
 
@@ -239,44 +251,31 @@ namespace Banan::Networking
 					continue;
 				}
 
-				// Accept new connections
-				if (e.data.fd == m_listening && e.events)
+				if ((e.data.fd == m_listening) && (e.events & EPOLLIN))
 				{
-					std::pair<int, std::string> connectionInfo = AcceptConnection();
-					while (connectionInfo.first != -1)
-					{
-						m_ipMutex.lock();
-						m_ipMap.insert(connectionInfo);
-						m_ipMutex.unlock();
+					// Accept new connections
 
-						epoll_event event{};
-						event.data.fd = m_listening;
-						event.events = 	EPOLLET |	// Edge triggered mode
-										EPOLLIN |	// Read events
-										EPOLLRDHUP;	// Disconnection events
-
-						int ret = epoll_ctl(m_efd, EPOLL_CTL_ADD, m_listening, &event);
-						if (ret == -1)
-							BANAN_PRINT("epoll_ctl() (%d)\n", errno);
-
-						connectionInfo = AcceptConnection();
-					}
+					while (AcceptConnection());
 				}
 				else if (e.events & (EPOLLRDHUP | EPOLLHUP))
 				{
+					// Disconnection
+
 					Kick(e.data.fd);
 				}
 				else if (e.events & EPOLLIN)
 				{
+					// New data available on socket
+
 					char* buffer = new char[BANAN_MAX_MESSAGE_SIZE];
-					uint64_t target = -1;
+					uint64_t target = 0;
 					uint64_t current = 0;
 
 					auto it = m_pendingMessages.find(e.data.fd);
 					if (it != m_pendingMessages.end())
 					{
 						PendingMessage& msg = it->second;
-						memcpy(buffer, msg.data, msg.current);
+						std::memcpy(buffer, msg.data, msg.current);
 						target = msg.target;
 						current = msg.current;
 					}
@@ -286,15 +285,22 @@ namespace Banan::Networking
 					while (true)
 					{
 						int nbytes = recv(e.data.fd, buffer + current, BANAN_MAX_MESSAGE_SIZE - current, 0);
+						if (!m_active)
+						{
+							delete[] buffer;
+							return;
+						}
 						if (nbytes == -1)
 						{
 							if (errno != EAGAIN && errno != EWOULDBLOCK)
 							{
-								BANAN_WARN("recv() (%d)\n", errno);
+								BANAN_WARN("recv() (%s)\n", strerror(errno));
 								error = true;
 							}
 							break;
 						}
+						if (nbytes == 0)
+							continue;
 
 						current += nbytes;
 
@@ -350,7 +356,7 @@ namespace Banan::Networking
 			{
 				auto& [sock, message] = object;
 
-				uint8_t* serialized = (uint8_t*)message.GetSerialized();
+				const char* serialized = message.GetSerialized();
 				int size = message.Size();
 
 				int sent = 0;
@@ -360,7 +366,7 @@ namespace Banan::Networking
 					if (!m_active)
 						return;
 					if (bytes < 0)
-						BANAN_WARN("Error on send() (errno: %d)\n", errno);
+						BANAN_WARN("send() (%s)\n", strerror(errno));
 					if (bytes <= 0)
 					{
 						Kick(sock);

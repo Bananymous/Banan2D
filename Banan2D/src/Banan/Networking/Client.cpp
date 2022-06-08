@@ -10,12 +10,12 @@
 namespace Banan::Networking
 {
 
-		Scope<Client> Client::Create(const std::string& ip, int port, TransportLayer tl, InternetLayer il)
+		Scope<Client> Client::Create()
 		{
 #if defined BANAN_PLATFORM_WINDOWS
-			return CreateScope<WindowsClient>(ip, port, tl, il);
+			return CreateScope<WindowsClient>();
 #elif defined BANAN_PLATFORM_LINUX
-			return CreateScope<LinuxClient>(ip, port, tl, il);
+			return CreateScope<LinuxClient>();
 #endif
 			return nullptr;
 		}

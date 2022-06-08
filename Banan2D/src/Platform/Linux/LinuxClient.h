@@ -7,13 +7,15 @@
 namespace Banan::Networking
 {
 
+	// Just realized Disconnect() cannot be called from threads since it joins them
+	
 	class LinuxClient : public Client
 	{
 	public:
-		LinuxClient(const std::string& ip, int port, TransportLayer tl, InternetLayer il);
+		LinuxClient();
 		~LinuxClient();
 
-		virtual void Connect() override;
+		virtual void Connect(const std::string& ip, int port, InternetLayer il) override;
 		virtual void Disconnect() override;
 
 		virtual bool IsConnected() const override;
@@ -47,16 +49,6 @@ namespace Banan::Networking
 
 		std::atomic<bool>					m_connected;
 		std::atomic<bool>					m_disconnected;
-
-		struct PendingMessage
-		{
-			uint64_t	total_size;
-			uint64_t	current_size;
-			void*		data;
-		};
-
-		mutable std::mutex					m_pendingMutex;
-		PendingMessage						m_pendingMessage;
 	};
 
 }

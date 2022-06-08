@@ -14,7 +14,7 @@ namespace Banan::Networking
 	public:
 		virtual ~Client() {}
 
-		virtual void Connect() = 0;
+		virtual void Connect(const std::string& ip, int port, InternetLayer il = InternetLayer::IPv4) = 0;
 		virtual void Disconnect() = 0;
 
 		virtual bool IsConnected() const = 0;
@@ -27,7 +27,7 @@ namespace Banan::Networking
 
 		virtual void QueryUpdates() = 0;
 
-		static Scope<Client> Create(const std::string& ip, int port, TransportLayer tl = TransportLayer::TCP, InternetLayer il = InternetLayer::IPv4);
+		static Scope<Client> Create();
 	};
 
 }
