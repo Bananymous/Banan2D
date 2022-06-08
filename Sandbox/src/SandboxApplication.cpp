@@ -1,10 +1,6 @@
-#include <Banan2D.h>
-
-
-
-
 #if 0
 
+#include <Banan2D.h>
 #include <Banan/Core/EntryPoint.h>
 
 #include "SandboxLayer.h"
@@ -34,10 +30,12 @@ Banan::Application* Banan::CreateApplication()
 
 #else
 
+#include <Banan2D.h>
 #include "Banan/Networking/Server.h"
 #include "Banan/Networking/Client.h"
 
-#include <sstream>
+#include <thread>
+#include <iostream>
 
 void PrintUsage()
 {
@@ -62,33 +60,48 @@ int ParseArguments(int argc, char** argv)
 	return 0;
 }
 
+struct pos { int x, y; };
+namespace Banan::Networking
+{
+	template<> void Serialize  <pos>(std::ostream& os, const pos& p) { os << bits(p.x) << bits(p.y); }
+	template<> void Deserialize<pos>(std::istream& is,       pos& p) { is >> bits(p.x) >> bits(p.y); }
+}
+
+using namespace Banan;
+using namespace Banan::Networking;
+
+void InputThread(Scope<Client>& client)
+{
+	while (client->IsConnected())
+	{
+		std::string input;
+		std::getline(std::cin, input);
+
+		if (input == "stop")
+		{
+			client->Disconnect();
+			break;
+		}
+		
+		client->Send(Message::Create(input));
+	}
+	
+}
+
 int main(int argc, char** argv)
 {
-	using Banan::Networking::bits;
-
-	std::string str = "Hello World!";
-
-	std::stringstream ss;
-	
-	ss << bits(str);
-
-	std::string res;
-	ss >> bits(res);
-
-	std::printf("%s\n", res.c_str());
-
-	using namespace Banan::Networking;
-
 	int type = ParseArguments(argc, argv);
 
 	if (type == 1)
 	{
-		auto server = Server::Create(54000);
+		auto server = Server::Create();
 
 		server->SetMessageCallback(
 			[](Socket sock, const Message& msg)
 			{
-				BANAN_PRINT("%lu: %s\n", sock, msg.GetObject<std::string>().c_str());
+				std::string str;
+				msg.GetObject(str);
+				BANAN_PRINT("%lu: %s\n", sock, str.c_str());
 			}
 		);
 
@@ -106,7 +119,7 @@ int main(int argc, char** argv)
 			}
 		);
 
-		server->Start();
+		server->Start(54000);
 
 		BANAN_PRINT("Server started!\n");
 
@@ -117,7 +130,42 @@ int main(int argc, char** argv)
 	}
 	else if (type == 2)
 	{
+		auto client = Client::Create();
+		std::thread input;
 
+		client->SetMessageCallback(
+			[](const Message& msg)
+			{
+				std::string str;
+				msg.GetObject(str);
+				BANAN_PRINT("%s\n", str.c_str());
+			}
+		);
+
+		client->SetConnectionCallback(
+			[]()
+			{
+				BANAN_PRINT("Connected to server!\n");
+			}
+		);
+
+		client->SetDisconnectionCallback(
+			[]()
+			{
+				BANAN_PRINT("Disconnected!\n");
+			}
+		);
+
+		client->Connect("localhost", 54000);
+
+		input = std::thread(&InputThread, std::ref(client));
+		while (client->IsConnected())
+		{
+			client->QueryUpdates();
+		}
+
+		if (input.joinable())
+			input.join();
 	}
 	
 	return 0;
