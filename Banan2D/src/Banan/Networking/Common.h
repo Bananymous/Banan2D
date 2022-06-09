@@ -105,7 +105,7 @@ namespace Banan::Networking
 			std::stringstream objstream;
 			Banan::Networking::Serialize(objstream, object);
 
-			uint64_t size = objstream.tellp() + sizeof(uint64_t) + sizeof(uint64_t);
+			uint64_t size = (uint64_t)objstream.tellp() + sizeof(uint64_t) + sizeof(uint64_t);
 			uint64_t hash = typeid(T).hash_code();
 
 			std::stringstream full;
@@ -120,11 +120,15 @@ namespace Banan::Networking
 			return message;
 		}
 
-		static Message Create(void* data, uint64_t size)
+		template<typename T>
+		static Message Create(T* data)
 		{
+			uint64_t size = *(uint64_t*)data;
+
 			Message message;
 			message.m_data.resize(size);
 			std::memcpy(message.m_data.data(), data, size);
+
 			return message;
 		}
 
@@ -171,7 +175,7 @@ namespace Banan::Networking
 		}
 
 		template<typename T>
-		inline void GetObject(T& out) const
+		inline void Get(T& out) const
 		{
 			std::istringstream iss(m_data);
 

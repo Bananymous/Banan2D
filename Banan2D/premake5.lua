@@ -71,8 +71,8 @@ project "Banan2D"
 		removefiles {
 			"src/Platform/Windows/WindowsImGuiLayer.*",
 			"src/Platform/Windows/WindowsInput.*",
-			"src/Platform/Windows/OpenGLContext.*",
-			"src/Platform/Windows/WindowsWindows.*"
+			"src/Platform/Windows/WindowsOpenGLContext.*",
+			"src/Platform/Windows/WindowsWindow.*"
 		}
 
 

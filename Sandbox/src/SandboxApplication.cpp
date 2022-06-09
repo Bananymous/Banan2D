@@ -88,8 +88,37 @@ void InputThread(Scope<Client>& client)
 	
 }
 
+template<typename T>
+void TestMessage(const T& t)
+{
+	void* data;
+
+	{
+		Message message;
+		message = Message::Create(t);
+
+		data = (void*)(new char[message.Size()]);
+		memcpy(data, message.GetSerialized(), message.Size());
+	}
+
+	{
+		Message message = Message::Create(data);
+		T t;
+		message.Get<T>(t);
+		std::cout << t << std::endl;
+	}
+
+	delete[] data;
+}
+
 int main(int argc, char** argv)
 {
+	TestMessage<int>(3);
+	TestMessage<float>(5.4f);
+	TestMessage<std::string>("Hello World!");
+	std::cin.get();
+
+#if 0
 	int type = ParseArguments(argc, argv);
 
 	if (type == 1)
@@ -100,7 +129,7 @@ int main(int argc, char** argv)
 			[](Socket sock, const Message& msg)
 			{
 				std::string str;
-				msg.GetObject(str);
+				msg.Get(str);
 				BANAN_PRINT("%lu: %s\n", sock, str.c_str());
 			}
 		);
@@ -137,7 +166,7 @@ int main(int argc, char** argv)
 			[](const Message& msg)
 			{
 				std::string str;
-				msg.GetObject(str);
+				msg.Get(str);
 				BANAN_PRINT("%s\n", str.c_str());
 			}
 		);
@@ -169,8 +198,7 @@ int main(int argc, char** argv)
 	}
 	
 	return 0;
-
-	
+#endif
 }
 
 #endif
