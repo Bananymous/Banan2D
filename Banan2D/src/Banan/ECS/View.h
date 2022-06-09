@@ -198,12 +198,12 @@ namespace Banan::ECS
 			template<typename T>
 			T& GetR()
 			{
-				return std::any_cast<T&>(*(m_currentEntity->second[m_componentOffsets[typeid(T)]]));
+				return std::any_cast<T&>(*(m_currentEntity->second[m_componentOffsets.at(typeid(T))]));
 			}
 			template<typename T>
 			T Get() const
 			{
-				return std::any_cast<T>(*(m_currentEntity->second[m_componentOffsets[typeid(T)]]));
+				return std::any_cast<T>(*(m_currentEntity->second[m_componentOffsets.at(typeid(T))]));
 			}
 
 		private:

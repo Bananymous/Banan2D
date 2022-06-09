@@ -14,8 +14,8 @@ namespace Banan
 		virtual void OnDetach()			override;
 		virtual void OnEvent(Event& e)	override;
 
-		void Begin();
-		void End();
+		virtual void Begin()			override;
+		virtual void End()				override;
 
 	private:
 		bool m_blockEvents = true;
