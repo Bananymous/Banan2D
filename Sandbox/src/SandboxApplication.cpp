@@ -37,6 +37,9 @@ Banan::Application* Banan::CreateApplication()
 #include <thread>
 #include <iostream>
 
+using namespace Banan;
+using namespace Banan::Networking;
+
 void PrintUsage()
 {
 	BANAN_PRINT("Please specify valid type.\n");
@@ -59,16 +62,6 @@ int ParseArguments(int argc, char** argv)
 	PrintUsage();
 	return 0;
 }
-
-struct pos { int x, y; };
-namespace Banan::Networking
-{
-	template<> void Serialize  <pos>(std::ostream& os, const pos& p) { os << bits(p.x) << bits(p.y); }
-	template<> void Deserialize<pos>(std::istream& is,       pos& p) { is >> bits(p.x) >> bits(p.y); }
-}
-
-using namespace Banan;
-using namespace Banan::Networking;
 
 void InputThread(Scope<Client>& client)
 {

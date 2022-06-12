@@ -6,9 +6,6 @@
 
 // Inspired by https://stackoverflow.com/a/48643036/14181972
 
-// TODO
-// std::containers could be optimized for POD types
-
 #define BANAN_BYTE_ORDER __ORDER_BIG_ENDIAN__
 
 namespace Banan::Networking
@@ -32,7 +29,7 @@ namespace Banan::Networking
 	std::ostream& operator<<(std::ostream& os, bits_t<const T&> b)
 	{
 #if __BYTE_ORDER__ != BANAN_BYTE_ORDER
-		char* ptr = (char*)&b.t;
+		const char* ptr = (const char*)&b.t;
 		for (std::size_t i = sizeof(T); i > 0; i--)
 			os.put(ptr[i - 1]);
 #else

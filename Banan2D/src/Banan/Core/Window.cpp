@@ -1,8 +1,6 @@
 #include "bgepch.h"
 #include "Window.h"
 
-// TODO
-
 #ifdef BANAN_USE_GLFW
 	#include "Platform/GLFW/GLFWWindow.h"
 #elif defined BANAN_PLATFORM_WINDOWS

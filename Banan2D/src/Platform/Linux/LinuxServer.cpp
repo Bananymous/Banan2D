@@ -369,7 +369,8 @@ namespace Banan::Networking
 			int nbytes = send(socket, buffer + sent, size - sent, 0);
 			if (!m_active)
 				return;
-			// TODO: EAGAIN and EWOULDBLOCK should be handeled seperately
+			if (nbytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+				continue;
 			if (nbytes == -1)
 				BANAN_WARN("send() (%s)\n", strerror(errno));
 			if (nbytes <= 0)
