@@ -1,12 +1,12 @@
 #pragma once
 
-extern Banan::Application* Banan::CreateApplication();
+extern Banan::Application* Banan::CreateApplication(int argc, char** argv);
 
 #ifdef BANAN_USE_GLFW
 
 int main(int argc, char** argv)
 {
-	auto app = Banan::CreateApplication();
+	auto app = Banan::CreateApplication(argc, argv);
 	app->Run();
 	delete app;
 }
@@ -16,6 +16,7 @@ int main(int argc, char** argv)
 #include "Banan/Core/ConsoleOutput.h"
 #include "Platform/Windows/WindowsWindow.h"
 
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
@@ -49,12 +50,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 		freopen_s(&stream, "CONOUT$", "wb", stdout);
 	} while (0);
-
 #endif
 
 	Banan::WindowsWindow::SetHInstance(hInstance);
 
-	auto app = Banan::CreateApplication();
+	auto app = Banan::CreateApplication(__argc, __argv);
 	app->Run();
 	delete app;
 
@@ -64,7 +64,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 int main(int argc, char** argv)
 {
-	auto app = Banan::CreateApplication();
+	auto app = Banan::CreateApplication(argc, argv);
 	app->Run();
 	delete app;
 }

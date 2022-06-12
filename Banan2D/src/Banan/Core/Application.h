@@ -57,10 +57,8 @@ namespace Banan
 
 	private:
 		static Application* s_instance;
-
-		friend BANAN_MAIN;
 	};
 
-	Application* CreateApplication();
+	Application* CreateApplication(int argc, char** argv);
 
 }
