@@ -10,19 +10,12 @@
 
 #if defined BANAN_PLATFORM_WINDOWS
 	#define BANAN_DEBUG_BREAK() __debugbreak()
-	#ifdef BANAN_USE_GLFW
-		#define BANAN_MAIN int main(int argc, char** argv)
-	#else
-		#define BANAN_MAIN int WINAPI ::wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
-	#endif
 	#define BANAN_FUNCTION_NAME __FUNCTION__
 #elif defined BANAN_PLATFORM_LINUX
 	#include <signal.h>
 	#define BANAN_DEBUG_BREAK() raise(SIGTRAP)
-	#define BANAN_MAIN int main(int argc, char** argv)
 	#define BANAN_FUNCTION_NAME __FUNCTION__
 #endif
-
 
 #include <memory>
 
