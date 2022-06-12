@@ -12,7 +12,7 @@
 
 // Thread pool
 #include <functional>
-#include <future>
+#include <thread>
 
 // Message
 #include <cstring>
@@ -180,7 +180,6 @@ namespace Banan::Networking
 		std::atomic<bool>					m_running;
 		std::condition_variable				m_cv_taskNew;
 		std::condition_variable				m_cv_taskDone;
-
 
 		mutable std::mutex					m_mutex;
 		std::vector<std::thread>			m_threads;

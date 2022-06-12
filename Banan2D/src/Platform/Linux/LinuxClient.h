@@ -2,13 +2,9 @@
 
 #include "Banan/Networking/Client.h"
 
-#include <thread>
-
 namespace Banan::Networking
 {
 
-	// Just realized Disconnect() cannot be called from threads since it joins them
-	
 	class LinuxClient : public Client
 	{
 	public:
