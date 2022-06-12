@@ -28,10 +28,11 @@ namespace Banan::Networking
 		addrinfo* ptr = NULL;
 		addrinfo hints {};
 
-		if (il == InternetLayer::IPv4)
-			family = AF_INET;
-		else if (il == InternetLayer::IPv6)
-			family = AF_INET6;
+		switch (il)
+		{
+			case InternetLayer::IPv4: family = AF_INET;  break;
+			case InternetLayer::IPv6: family = AF_INET6; break;
+		}
 
 		hints.ai_family = family;
 		hints.ai_socktype = SOCK_STREAM;
@@ -111,26 +112,31 @@ namespace Banan::Networking
 
     void LinuxClient::RecvThread()
 	{
-		char* buffer = new char[BANAN_MAX_MESSAGE_SIZE];
+		std::vector<char> buffer(BANAN_MAX_MESSAGE_SIZE);
 		uint64_t target = 0;
 		uint64_t current = 0;
 
 		while (m_active)
 		{
-			int bytes = recv(m_socket, buffer + current, BANAN_MAX_MESSAGE_SIZE - current, 0);
-			if (bytes == -1 && m_active)
+			int nbytes = recv(m_socket, buffer.data() + current, BANAN_MAX_MESSAGE_SIZE - current, 0);
+			if (!m_active)
+				return;
+			if (nbytes == -1)
 				BANAN_ERROR("recv() (%s)\n", strerror(errno));
-			if (bytes <= 0 || !m_active)
+			if (nbytes <= 0)
 			{
 				m_active = false;
 				break;
 			}
 
+			current += nbytes;
+
 			if (target == 0)
 			{
 				if (current < sizeof(uint64_t))
 					continue;
-				target = *(uint64_t*)buffer;
+
+				target = Message::GetSize(buffer.data());
 
 				if (target == 0 || target > BANAN_MAX_MESSAGE_SIZE)
 				{
@@ -141,15 +147,13 @@ namespace Banan::Networking
 
 			if (current >= target)
 			{
-				m_recvMessages.Push(Message::Create(buffer, target));
+				m_recvMessages.Push(Message::Create(buffer.data(), target));
 
-				std::memmove(buffer, buffer + target, current - target);
+				std::memmove(buffer.data(), buffer.data() + target, current - target);
 				current -= target;
 				target = 0;
 			}
 		}
-
-		delete[] buffer;
 	}
 
     void LinuxClient::SendThread()
@@ -162,19 +166,23 @@ namespace Banan::Networking
 				const char* serialized = message.GetSerialized();
 				int size = message.Size();
 
+				std::string str;
+				message.Get(str);
+
 				int sent = 0;
 				while (sent < size)
 				{
-					int bytes = send(m_socket, serialized + sent, size - sent, 0);
+					int nbytes = send(m_socket, serialized + sent, size - sent, 0);
 					if (!m_active)
 						return;
-					if (bytes < 0)
+					if (nbytes < 0)
 						BANAN_ERROR("send() (%s)\n", strerror(errno));
-					if (bytes <= 0)
+					if (nbytes <= 0)
 					{
 						m_active = false;
 						return;
 					}
+					sent += nbytes;
 				}
 			}
 		}

@@ -4,16 +4,21 @@
 
 #include "Banan/Core/ConsoleOutput.h"
 
-#include <cstring>
-#include <sstream>
-#include <string>
-#include <typeinfo>
-
 // Thread safe queue
 #include <atomic>
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+
+// Thread pool
+#include <functional>
+#include <future>
+
+// Message
+#include <cstring>
+#include <sstream>
+#include <string>
+#include <typeinfo>
 
 #define BANAN_MAX_MESSAGE_SIZE 1'000'000
 
@@ -94,6 +99,96 @@ namespace Banan::Networking
 		std::condition_variable	m_cv;
 	};
 
+	struct ThreadPool
+	{
+	public:
+		ThreadPool(uint64_t count) :
+			m_running(true),
+			m_threads(count),
+			m_taskCount(0)
+		{
+			for (std::thread& t : m_threads)
+				t = std::thread(&ThreadPool::ThreadFunc, this);
+		}
+
+		~ThreadPool()
+		{
+			m_running = false;
+			m_cv_taskNew.notify_all();
+			m_cv_taskDone.notify_all();
+
+			for (std::thread& t : m_threads)
+				if (t.joinable())
+					t.join();
+		}
+
+		template<typename Fn, typename... Args>
+		void Push(Fn&& func, Args&&... args)
+		{
+			std::scoped_lock _(m_mutex);
+
+			if constexpr(sizeof...(Args) == 0)
+				m_pending.push(func);
+			else
+				m_pending.push([func, args...]() { func(args...); });
+
+			m_taskCount++;
+			m_cv_taskNew.notify_one();
+		}
+
+		void Wait(bool clear = false)
+		{
+			std::unique_lock lock(m_mutex);
+			if (clear)
+			{
+				m_pending = std::queue<std::function<void()>>();
+				m_taskCount -= m_pending.size();
+			}
+			m_cv_taskDone.wait(lock, [&]() { return !m_running || m_taskCount == 0; });
+		}
+
+		bool IsActive() const
+		{
+			return m_running && m_taskCount > 0;
+		}
+
+	private:
+		void ThreadFunc()
+		{
+			while (m_running)
+			{
+				std::function<void()> task;
+
+				{
+					std::unique_lock lock(m_mutex);
+					m_cv_taskNew.wait(lock, [&](){ return !m_running || !m_pending.empty(); });
+					if (!m_running)
+						break;
+
+					task = std::move(m_pending.front());
+					m_pending.pop();
+				}
+
+				task();
+				m_taskCount--;
+
+				m_cv_taskDone.notify_all();
+			}
+		}
+
+	private:
+		std::atomic<bool>					m_running;
+		std::condition_variable				m_cv_taskNew;
+		std::condition_variable				m_cv_taskDone;
+
+
+		mutable std::mutex					m_mutex;
+		std::vector<std::thread>			m_threads;
+		std::queue<std::function<void()>>	m_pending;
+
+		std::atomic<uint64_t>				m_taskCount;
+	};
+
 	struct Message
 	{
 	public:
@@ -102,6 +197,8 @@ namespace Banan::Networking
 		template<typename T>
 		static Message Create(const T& object)
 		{
+			static_assert(!std::is_pointer_v<T>, "'Banan::Networking::Message::Create(const T&)' requires T not to be a pointer");
+
 			std::stringstream objstream;
 			Banan::Networking::Serialize(objstream, object);
 
@@ -120,11 +217,8 @@ namespace Banan::Networking
 			return message;
 		}
 
-		template<typename T>
-		static Message Create(T* data)
+		static Message Create(void* data, uint64_t size)
 		{
-			uint64_t size = *(uint64_t*)data;
-
 			Message message;
 			message.m_data.resize(size);
 			std::memcpy(message.m_data.data(), data, size);
@@ -188,6 +282,15 @@ namespace Banan::Networking
 		inline const char* GetSerialized() const
 		{
 			return m_data.data();
+		}
+
+		// Data must be atleast sizeof(uint64_t) bytes long
+		static uint64_t GetSize(void* data)
+		{
+			std::istringstream iss(std::string((char*)data, sizeof(uint64_t)));
+			uint64_t size;
+			iss >> bits(size);
+			return size;
 		}
 
 	private:

@@ -13,7 +13,7 @@
 
 namespace Banan::Networking
 {
-
+	
 	using size_type = uint64_t;
 
 	template<typename T>
@@ -44,15 +44,6 @@ namespace Banan::Networking
 	std::ostream& operator<<(std::ostream& os, bits_t<T&> b)
 	{
 		return os << bits_cref(b);
-
-#if __BYTE_ORDER__ != BANAN_BYTE_ORDER
-		char* ptr = (char*)&b.t;
-		for (std::size_t i = sizeof(T); i > 0; i--)
-			os.put(ptr[i - 1]);
-#else
-		os.write((char*)&b.t, sizeof(T));
-#endif
-		return os;
 	}
 	template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 	std::istream& operator>>(std::istream& is, bits_t<T&> b)
@@ -80,11 +71,6 @@ namespace Banan::Networking
 	std::ostream& operator<<(std::ostream& os, bits_t<std::basic_string<CharT, Traits, Allocator>&> b)
 	{
 		return os << bits_cref(b.t);
-
-		os << bits<const size_type&>(b.t.size());
-		for (const CharT& c : b.t)
-			os << bits(c);
-		return os;
 	}
 	template<typename CharT, typename Traits, typename Allocator>
 	std::istream& operator>>(std::istream& is, bits_t<std::basic_string<CharT, Traits, Allocator>&> b)
@@ -110,11 +96,6 @@ namespace Banan::Networking
 	std::ostream& operator<<(std::ostream& os, bits_t<std::vector<T, Allocator>&> b)
 	{
 		return os << bits_cref(b);
-
-		os << bits<const size_type&>(b.t.size());
-		for (const T& t : b.t)
-			os << bits(t);
-		return os;
 	}
 	template<typename T, typename Allocator>
 	std::istream& operator>>(std::istream& is, bits_t<std::vector<T, Allocator>&> b)
@@ -139,10 +120,6 @@ namespace Banan::Networking
 	std::ostream& operator<<(std::ostream& os, bits_t<std::array<T, N>&> b)
 	{
 		return os << bits_cref(b);
-
-		for (const T& t : b.t)
-			os << bits(t);
-		return os;
 	}
 	template<typename T, std::size_t N>
 	std::istream& operator>>(std::istream& is, bits_t<std::array<T, N>&> b)

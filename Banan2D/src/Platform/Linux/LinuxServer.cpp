@@ -14,9 +14,10 @@ epoll_event g_events[BANAN_MAX_EVENTS];
 namespace Banan::Networking
 {
 
-	LinuxServer::LinuxServer() :
+	LinuxServer::LinuxServer(uint64_t thread_count) :
 		m_active(false),
-		m_listening(-1)
+		m_listening(-1),
+		m_threadPool(thread_count)
 	{}
 
 	LinuxServer::~LinuxServer()
@@ -31,10 +32,11 @@ namespace Banan::Networking
 		addrinfo* ptr = NULL;
 		addrinfo hints{};
 
-		if (il == InternetLayer::IPv4)
-			family = AF_INET;
-		else if (il == InternetLayer::IPv6)
-			family = AF_INET6;
+		switch (il)
+		{
+			case InternetLayer::IPv4: family = AF_INET;  break;
+			case InternetLayer::IPv6: family = AF_INET6; break;
+		}
 		
 		hints.ai_family = family;
 		hints.ai_socktype = SOCK_STREAM;
@@ -52,7 +54,7 @@ namespace Banan::Networking
 			int opt = 1;
 			setsockopt(m_listening, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 
-			ret = bind(m_listening, ptr->ai_addr, ptr->ai_addrlen);
+			ret = ::bind(m_listening, ptr->ai_addr, ptr->ai_addrlen);
 			if (ret == 0)
 				break;
 			
@@ -76,26 +78,25 @@ namespace Banan::Networking
 		BANAN_ASSERT(ret != -1, "epoll_ctl() (%s)\n", strerror(errno));
 
 		m_active = true;
-		m_recvThread = std::thread(&LinuxServer::RecvThread, this);
-		m_sendThread = std::thread(&LinuxServer::SendThread, this);
+		m_epollThread = std::thread(&LinuxServer::EpollThread, this);
 	}
 
 	void LinuxServer::Stop()
 	{
 		m_active = false;
 
+		// Shutdown incoming messages/connections.
+		// epoll will be notified
 		shutdown(m_listening, SHUT_RD);
-		if (m_recvThread.joinable())
-			m_recvThread.join();
 
-		m_toSend.Kill();
-		if (m_sendThread.joinable())
-			m_sendThread.join();
+		if (m_epollThread.joinable())
+			m_epollThread.join();
+
+		m_threadPool.Wait(true);
 
 		for (auto& sfd : m_sfds)
 			close(sfd);
 		close(m_listening);
-
 
 		m_sfds.clear();
 		m_toSend.Clear();
@@ -103,23 +104,21 @@ namespace Banan::Networking
 		m_disconnections.Clear();
 		m_recievedMessages.Clear();
 
-		for (auto& [_, msg] : m_pendingMessages)
-			delete[] msg.data;
 		m_pendingMessages.clear();
 	}
 
 	void LinuxServer::Send(const Message& message, Socket socket)
 	{
-		m_toSend.Push({ (int)socket, message });
+		using namespace std::placeholders;
+		m_threadPool.Push(std::bind(&LinuxServer::SendTask, this, _1, _2), socket, message);
 	}
 
 	void LinuxServer::SendAll(const Message& message, Socket skip)
 	{
-		m_sfdMutex.lock();
+		std::scoped_lock _(m_sfdMutex);
 		for (int sfd : m_sfds)
 			if (sfd != skip)
 				Send(message, sfd);
-		m_sfdMutex.unlock();
 	}
 
 	void LinuxServer::QueryUpdates()
@@ -151,7 +150,7 @@ namespace Banan::Networking
 
 	std::string LinuxServer::GetIP(Socket socket) const
 	{
-		std::scoped_lock lock(m_ipMutex);
+		std::scoped_lock _(m_ipMutex);
 		auto it = m_ipMap.find(socket);
 		if (it == m_ipMap.end())
 			return "<Not Connected>";
@@ -160,80 +159,82 @@ namespace Banan::Networking
 
 	void LinuxServer::Kick(int socket)
 	{
-		m_sfdMutex.lock();
-		auto it = std::find(m_sfds.begin(), m_sfds.end(), (int)socket);
-		if (it == m_sfds.end())
-			return;
-		m_sfds.erase(it);
-		m_sfdMutex.unlock();
+		{
+			std::scoped_lock _(m_sfdMutex);
+			auto it = std::find(m_sfds.begin(), m_sfds.end(), (int)socket);
+			if (it == m_sfds.end())
+				return;
+			m_sfds.erase(it);
+		}
 
-		close(socket); // closing should remove fd from epoll
+		epoll_ctl(m_epfd, EPOLL_CTL_DEL, socket, NULL);
+		close(socket);
 
 		m_pendingMessages.erase(socket);
 		
-		m_ipMutex.lock();
-		m_ipMap.erase(socket);
-		m_ipMutex.unlock();
+		{
+			std::scoped_lock _(m_ipMutex);
+			m_ipMap.erase(socket);
+		}
 
 		m_disconnections.Push(socket);
 	}
 
-	bool LinuxServer::AcceptConnection()
+	void LinuxServer::AcceptConnections()
 	{
 		sockaddr addr;
 		socklen_t size = sizeof(addr);
 
-		int client = accept4(m_listening, &addr, &size, SOCK_NONBLOCK);
-		if (client == -1)
+		char host[NI_MAXHOST];
+		char serv[NI_MAXSERV];
+
+		while (true)
 		{
-			if (errno == EAGAIN || errno == EWOULDBLOCK)
-				return false;
-			BANAN_WARN("accept() (%s)\n", strerror(errno));
-			return true;
+			int client = accept4(m_listening, &addr, &size, SOCK_NONBLOCK);
+			if (client == -1)
+			{
+				if (errno != EAGAIN && errno != EWOULDBLOCK)
+					BANAN_WARN("accept() (%s)\n", strerror(errno));
+				break;
+			}
+
+			std::memset(host, 0, NI_MAXHOST);
+			std::memset(serv, 0, NI_MAXSERV);
+
+			int ret = getnameinfo(&addr, size, host, NI_MAXHOST, serv, NI_MAXSERV, 0);
+			if (ret != 0)
+			{
+				std::sprintf(host, "?.?.?.?");
+				std::sprintf(serv, "?");
+			}
+
+			epoll_event event{};
+			event.data.fd = client;
+			event.events  =	EPOLLET |	// Edge triggered mode
+							EPOLLIN |	// Read events
+							EPOLLRDHUP;	// Disconnection events
+			epoll_ctl(m_epfd, EPOLL_CTL_ADD, client, &event);
+
+			{
+				std::scoped_lock _(m_sfdMutex);
+				m_sfds.push_back(client);
+			}
+			{
+				std::scoped_lock _(m_ipMutex);
+				m_ipMap[client] = std::string(host) + ':' + std::string(serv);
+			}
+
+			m_connections.Push(client);
 		}
-
-		char host[NI_MAXHOST]{};
-		char serv[NI_MAXSERV]{};
-
-		int ret = getnameinfo(&addr, size, host, NI_MAXHOST, serv, NI_MAXSERV, 0);
-		if (ret != 0)
-		{
-			std::sprintf(host, "?.?.?.?");
-			std::sprintf(serv, "?");
-		}
-
-		epoll_event event{};
-		event.data.fd = client;
-		event.events  =	EPOLLET |	// Edge triggered mode
-						EPOLLIN |	// Read events
-						EPOLLRDHUP;	// Disconnection events
-
-		ret = epoll_ctl(m_epfd, EPOLL_CTL_ADD, client, &event);
-		if (ret == -1)
-		{
-			BANAN_WARN("epoll_ctl() (%s)\n", strerror(errno));
-			close(client);
-			return true;
-		}
-
-		m_sfdMutex.lock();
-		m_sfds.push_back(client);
-		m_sfdMutex.unlock();
-
-		m_ipMutex.lock();
-		m_ipMap[client] = std::string(host) + ':' + std::string(serv);
-		m_ipMutex.unlock();
-
-		m_connections.Push(client);
-
-		return true;
 	}
 
-	void LinuxServer::RecvThread()
+	void LinuxServer::EpollThread()
 	{
 		while (m_active)
 		{
 			int nfds = epoll_wait(m_epfd, g_events, BANAN_MAX_EVENTS, -1);
+			if (!m_active)
+				return;
 			if (nfds == -1)
 			{
 				BANAN_WARN("epoll_wait() (%s)\n", strerror(errno));
@@ -244,136 +245,139 @@ namespace Banan::Networking
 			{
 				epoll_event& e = g_events[i];
 
-				// Check for errors
 				if (e.events & EPOLLERR)
 				{
 					BANAN_WARN("EPOLLERR\n");
 					continue;
 				}
 
-				if ((e.data.fd == m_listening) && (e.events & EPOLLIN))
-				{
-					// Accept new connections
+				using namespace std::placeholders;
 
-					while (AcceptConnection());
-				}
+				int socket = e.data.fd;
+				
+				if ((socket == m_listening) && (e.events & EPOLLIN))
+					m_threadPool.Push(std::bind(&LinuxServer::AcceptConnections, this));
 				else if (e.events & (EPOLLRDHUP | EPOLLHUP))
-				{
-					// Disconnection
-
-					Kick(e.data.fd);
-				}
+					m_threadPool.Push(std::bind(&LinuxServer::Kick, this, _1), socket);
 				else if (e.events & EPOLLIN)
-				{
-					// New data available on socket
-
-					char* buffer = new char[BANAN_MAX_MESSAGE_SIZE];
-					uint64_t target = 0;
-					uint64_t current = 0;
-
-					auto it = m_pendingMessages.find(e.data.fd);
-					if (it != m_pendingMessages.end())
-					{
-						PendingMessage& msg = it->second;
-						std::memcpy(buffer, msg.data, msg.current);
-						target = msg.target;
-						current = msg.current;
-					}
-
-					bool error = false;
-
-					while (true)
-					{
-						int nbytes = recv(e.data.fd, buffer + current, BANAN_MAX_MESSAGE_SIZE - current, 0);
-						if (!m_active)
-						{
-							delete[] buffer;
-							return;
-						}
-						if (nbytes == -1)
-						{
-							if (errno != EAGAIN && errno != EWOULDBLOCK)
-							{
-								BANAN_WARN("recv() (%s)\n", strerror(errno));
-								error = true;
-							}
-							break;
-						}
-						if (nbytes == 0)
-							continue;
-
-						current += nbytes;
-
-						if (target == 0)
-						{
-							if (current < sizeof(uint64_t))
-								continue;
-							target = *(uint64_t*)buffer;
-
-							if (target == 0 || target > BANAN_MAX_MESSAGE_SIZE)
-							{
-								BANAN_WARN("%d sent an invalid message\n", e.data.fd);
-								error = true;
-								break;
-							}
-						}
-						
-						if (current >= target)
-						{
-							m_recievedMessages.Push({ (int)e.data.fd, Message::Create(buffer, target) });
-
-							std::memmove(buffer, buffer + target, current - target);
-							current -= target;
-							target = 0;
-						}
-					}
-
-					if (error) 
-					{
-						Kick(e.data.fd);
-					}
-					else if (current > 0)
-					{
-						PendingMessage pending;
-						pending.current = current;
-						pending.target = target;
-						pending.data = new char[target];
-						std::memcpy(pending.data, buffer, current);
-					}
-					
-					delete[] buffer;
-				}
+					m_threadPool.Push(std::bind(&LinuxServer::RecvTask, this, _1), socket);
 			}
 		}
 	}
 
-	void LinuxServer::SendThread()
+	void LinuxServer::RecvTask(int socket)
 	{
-		while (m_active)
+		uint64_t target = 0;
+		uint64_t current = 0;
+		std::vector<char> buffer;
+
 		{
-			std::pair<int, Message> object;
-			if (m_toSend.WaitAndPop(object))
+			std::scoped_lock _(m_pendingMutex);
+			auto it = m_pendingMessages.find(socket);
+			if (it != m_pendingMessages.end())
 			{
-				auto& [sock, message] = object;
+				target	= it->second.target;
+				current	= it->second.current;
+				buffer	= it->second.buffer;
+			}
+		}
 
-				const char* serialized = message.GetSerialized();
-				int size = message.Size();
+		buffer.resize(BANAN_MAX_MESSAGE_SIZE);
 
-				int sent = 0;
-				while (sent < size)
+		while (true)
+		{
+			// Recieve data from socket
+			int nbytes = recv(socket, buffer.data() + current, BANAN_MAX_MESSAGE_SIZE - current, 0);
+			if (!m_active)
+				return;
+			if (nbytes == -1)
+			{
+				if (errno == EAGAIN || errno == EWOULDBLOCK)
+					break;
+				BANAN_WARN("recv() (%s)\n", strerror(errno));
+			}
+			if (nbytes <= 0)
+			{
+				Kick(socket);
+				return;
+			}
+
+			current += nbytes;
+
+			// Update target if not set
+			if (target == 0)
+			{
+				if (current < sizeof(uint64_t))
+					continue;
+				
+				target = Message::GetSize(buffer.data());
+
+				if (target == 0 || target > BANAN_MAX_MESSAGE_SIZE)
 				{
-					int bytes = send(sock, serialized + sent, size - sent, 0);
-					if (!m_active)
-						return;
-					if (bytes < 0)
-						BANAN_WARN("send() (%s)\n", strerror(errno));
-					if (bytes <= 0)
-					{
-						Kick(sock);
-						break;
-					}
+					BANAN_WARN("%d tried to send %lu bytes\n", socket, target);
+					Kick(socket);
+					return;
 				}
 			}
+
+			// Process ready messages
+			while (current >= target)
+			{
+				m_recievedMessages.Push({ socket, Message::Create(buffer.data(), target) });
+
+				std::memmove(buffer.data(), buffer.data() + target, current - target);
+
+				current -= target;
+				target = 0;
+
+				if (current < sizeof(uint64_t))
+					break;
+
+				target = Message::GetSize(buffer.data());
+
+				if (target == 0 || target > BANAN_MAX_MESSAGE_SIZE)
+				{
+					BANAN_WARN("%d tried to send %lu bytes\n", socket, target);
+					Kick(socket);
+					return;
+				}
+			}
+		}
+
+		// Save pending message
+		if (current > 0)
+		{
+			std::scoped_lock _(m_pendingMutex);
+
+			PendingMessage& msg = m_pendingMessages[socket];
+			msg.target = target;
+			msg.current = current;
+			msg.buffer.resize(current);
+			std::memcpy(msg.buffer.data(), buffer.data(), current);
+		}
+	}
+
+	void LinuxServer::SendTask(int socket, const Message& message)
+	{
+		uint64_t size = message.Size();
+		uint64_t sent = 0;
+
+		const char* buffer = message.GetSerialized();
+
+		while (sent < size)
+		{
+			int nbytes = send(socket, buffer + sent, size - sent, 0);
+			if (!m_active)
+				return;
+			// TODO: EAGAIN and EWOULDBLOCK should be handeled seperately
+			if (nbytes == -1)
+				BANAN_WARN("send() (%s)\n", strerror(errno));
+			if (nbytes <= 0)
+			{
+				Kick(socket);
+				return;
+			}
+			sent += nbytes;
 		}
 	}
 

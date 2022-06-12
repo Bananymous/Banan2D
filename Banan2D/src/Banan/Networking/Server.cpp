@@ -10,12 +10,12 @@
 namespace Banan::Networking
 {
 
-	Scope<Server> Server::Create()
+	Scope<Server> Server::Create(uint64_t thread_count)
 	{
 #if defined BANAN_PLATFORM_WINDOWS
-		return CreateScope<WindowsServer>();
+		return CreateScope<WindowsServer>(thread_count);
 #elif defined BANAN_PLATFORM_LINUX
-		return CreateScope<LinuxServer>();
+		return CreateScope<LinuxServer>(thread_count);
 #endif
 		return nullptr;
 	}

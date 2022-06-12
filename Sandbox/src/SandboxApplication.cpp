@@ -85,40 +85,11 @@ void InputThread(Scope<Client>& client)
 		
 		client->Send(Message::Create(input));
 	}
-	
-}
-
-template<typename T>
-void TestMessage(const T& t)
-{
-	void* data;
-
-	{
-		Message message;
-		message = Message::Create(t);
-
-		data = (void*)(new char[message.Size()]);
-		memcpy(data, message.GetSerialized(), message.Size());
-	}
-
-	{
-		Message message = Message::Create(data);
-		T t;
-		message.Get<T>(t);
-		std::cout << t << std::endl;
-	}
-
-	delete[] data;
 }
 
 int main(int argc, char** argv)
 {
-	TestMessage<int>(3);
-	TestMessage<float>(5.4f);
-	TestMessage<std::string>("Hello World!");
-	std::cin.get();
-
-#if 0
+#if 1
 	int type = ParseArguments(argc, argv);
 
 	if (type == 1)
@@ -126,11 +97,13 @@ int main(int argc, char** argv)
 		auto server = Server::Create();
 
 		server->SetMessageCallback(
-			[](Socket sock, const Message& msg)
+			[&](Socket sock, const Message& msg)
 			{
 				std::string str;
 				msg.Get(str);
 				BANAN_PRINT("%lu: %s\n", sock, str.c_str());
+
+				server->SendAll(msg, sock);
 			}
 		);
 
@@ -138,6 +111,7 @@ int main(int argc, char** argv)
 			[&](Socket sock)
 			{
 				BANAN_PRINT("%lu connected (%s)\n", sock, server->GetIP(sock).c_str());
+				server->Send(Message::Create(std::string("Hello!")), sock);
 			}
 		);
 
@@ -196,9 +170,9 @@ int main(int argc, char** argv)
 		if (input.joinable())
 			input.join();
 	}
+#endif
 	
 	return 0;
-#endif
 }
 
 #endif
