@@ -25,8 +25,11 @@ project "Sandbox"
 	filter { "options:glfw" }
 		links { "GLFW" }
 
+	filter { "system:windows", "options:glfw" }
+		links { "Ws2_32.lib" }
+
 	filter { "system:windows", "not options:glfw" }
-		links { "opengl32.lib", "XInput.lib" }
+		links { "opengl32.lib", "XInput.lib", "Ws2_32.lib" }
 
 	filter { "system:linux", "options:glfw" }
 		links { "pthread", "X11", "dl" }
