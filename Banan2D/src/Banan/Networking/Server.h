@@ -30,7 +30,7 @@ namespace Banan::Networking
 
 		virtual std::string GetIP(Socket socket) const = 0;
 
-		static Scope<Server> Create(uint64_t thread_count = std::thread::hardware_concurrency() - 1);
+		static Scope<Server> Create(uint64_t thread_count = std::thread::hardware_concurrency() - 2);
 	};
 
 }
