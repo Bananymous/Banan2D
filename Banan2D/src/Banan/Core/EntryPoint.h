@@ -19,10 +19,10 @@ int main(int argc, char** argv)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR pCmdLine, _In_ int nCmdShow)
 {
 #ifndef BANAN_DISABLE_CONSOLE
-	FILE* stream;
+	FILE* stream = NULL;
 	AllocConsole();
 
 	do
@@ -48,7 +48,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			break;
 		}
 
-		freopen_s(&stream, "CONOUT$", "wb", stdout);
+		freopen_s(&stream, "CONIN$",  "r", stdin);
+		freopen_s(&stream, "CONOUT$", "w", stdout);
+		freopen_s(&stream, "CONOUT$", "w", stderr);
 	} while (0);
 #endif
 
