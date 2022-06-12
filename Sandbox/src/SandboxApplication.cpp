@@ -1,38 +1,10 @@
-#if 0
-
 #include <Banan2D.h>
 #include <Banan/Core/EntryPoint.h>
 
-#include "SandboxLayer.h"
-
-class Sandbox : public Banan::Application
-{
-public:
-	Sandbox() :
-		Application("Sandbox", 1280, 720, false)
-	{
-		PushLayer(new SandboxLayer());
-	}
-
-	~Sandbox()
-	{
-
-	}
-
-};
-
-
-Banan::Application* Banan::CreateApplication()
-{
-	return new Sandbox();
-}
-
-
-#else
-
-#include <Banan2D.h>
 #include "Banan/Networking/Server.h"
 #include "Banan/Networking/Client.h"
+
+#include "SandboxLayer.h"
 
 #include <thread>
 #include <iostream>
@@ -80,13 +52,14 @@ void InputThread(Scope<Client>& client)
 	}
 }
 
-int main(int argc, char** argv)
+int tester(int argc, char** argv)
 {
 #if 1
 	int type = ParseArguments(argc, argv);
 
 	if (type == 1)
 	{
+#if 0
 		auto server = Server::Create();
 
 		server->SetMessageCallback(
@@ -94,7 +67,7 @@ int main(int argc, char** argv)
 			{
 				std::string str;
 				msg.Get(str);
-				BANAN_PRINT("%lu: %s\n", sock, str.c_str());
+				BANAN_PRINT("%llu: %s\n", sock, str.c_str());
 
 				server->SendAll(msg, sock);
 			}
@@ -103,7 +76,7 @@ int main(int argc, char** argv)
 		server->SetConnectionCallback(
 			[&](Socket sock)
 			{
-				BANAN_PRINT("%lu connected (%s)\n", sock, server->GetIP(sock).c_str());
+				BANAN_PRINT("%llu connected (%s)\n", sock, server->GetIP(sock).c_str());
 				server->Send(Message::Create(std::string("Hello!")), sock);
 			}
 		);
@@ -111,7 +84,7 @@ int main(int argc, char** argv)
 		server->SetDisconnectionCallback(
 			[](Socket sock)
 			{
-				BANAN_PRINT("%lu disconnected\n", sock);
+				BANAN_PRINT("%llu disconnected\n", sock);
 			}
 		);
 
@@ -123,6 +96,7 @@ int main(int argc, char** argv)
 		{
 			server->QueryUpdates();
 		}
+#endif
 	}
 	else if (type == 2)
 	{
@@ -164,8 +138,34 @@ int main(int argc, char** argv)
 			input.join();
 	}
 #endif
-	
+
 	return 0;
 }
 
+
+
+class Sandbox : public Application
+{
+public:
+	Sandbox() :
+		Application("Sandbox", 1280, 720, false)
+	{
+		PushLayer(new SandboxLayer());
+	}
+
+	~Sandbox()
+	{
+
+	}
+
+};
+
+
+Banan::Application* Banan::CreateApplication(int argc, char** argv)
+{
+#if 1
+	tester(argc, argv);
+	while (true);
 #endif
+	return new Sandbox();
+}

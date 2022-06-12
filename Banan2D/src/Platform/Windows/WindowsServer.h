@@ -8,7 +8,7 @@ namespace Banan::Networking
 	class WindowsServer : public Server
 	{
 	public:
-		WindowsServer();
+		WindowsServer(uint64_t thread_count);
 		~WindowsServer();
 
 		virtual void Start(int port, InternetLayer il = InternetLayer::IPv4) override;
