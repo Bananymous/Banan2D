@@ -54,7 +54,7 @@ namespace Banan::Networking
 		}
 
 		freeaddrinfo(res);
-		BANAN_ASSERT(ptr, "socket(), connect() (%s)\n", strerror(errno));
+		BANAN_ASSERT(ptr != NULL, "socket(), connect() (%s)\n", strerror(errno));
 
 		m_active = true;
 		m_recvThread = std::thread(&LinuxClient::RecvThread, this);
