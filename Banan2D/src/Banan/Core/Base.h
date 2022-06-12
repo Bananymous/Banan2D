@@ -9,7 +9,6 @@
 #define BANAN_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 #if defined BANAN_PLATFORM_WINDOWS
-	#include <Windows.h>
 	#define BANAN_DEBUG_BREAK() __debugbreak()
 	#ifdef BANAN_USE_GLFW
 		#define BANAN_MAIN int main(int argc, char** argv)
