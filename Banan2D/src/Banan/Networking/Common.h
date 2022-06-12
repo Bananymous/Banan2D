@@ -230,7 +230,7 @@ namespace Banan::Networking
 			m_data = other.m_data;	
 		}
 
-		Message(Message&& other)
+		Message(Message&& other) noexcept
 		{
 			m_data = std::move(other.m_data);
 			other.m_data = std::string();
@@ -242,7 +242,7 @@ namespace Banan::Networking
 			return *this;
 		}
 
-		Message& operator=(Message&& other)
+		Message& operator=(Message&& other) noexcept
 		{
 			m_data = std::move(other.m_data);
 			other.m_data = std::string();
