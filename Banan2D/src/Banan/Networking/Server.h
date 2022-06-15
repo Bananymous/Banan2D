@@ -5,6 +5,7 @@
 #include "Banan/Core/Base.h"
 
 #include <functional>
+#include <thread>
 
 namespace Banan::Networking
 {
@@ -19,8 +20,10 @@ namespace Banan::Networking
 
 		virtual bool IsActive() const = 0;
 
-		virtual void Send(const Message& message, Socket socket) = 0;
+		virtual void Send(Socket socket, const Message& message) = 0;
 		virtual void SendAll(const Message& message, Socket skip = ~Socket(0)) = 0;
+
+		virtual void Kick(Socket socket) = 0;
 
 		virtual void SetMessageCallback(std::function<void(Socket, const Message&)> callback) = 0;
 		virtual void SetConnectionCallback(std::function<void(Socket)> callback) = 0;
@@ -30,7 +33,8 @@ namespace Banan::Networking
 
 		virtual std::string GetIP(Socket socket) const = 0;
 
-		static Scope<Server> Create(uint64_t thread_count = std::thread::hardware_concurrency() - 2);
+		// Thread count must be atleast 2. 1 is for epoll/select and the rest are for thread pool.
+		static Scope<Server> Create(uint64_t thread_count = std::thread::hardware_concurrency() - 1);
 	};
 
 }

@@ -126,7 +126,7 @@ int tester(int argc, char** argv)
 			}
 		);
 
-		client->Connect("localhost", 54000);
+		client->Connect("localhost", 54000, InternetLayer::IPv6);
 
 		input = std::thread(&InputThread, std::ref(client));
 		while (client->IsConnected())

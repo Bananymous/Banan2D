@@ -21,7 +21,7 @@ namespace Banan::Networking
 
 		virtual bool IsActive() const override { return m_active; }
 
-		virtual void Send(const Message& message, Socket socket) override;
+		virtual void Send(Socket socket, const Message& message) override;
 		virtual void SendAll(const Message& message, Socket skip) override;
 
 		virtual void SetMessageCallback(std::function<void(Socket, const Message&)> callback) override	{ m_messageCallback = callback; }

@@ -12,9 +12,7 @@
 #include "Banan/Event/KeyEvent.h"
 #include "Banan/Event/MouseEvent.h"
 
-
 #include "Banan/ImGui/ImGuiLayer.h"
-
 
 #include "Banan/Renderer/Renderer2D.h"
 #include "Banan/Renderer/RenderCommand.h"
@@ -26,3 +24,6 @@
 
 #include "Banan/Renderer/Camera.h"
 #include "Banan/Renderer/CameraController.h"
+
+#include "Banan/Threading/ThreadSafeContainers.h"
+#include "Banan/Threading/ThreadPool.h"

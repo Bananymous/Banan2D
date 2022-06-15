@@ -17,8 +17,10 @@ namespace Banan::Networking
 	LinuxServer::LinuxServer(uint64_t thread_count) :
 		m_active(false),
 		m_listening(-1),
-		m_threadPool(thread_count)
-	{}
+		m_threadPool(thread_count - 1)
+	{
+		BANAN_ASSERT(thread_count >= 2, "Banan::Networking::Server needs atleast 2 threads to work!\n");
+	}
 
 	LinuxServer::~LinuxServer()
 	{
@@ -107,7 +109,7 @@ namespace Banan::Networking
 		m_pendingMessages.clear();
 	}
 
-	void LinuxServer::Send(const Message& message, Socket socket)
+	void LinuxServer::Send(Socket socket, const Message& message)
 	{
 		using namespace std::placeholders;
 		m_threadPool.Push(std::bind(&LinuxServer::SendTask, this, _1, _2), socket, message);
